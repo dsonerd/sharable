@@ -6,3 +6,8 @@
 .env.*
 node_modules/
 .local/
+
+# Override global gitignore to track Claude Code project commands
+!.claude/
+.claude/*
+!.claude/commands/
