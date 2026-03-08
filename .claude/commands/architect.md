@@ -7,19 +7,20 @@ Design system architecture for the given topic or component.
 Before proceeding, read and apply the following skills from `.claude/skills/`:
 
 **Always apply:**
-1. **aws-cloud-patterns** — Service selection, Well-Architected pillars, architecture patterns
-2. **security-review** — Threat model, encryption, access control, audit logging
-3. **operational-readiness** — Monitoring, alerting, DR/BCP, deployment strategy
-4. **cost-analysis** — TCO, pricing models, cost optimization levers
-5. **risk-assessment** — Architectural risks, failure modes, mitigations
-6. **trade-off-analysis** — Explicit trade-offs for every key decision
-7. **creative-challenge** — Challenge the design, find simpler alternatives, surface assumptions
+1. **vietnam-insurance-regulatory** — Regulatory context for life insurance in Vietnam
+2. **vietnam-banking-regulatory** — Banking regulatory context (SBV, AML/KYC, payments)
+3. **insurance-domain-model** — Core business concepts, processes, terminology
+4. **compliance-check** — Data residency, PII handling, regulatory reporting
+5. **aws-cloud-patterns** — Service selection, Well-Architected pillars, architecture patterns
+6. **security-review** — Threat model, encryption, access control, audit logging
+7. **operational-readiness** — Monitoring, alerting, DR/BCP, deployment strategy
+8. **cost-analysis** — TCO, pricing models, cost optimization levers
+9. **risk-assessment** — Architectural risks, failure modes, mitigations
+10. **trade-off-analysis** — Explicit trade-offs for every key decision
+11. **creative-challenge** — Challenge the design, find simpler alternatives, surface assumptions
 
 **Apply when relevant:**
-- **compliance-check** — If handling PII, financial data, or regulatory reporting
 - **devsecops-practices** — If architecture includes CI/CD, IaC, or deployment automation
-- **vietnam-insurance-regulatory** / **vietnam-banking-regulatory** — If the system operates in regulated space
-- **insurance-domain-model** — If the system handles insurance business processes
 
 ## Instructions
 
@@ -34,7 +35,7 @@ Before proceeding, read and apply the following skills from `.claude/skills/`:
    - **Operations**: Monitoring, alerting, DR/BCP, deployment (`operational-readiness`)
    - **Cost**: Estimated cost profile, optimization opportunities (`cost-analysis`)
    - **Risks**: Architectural risks and mitigations (`risk-assessment`)
-   - **Compliance**: Regulatory alignment if applicable (`compliance-check`)
+   - **Compliance**: Regulatory alignment (`compliance-check`)
    - **Creative challenges**: Assumptions challenged, simpler alternatives considered (`creative-challenge`)
 4. Save to `architecture/<topic-in-kebab-case>.md` (subfolder if multi-document).
 5. If an architecture document on the same topic already exists, update it.

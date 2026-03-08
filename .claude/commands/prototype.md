@@ -7,12 +7,15 @@ Build a quick prototype or spike solution for the given idea.
 Before proceeding, read and apply the following skills from `.claude/skills/`:
 
 **Always apply:**
-1. **devsecops-practices** — Pipeline patterns, IaC conventions, security-in-code basics
-2. **security-review** — Even in prototypes: no hardcoded secrets, no real PII, flag what needs hardening
+1. **vietnam-insurance-regulatory** — Regulatory context for life insurance in Vietnam
+2. **vietnam-banking-regulatory** — Banking regulatory context (SBV, AML/KYC, payments)
+3. **insurance-domain-model** — Core business concepts, processes, terminology
+4. **devsecops-practices** — Pipeline patterns, IaC conventions, security-in-code basics
+5. **security-review** — Even in prototypes: no hardcoded secrets, no real PII, flag what needs hardening
 
 **Apply when relevant:**
 - **aws-cloud-patterns** — If prototype involves AWS services
-- **insurance-domain-model** — If prototype involves insurance business logic
+- **compliance-check** — If prototype handles PII or regulatory data flows
 - **cost-analysis** — If prototype tests something with cost implications (estimate expected cost)
 - **creative-challenge** — If the prototype goal is ambiguous, challenge scope before building
 

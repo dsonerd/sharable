@@ -7,16 +7,17 @@ Review and improve an existing document or piece of work in this workspace.
 Before proceeding, read and apply the following skills from `.claude/skills/`:
 
 **Always apply:**
-1. **creative-challenge** — After structured review, challenge assumptions and surface what's missing
+1. **vietnam-insurance-regulatory** — Regulatory context for life insurance in Vietnam
+2. **vietnam-banking-regulatory** — Banking regulatory context (SBV, AML/KYC, payments)
+3. **insurance-domain-model** — Core business concepts, processes, terminology
+4. **compliance-check** — Data residency, PII handling, regulatory reporting
+5. **creative-challenge** — After structured review, challenge assumptions and surface what's missing
 
 **Apply based on content type:**
 - **security-review** — For architecture docs, infrastructure configs, code
-- **compliance-check** — For anything touching regulated processes, PII, financial data
 - **operational-readiness** — For architecture docs, deployment configs, runbooks
 - **cost-analysis** — For architecture docs, infrastructure proposals
 - **risk-assessment** — For solution designs, proposals, architecture docs
-- **vietnam-insurance-regulatory** / **vietnam-banking-regulatory** — For regulatory or business documents
-- **insurance-domain-model** — For documents using insurance terminology or processes
 - **aws-cloud-patterns** — For AWS architecture documents
 - **devsecops-practices** — For CI/CD configs, Dockerfiles, IaC code
 - **research-methodology** — For research documents (verify sources, check confidence tags)

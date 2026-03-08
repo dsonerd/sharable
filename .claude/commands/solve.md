@@ -7,20 +7,21 @@ Create a solution design or technical proposal for the given problem.
 Before proceeding, read and apply the following skills from `.claude/skills/`:
 
 **Always apply:**
-1. **structured-decomposition** — Decompose the problem before proposing solutions
-2. **risk-assessment** — Identify risks, failure modes, rollback scenarios
-3. **trade-off-analysis** — Compare alternatives explicitly
-4. **creative-challenge** — Challenge your own solution, find simpler paths, surface unasked questions
+1. **vietnam-insurance-regulatory** — Regulatory context for life insurance in Vietnam
+2. **vietnam-banking-regulatory** — Banking regulatory context (SBV, AML/KYC, payments)
+3. **insurance-domain-model** — Core business concepts, processes, terminology
+4. **compliance-check** — Data residency, PII handling, regulatory reporting
+5. **structured-decomposition** — Decompose the problem before proposing solutions
+6. **risk-assessment** — Identify risks, failure modes, rollback scenarios
+7. **trade-off-analysis** — Compare alternatives explicitly
+8. **creative-challenge** — Challenge your own solution, find simpler paths, surface unasked questions
 
 **Apply when relevant:**
 - **aws-cloud-patterns** — If solution involves AWS infrastructure
 - **devsecops-practices** — If solution involves CI/CD, automation, or security tooling
 - **security-review** — If solution affects security posture
-- **compliance-check** — If solution affects regulated processes or data
 - **operational-readiness** — If solution changes how systems are operated
 - **cost-analysis** — If solution has significant cost implications
-- **vietnam-insurance-regulatory** / **vietnam-banking-regulatory** — If problem exists in regulated space
-- **insurance-domain-model** — If problem involves insurance business processes
 - **research-methodology** — If the problem requires investigation of external information
 
 ## Instructions
@@ -36,7 +37,7 @@ Before proceeding, read and apply the following skills from `.claude/skills/`:
    - **Proposed solution**: Detailed approach with rationale
    - **Alternatives considered**: At least 2 alternatives (`trade-off-analysis`)
    - **Implementation plan**: Phases, milestones, dependencies
-   - **Security & compliance impact**: If applicable (`security-review`, `compliance-check`)
+   - **Security & compliance impact**: (`security-review`, `compliance-check`)
    - **Risks and mitigations**: (`risk-assessment`)
    - **Rollback plan**: How to revert
    - **Success criteria**: How to know the problem is solved

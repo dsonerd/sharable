@@ -6,15 +6,16 @@ Start a structured brainstorming session on the given topic.
 
 Before proceeding, read and apply the following skills from `.claude/skills/`:
 
-1. **structured-decomposition** — Decompose the topic before ideating. Don't anchor on the first idea.
-2. **trade-off-analysis** — For each promising idea, surface trade-offs explicitly.
-3. **risk-assessment** — Flag risks for top candidates (don't kill ideas, but be honest).
-4. **creative-challenge** — After structured brainstorming, challenge your own output and look for non-obvious angles.
+1. **vietnam-insurance-regulatory** — Regulatory context for life insurance in Vietnam
+2. **vietnam-banking-regulatory** — Banking regulatory context (SBV, AML/KYC, payments)
+3. **insurance-domain-model** — Core business concepts, processes, terminology
+4. **structured-decomposition** — Decompose the topic before ideating. Don't anchor on the first idea.
+5. **trade-off-analysis** — For each promising idea, surface trade-offs explicitly.
+6. **risk-assessment** — Flag risks for top candidates (don't kill ideas, but be honest).
+7. **creative-challenge** — After structured brainstorming, challenge your own output and look for non-obvious angles.
 
-Load domain skills based on topic relevance:
-- **vietnam-insurance-regulatory** / **vietnam-banking-regulatory** — If topic touches regulated space
-- **insurance-domain-model** — If topic involves insurance products, processes, or systems
-- **aws-cloud-patterns** / **devsecops-practices** — If topic involves infrastructure or technical operations
+**Apply when topic involves infrastructure or technical operations:**
+- **aws-cloud-patterns** / **devsecops-practices**
 
 ## Instructions
 

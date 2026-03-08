@@ -7,12 +7,13 @@ Research a topic and compile findings into a knowledge document.
 Before proceeding, read and apply the following skills from `.claude/skills/`:
 
 **Always apply:**
-1. **research-methodology** — Search strategy, source evaluation, confidence tagging, citation standards
-2. **creative-challenge** — After gathering findings, synthesize across domains, spot what's missing, challenge narratives
+1. **vietnam-insurance-regulatory** — Regulatory context for life insurance in Vietnam
+2. **vietnam-banking-regulatory** — Banking regulatory context (SBV, AML/KYC, payments)
+3. **insurance-domain-model** — Core business concepts, processes, terminology
+4. **research-methodology** — Search strategy, source evaluation, confidence tagging, citation standards
+5. **creative-challenge** — After gathering findings, synthesize across domains, spot what's missing, challenge narratives
 
 **Apply when relevant:**
-- **vietnam-insurance-regulatory** / **vietnam-banking-regulatory** — If researching regulatory topics
-- **insurance-domain-model** — If researching insurance business topics
 - **aws-cloud-patterns** — If researching AWS services or cloud architecture
 - **devsecops-practices** — If researching DevOps/security tooling
 - **security-review** — If researching security topics
