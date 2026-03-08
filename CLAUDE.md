@@ -13,6 +13,7 @@ A shared workspace for brainstorming, architecture, solution design, knowledge e
 - **Always commit** after completing any task — do not leave work uncommitted.
 - **Never push** unless the user explicitly asks to push.
 - Write concise, meaningful commit messages describing *why*, not *what*.
+- **Never mention Claude or AI** in commit messages — no `Co-Authored-By` tags, no AI references.
 - Do not commit `.env`, `.local/`, or any file containing secrets.
 - Do not force-push to `main`.
 
