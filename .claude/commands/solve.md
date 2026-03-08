@@ -2,45 +2,48 @@
 
 Create a solution design or technical proposal for the given problem.
 
-## Domain Context
+## Skills
 
-**Technical domain** — IT Operations, DevOps, DevSecOps, AWS cloud:
-- Incident resolution, root cause analysis, post-mortems
-- Security vulnerability remediation, compliance gap closure
-- Infrastructure migration, modernization, optimization
-- CI/CD pipeline design, automation, toolchain selection
-- Cost reduction, performance tuning, reliability improvement
+Before proceeding, read and apply the following skills from `.claude/skills/`:
 
-**Business domain** — Life insurance & banking in Vietnam:
-- Regulatory compliance solutions (Ministry of Finance circulars, SBV directives, Insurance Business Law)
-- System integration: core insurance ↔ banking ↔ payment ↔ regulatory reporting
-- Business process optimization: underwriting, claims, policy servicing
-- Digital channel enablement, customer onboarding, e-KYC
+**Always apply:**
+1. **structured-decomposition** — Decompose the problem before proposing solutions
+2. **risk-assessment** — Identify risks, failure modes, rollback scenarios
+3. **trade-off-analysis** — Compare alternatives explicitly
+4. **creative-challenge** — Challenge your own solution, find simpler paths, surface unasked questions
+
+**Apply when relevant:**
+- **aws-cloud-patterns** — If solution involves AWS infrastructure
+- **devsecops-practices** — If solution involves CI/CD, automation, or security tooling
+- **security-review** — If solution affects security posture
+- **compliance-check** — If solution affects regulated processes or data
+- **operational-readiness** — If solution changes how systems are operated
+- **cost-analysis** — If solution has significant cost implications
+- **vietnam-insurance-regulatory** / **vietnam-banking-regulatory** — If problem exists in regulated space
+- **insurance-domain-model** — If problem involves insurance business processes
+- **research-methodology** — If the problem requires investigation of external information
 
 ## Instructions
 
-1. Understand the problem — ask clarifying questions if needed.
-2. Assess impact and urgency:
-   - Who is affected? (customers, operations, regulators, security posture)
-   - What is the blast radius if unsolved?
+1. Read all applicable skill files listed above.
+2. Understand the problem — ask clarifying questions if needed.
+3. **Decompose** the problem (`structured-decomposition`) — don't jump to solutions.
+4. Assess impact and urgency:
+   - Who is affected? What's the blast radius if unsolved?
    - Are there regulatory deadlines or compliance implications?
-3. Produce a solution document covering:
-   - **Problem statement**: Clear description with evidence/symptoms
-   - **Root cause analysis**: Why does this problem exist? (use 5 Whys or Fishbone if appropriate)
+5. Produce a solution document:
+   - **Problem statement**: Clear description with evidence/symptoms, root cause analysis
    - **Proposed solution**: Detailed approach with rationale
-   - **Alternatives considered**: At least 2 alternatives with pros/cons comparison
-   - **Implementation plan**: Phases, milestones, dependencies, ownership
-   - **Security & compliance impact**: How does this solution affect security posture and regulatory compliance?
-   - **Risks and mitigations**: What could go wrong and how to handle it
-   - **Rollback plan**: How to revert if the solution causes issues
-   - **Success criteria**: How do we know the problem is solved?
-4. For solutions in regulated environments, include:
-   - Regulatory references (specific circular/decree numbers where applicable)
-   - Approval requirements (who needs to sign off)
-   - Audit trail considerations
-5. Save the result to `solutions/<topic-in-kebab-case>/` — use a subfolder with an index file for multi-part solutions.
-6. If a solution on the same topic already exists, update it rather than creating a new one.
-7. Commit the result when done.
+   - **Alternatives considered**: At least 2 alternatives (`trade-off-analysis`)
+   - **Implementation plan**: Phases, milestones, dependencies
+   - **Security & compliance impact**: If applicable (`security-review`, `compliance-check`)
+   - **Risks and mitigations**: (`risk-assessment`)
+   - **Rollback plan**: How to revert
+   - **Success criteria**: How to know the problem is solved
+   - **Creative challenges**: (`creative-challenge`) — assumptions questioned, simpler alternatives, unasked questions
+6. Save to `solutions/<topic-in-kebab-case>/` (subfolder with index for multi-part).
+7. If a solution on the same topic already exists, update it.
+8. Commit the result when done.
 
 ## Topic
 

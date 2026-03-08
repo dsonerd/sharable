@@ -7,7 +7,8 @@
 node_modules/
 .local/
 
-# Override global gitignore to track Claude Code project commands
+# Override global gitignore to track Claude Code project commands and skills
 !.claude/
 .claude/*
 !.claude/commands/
+!.claude/skills/

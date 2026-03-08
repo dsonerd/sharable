@@ -2,40 +2,36 @@
 
 Start a structured brainstorming session on the given topic.
 
-## Domain Context
+## Skills
 
-This workspace operates across two domains. Adapt your thinking accordingly:
+Before proceeding, read and apply the following skills from `.claude/skills/`:
 
-**Technical domain** — IT Operations, DevOps, DevSecOps, AWS cloud:
-- Infrastructure automation, CI/CD pipelines, container orchestration
-- Security hardening, vulnerability management, compliance-as-code
-- Cost optimization, observability, incident response
-- AWS services, IaC (Terraform, CDK, CloudFormation)
+1. **structured-decomposition** — Decompose the topic before ideating. Don't anchor on the first idea.
+2. **trade-off-analysis** — For each promising idea, surface trade-offs explicitly.
+3. **risk-assessment** — Flag risks for top candidates (don't kill ideas, but be honest).
+4. **creative-challenge** — After structured brainstorming, challenge your own output and look for non-obvious angles.
 
-**Business domain** — Life insurance & banking in Vietnam:
-- Product design, underwriting, claims, policy administration
-- Digital transformation, customer experience, channel strategy
-- Vietnamese regulatory landscape (Ministry of Finance, SBV/NHNN, Insurance Supervisory Authority)
-- AML/KYC, data privacy, cross-border data considerations
+Load domain skills based on topic relevance:
+- **vietnam-insurance-regulatory** / **vietnam-banking-regulatory** — If topic touches regulated space
+- **insurance-domain-model** — If topic involves insurance products, processes, or systems
+- **aws-cloud-patterns** / **devsecops-practices** — If topic involves infrastructure or technical operations
 
 ## Instructions
 
-1. Identify which domain(s) the topic touches. If it spans both (e.g., "core insurance system migration to AWS"), explore both lenses.
-2. Ask clarifying questions if the topic is too broad or ambiguous.
-3. Use structured thinking frameworks appropriate to the topic:
-   - **Opportunity exploration**: SWOT, Blue Ocean, "Jobs to Be Done"
-   - **Problem decomposition**: 5 Whys, Fishbone/Ishikawa, Impact Mapping
-   - **Technical ideation**: Trade-off matrices, "Build vs Buy vs Integrate"
-   - **Regulatory topics**: Compliance gap analysis, regulatory timeline mapping
-4. For each idea, briefly note:
-   - Feasibility (technical and organizational)
-   - Constraints (regulatory, security, cost, timeline)
-   - Dependencies and risks
-5. Generate at least 3 distinct angles or approaches — avoid anchoring on the first idea.
-6. Structure output with clear headings, bullet points, and a summary of top candidates.
-7. Save the result to `brainstorming/<topic-in-kebab-case>.md`.
-8. If a file on the same topic already exists, update it rather than creating a new one.
-9. Commit the result when done.
+1. Read all applicable skill files listed above.
+2. Identify which domain(s) the topic touches. If ambiguous, ask.
+3. **Decompose** the topic into sub-areas using `structured-decomposition`.
+4. For each sub-area, generate multiple ideas — aim for breadth before depth.
+5. Evaluate top candidates with `trade-off-analysis` and `risk-assessment`.
+6. Apply `creative-challenge` — challenge assumptions, find cross-domain connections, surface unasked questions.
+7. Structure output:
+   - Topic decomposition
+   - Ideas per sub-area (with brief feasibility notes)
+   - Top 3-5 candidates with trade-off summary
+   - Creative challenges and non-obvious angles
+8. Save to `brainstorming/<topic-in-kebab-case>.md`.
+9. If a file on the same topic already exists, update it rather than creating a new one.
+10. Commit the result when done.
 
 ## Topic
 

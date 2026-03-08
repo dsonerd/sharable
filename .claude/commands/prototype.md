@@ -2,43 +2,42 @@
 
 Build a quick prototype or spike solution for the given idea.
 
-## Domain Context
+## Skills
 
-**Technical domain** — IT Operations, DevOps, DevSecOps, AWS cloud:
-- Infrastructure-as-Code: Terraform modules, CDK constructs, CloudFormation templates
-- CI/CD: GitHub Actions workflows, pipeline configurations
-- Automation scripts: Python, Bash, PowerShell for operational tasks
-- Container configs: Dockerfiles, docker-compose, ECS task definitions, K8s manifests
-- Security tools: scanning configs, policy-as-code (OPA, Sentinel), WAF rules
-- Monitoring: CloudWatch dashboards, alerting configs, custom metrics
+Before proceeding, read and apply the following skills from `.claude/skills/`:
 
-**Business domain** — Life insurance & banking in Vietnam:
-- Calculation engines: premium calculation, reserve computation, benefit projection
-- Data processing: regulatory report generators, data transformation pipelines
-- Integration PoCs: API mockups, message queue patterns, file exchange formats
-- Workflow prototypes: approval flows, underwriting rules, claims triage logic
+**Always apply:**
+1. **devsecops-practices** — Pipeline patterns, IaC conventions, security-in-code basics
+2. **security-review** — Even in prototypes: no hardcoded secrets, no real PII, flag what needs hardening
+
+**Apply when relevant:**
+- **aws-cloud-patterns** — If prototype involves AWS services
+- **insurance-domain-model** — If prototype involves insurance business logic
+- **cost-analysis** — If prototype tests something with cost implications (estimate expected cost)
+- **creative-challenge** — If the prototype goal is ambiguous, challenge scope before building
 
 ## Instructions
 
-1. Clarify the goal and success criteria before coding.
-2. Keep it minimal — focus on proving the concept, not production quality.
-3. Even in prototypes, follow these guardrails:
-   - **No hardcoded secrets** — use environment variables or `.local/` files
-   - **No real PII or customer data** — use synthetic/mock data
-   - **Note security shortcuts** — comment what would need hardening for production
-4. Include a `README.md` in the prototype folder covering:
+1. Read all applicable skill files listed above.
+2. Clarify the goal and success criteria before coding.
+3. Keep it minimal — prove the concept, not production quality.
+4. Apply security guardrails from `security-review` (MUST tier only):
+   - No hardcoded secrets — use env vars or `.local/` files
+   - No real PII or customer data — use synthetic/mock data
+   - Comment what would need hardening for production
+5. Follow `devsecops-practices` conventions:
+   - IaC: Terraform or AWS CDK (TypeScript) preferred
+   - Scripts: Python 3.x or Bash preferred
+   - Containers: Docker with multi-stage builds
+   - APIs: Python (FastAPI) or Node.js preferred
+6. Include a `README.md` in the prototype folder:
    - What this prototype proves or demonstrates
    - How to run it (prerequisites, commands)
-   - What would need to change for production use
-   - Known limitations
-5. Preferred tech stack (unless the topic requires otherwise):
-   - **IaC**: Terraform or AWS CDK (TypeScript)
-   - **Scripts**: Python 3.x or Bash
-   - **Containers**: Docker with multi-stage builds
-   - **APIs**: Python (FastAPI) or Node.js (Express)
-6. Save the result to `prototypes/<topic-in-kebab-case>/` as a self-contained folder.
-7. If a prototype on the same topic already exists, update it rather than creating a new one.
-8. Commit the result when done.
+   - What would need to change for production
+   - Known limitations and shortcuts taken
+7. Save to `prototypes/<topic-in-kebab-case>/` as a self-contained folder.
+8. If a prototype on the same topic already exists, update it.
+9. Commit the result when done.
 
 ## Topic
 

@@ -2,51 +2,47 @@
 
 Research a topic and compile findings into a knowledge document.
 
-## Domain Context
+## Skills
 
-**Technical domain** — IT Operations, DevOps, DevSecOps, AWS cloud:
-- AWS service evaluations, pricing comparisons, feature matrices
-- DevSecOps toolchain assessments (SAST, DAST, SCA, container scanning)
-- Security advisories, CVE analysis, CIS benchmarks, NIST frameworks
-- Industry best practices, case studies, reference architectures
+Before proceeding, read and apply the following skills from `.claude/skills/`:
 
-**Business domain** — Life insurance & banking in Vietnam:
-- Vietnamese regulations: Ministry of Finance circulars, SBV/NHNN directives, decrees, amendments
-- Insurance Business Law (Luật Kinh doanh bảo hiểm) — latest version and amendments
-- IAIS (International Association of Insurance Supervisors) standards
-- Basel framework adaptations for Vietnam banking
-- AML/KYC/CFT regulations, data privacy laws
-- Market reports, industry benchmarks, competitor analysis
+**Always apply:**
+1. **research-methodology** — Search strategy, source evaluation, confidence tagging, citation standards
+2. **creative-challenge** — After gathering findings, synthesize across domains, spot what's missing, challenge narratives
+
+**Apply when relevant:**
+- **vietnam-insurance-regulatory** / **vietnam-banking-regulatory** — If researching regulatory topics
+- **insurance-domain-model** — If researching insurance business topics
+- **aws-cloud-patterns** — If researching AWS services or cloud architecture
+- **devsecops-practices** — If researching DevOps/security tooling
+- **security-review** — If researching security topics
+- **cost-analysis** — If research involves pricing, TCO, or financial comparison
 
 ## Instructions
 
-1. **Always use real-time web search** (WebSearch tool) to gather current information. Do not rely solely on training data — regulations and cloud services change frequently.
-2. Search strategy:
-   - Use multiple search queries from different angles
-   - For Vietnamese regulations: search in both English and Vietnamese (e.g., "Thông tư", "Nghị định", "Luật kinh doanh bảo hiểm")
-   - For AWS/DevOps: check official documentation, AWS blogs, re:Invent talks, community benchmarks
-   - Cross-reference findings from multiple sources
-3. Synthesize findings into a well-structured document covering:
-   - **Executive summary**: Key takeaways in 3-5 bullet points
+1. Read all applicable skill files listed above.
+2. **Plan the search** (`research-methodology`):
+   - Formulate 3-5 search queries from different angles
+   - Use bilingual search (EN/VI) for Vietnamese regulatory or market topics
+   - Identify primary, secondary, and tertiary sources to target
+3. **Execute web searches** — Use the WebSearch tool. Do not skip this step.
+4. **Evaluate sources** — Apply CRAAP test from `research-methodology`. Discard unreliable sources.
+5. **Synthesize findings** into a structured document:
+   - **Executive summary**: 3-5 key takeaways
    - **Background / context**: Why this topic matters
-   - **Key findings**: Organized by theme, with evidence and sources
+   - **Key findings**: Organized by theme (not by source), with confidence tags
    - **Comparisons / evaluations**: Tables or matrices where applicable
-   - **Vietnam-specific considerations**: Regulatory, market, or operational factors unique to Vietnam (when relevant)
+   - **Vietnam-specific considerations**: When relevant
    - **Implications**: What does this mean for our work?
-   - **Open questions**: What remains unclear or needs further investigation?
-   - **References**: Full list of sources with URLs and access dates
-4. Be objective — clearly distinguish facts from opinions. Flag uncertainty levels:
-   - **Confirmed**: Verified from official/authoritative sources
-   - **Likely**: Multiple credible sources agree
-   - **Uncertain**: Limited or conflicting information
-5. For regulatory research, always note:
-   - Effective date of the regulation
-   - Which entities it applies to
-   - Key requirements and deadlines
-   - Penalties for non-compliance (if stated)
-6. Save the result to `knowledge/<topic-in-kebab-case>.md` (use a subfolder for multi-part research).
-7. If a knowledge document on the same topic already exists, update it rather than creating a new one.
-8. Commit the result when done.
+   - **Open questions**: What remains unclear or needs investigation?
+   - **References**: Full source list with URLs and access dates
+6. **Apply creative challenge** (`creative-challenge`):
+   - What narrative are the sources collectively pushing? Is it accurate?
+   - What's missing from the available information?
+   - What cross-domain connections exist?
+7. Save to `knowledge/<topic-in-kebab-case>.md` (subfolder for multi-part).
+8. If a knowledge document on the same topic already exists, update it.
+9. Commit the result when done.
 
 ## Topic
 

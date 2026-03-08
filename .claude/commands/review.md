@@ -2,42 +2,47 @@
 
 Review and improve an existing document or piece of work in this workspace.
 
-## Domain Context
+## Skills
 
-Apply review lenses appropriate to the content:
+Before proceeding, read and apply the following skills from `.claude/skills/`:
 
-**Technical lens** — IT Operations, DevOps, DevSecOps, AWS:
-- Security: OWASP Top 10, CIS benchmarks, AWS security best practices, least privilege
-- Operational readiness: monitoring, alerting, runbooks, DR/BCP, scaling
-- Cost: right-sizing, reserved vs on-demand, data transfer costs, storage tiers
-- Reliability: single points of failure, blast radius, failure modes, graceful degradation
-- IaC quality: modularity, state management, drift detection, idempotency
+**Always apply:**
+1. **creative-challenge** — After structured review, challenge assumptions and surface what's missing
 
-**Business lens** — Life insurance & banking in Vietnam:
-- Regulatory compliance: Does this align with current Vietnamese regulations?
-- PII handling: Is customer data classified and protected appropriately?
-- Audit trail: Are decisions and changes traceable?
-- Business accuracy: Are domain terms, calculations, and processes correct?
-- Completeness: Are edge cases in insurance/banking workflows covered?
+**Apply based on content type:**
+- **security-review** — For architecture docs, infrastructure configs, code
+- **compliance-check** — For anything touching regulated processes, PII, financial data
+- **operational-readiness** — For architecture docs, deployment configs, runbooks
+- **cost-analysis** — For architecture docs, infrastructure proposals
+- **risk-assessment** — For solution designs, proposals, architecture docs
+- **vietnam-insurance-regulatory** / **vietnam-banking-regulatory** — For regulatory or business documents
+- **insurance-domain-model** — For documents using insurance terminology or processes
+- **aws-cloud-patterns** — For AWS architecture documents
+- **devsecops-practices** — For CI/CD configs, Dockerfiles, IaC code
+- **research-methodology** — For research documents (verify sources, check confidence tags)
 
 ## Instructions
 
 1. Read the target file(s) thoroughly.
-2. Identify which review lenses apply based on the content type.
-3. Provide structured feedback across applicable dimensions:
-   - **Clarity & structure**: Is it well-organized and easy to follow?
-   - **Completeness**: Are there gaps, missing considerations, or unstated assumptions?
-   - **Accuracy**: Are there factual errors, outdated information, or questionable assumptions?
-   - **Security & compliance**: Are there security risks or compliance gaps? (for technical/regulated content)
-   - **Actionability**: Can someone act on this? Are next steps clear?
-   - **Consistency**: Does it align with other documents in this workspace?
-4. For each finding, categorize severity:
-   - **Critical**: Must fix — security risk, regulatory issue, factual error
-   - **Important**: Should fix — significant gap or improvement
-   - **Suggestion**: Nice to have — polish, clarity, minor improvement
-5. Apply improvements directly to the file (with user agreement on critical/important changes).
-6. Summarize changes made and remaining recommendations.
-7. Commit the result when done.
+2. Identify which review skills apply based on content type — read those skill files.
+3. Apply each applicable skill as a review lens. For each lens, assess:
+   - What's done well (acknowledge strengths)
+   - What's missing or incomplete
+   - What's incorrect or risky
+4. Categorize every finding by severity:
+   - **Critical**: Must fix — security risk, regulatory issue, factual error, data exposure
+   - **Important**: Should fix — significant gap, misleading content, missing consideration
+   - **Suggestion**: Nice to have — clarity improvement, structural polish, additional perspective
+5. Apply `creative-challenge` last:
+   - What assumptions does this document make that might be wrong?
+   - What question should the author have asked but didn't?
+   - Is there a simpler approach to the same goal?
+6. Present findings as a structured review:
+   - Summary (overall assessment in 2-3 sentences)
+   - Findings by severity (Critical → Important → Suggestion)
+   - Specific recommendations with rationale
+7. Apply improvements directly to the file (with user agreement on Critical/Important changes).
+8. Commit the result when done.
 
 ## Target
 

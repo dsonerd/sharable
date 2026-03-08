@@ -2,37 +2,42 @@
 
 Design system architecture for the given topic or component.
 
-## Domain Context
+## Skills
 
-**Technical domain** — IT Operations, DevOps, DevSecOps, AWS cloud:
-- Apply AWS Well-Architected Framework pillars: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, Sustainability
-- Consider: zero trust, defense in depth, encryption (at rest and in transit), least privilege
-- Infrastructure patterns: microservices, event-driven, serverless, container orchestration (ECS/EKS)
-- Operational readiness: monitoring, alerting, logging, tracing, runbooks, DR/BCP
+Before proceeding, read and apply the following skills from `.claude/skills/`:
 
-**Business domain** — Life insurance & banking in Vietnam:
-- Core system integration: policy admin, claims, underwriting, billing, reinsurance
-- Data architecture: PII classification, data residency in Vietnam, audit trails, retention policies
-- Regulatory compliance: reporting pipelines, data lineage, access control per Vietnamese regulations
-- High availability requirements for financial services (RPO/RTO)
+**Always apply:**
+1. **aws-cloud-patterns** — Service selection, Well-Architected pillars, architecture patterns
+2. **security-review** — Threat model, encryption, access control, audit logging
+3. **operational-readiness** — Monitoring, alerting, DR/BCP, deployment strategy
+4. **cost-analysis** — TCO, pricing models, cost optimization levers
+5. **risk-assessment** — Architectural risks, failure modes, mitigations
+6. **trade-off-analysis** — Explicit trade-offs for every key decision
+7. **creative-challenge** — Challenge the design, find simpler alternatives, surface assumptions
+
+**Apply when relevant:**
+- **compliance-check** — If handling PII, financial data, or regulatory reporting
+- **devsecops-practices** — If architecture includes CI/CD, IaC, or deployment automation
+- **vietnam-insurance-regulatory** / **vietnam-banking-regulatory** — If the system operates in regulated space
+- **insurance-domain-model** — If the system handles insurance business processes
 
 ## Instructions
 
-1. Clarify scope, constraints, and non-functional requirements before designing.
-2. Produce a structured architecture document covering:
+1. Read all applicable skill files listed above.
+2. Clarify scope, constraints, and non-functional requirements before designing.
+3. Produce a structured architecture document:
    - **Context**: Problem statement, stakeholders, business drivers
-   - **Design goals**: Functional and non-functional requirements, quality attributes
-   - **Constraints**: Regulatory, security, budget, timeline, existing systems
-   - **Architecture overview**: Components, interactions, data flow
-   - **Infrastructure**: AWS services, networking, compute, storage, security controls
-   - **Key decisions**: ADR (Architecture Decision Record) format — context, decision, consequences
-   - **Trade-offs**: What was sacrificed and why (e.g., cost vs resilience, simplicity vs flexibility)
-   - **Diagrams**: Use Mermaid syntax — C4 model (context, container, component), sequence diagrams, deployment diagrams
-   - **Security posture**: Threat model considerations, encryption, access control, audit logging
-   - **Operational model**: Deployment strategy, monitoring, incident response, scaling
-3. For regulated workloads, include a compliance section noting which regulations apply and how the design addresses them.
-4. Save the result to `architecture/<topic-in-kebab-case>.md` (use a subfolder if the design has multiple documents).
-5. If an architecture document on the same topic already exists, update it rather than creating a new one.
+   - **Requirements**: Functional, non-functional, constraints (apply domain skills for completeness)
+   - **Architecture**: Components, interactions, data flow — use Mermaid diagrams (C4, sequence, deployment)
+   - **Key decisions**: ADR format per decision — context, options considered (`trade-off-analysis`), decision, consequences
+   - **Security**: Threat model, controls, encryption, access (`security-review`)
+   - **Operations**: Monitoring, alerting, DR/BCP, deployment (`operational-readiness`)
+   - **Cost**: Estimated cost profile, optimization opportunities (`cost-analysis`)
+   - **Risks**: Architectural risks and mitigations (`risk-assessment`)
+   - **Compliance**: Regulatory alignment if applicable (`compliance-check`)
+   - **Creative challenges**: Assumptions challenged, simpler alternatives considered (`creative-challenge`)
+4. Save to `architecture/<topic-in-kebab-case>.md` (subfolder if multi-document).
+5. If an architecture document on the same topic already exists, update it.
 6. Commit the result when done.
 
 ## Topic
