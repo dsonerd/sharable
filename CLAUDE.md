@@ -1,6 +1,6 @@
-# Project Rules — Sharable (TCLife)
+# Project Rules — Sharable
 
-A shared workspace for brainstorming, architecture, solution design, knowledge exploration, and prototyping for the TCLife project.
+A shared workspace for brainstorming, architecture, solution design, knowledge exploration, and prototyping.
 
 ## Remote Repository
 
