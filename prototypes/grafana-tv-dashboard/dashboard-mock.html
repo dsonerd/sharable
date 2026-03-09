@@ -3,604 +3,857 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EKS Systems — TV Dashboard</title>
+<title>EKS Platform Observability - Grafana</title>
 <style>
+  /* ── Grafana exact color tokens ── */
   :root {
-    --bg-dark: #111217;
-    --bg-panel: #181b1f;
-    --bg-panel-header: #1e2028;
-    --border: #2c2f3a;
-    --text-primary: #d8d9da;
-    --text-secondary: #8e8fa0;
-    --text-muted: #6c6d80;
-    --green: #73bf69;
-    --green-bg: rgba(115,191,105,0.08);
-    --yellow: #f2cc0c;
-    --yellow-bg: rgba(242,204,12,0.08);
-    --orange: #ff9830;
-    --orange-bg: rgba(255,152,48,0.08);
-    --red: #f2495c;
-    --red-bg: rgba(242,73,92,0.08);
-    --blue: #5794f2;
-    --blue-bg: rgba(87,148,242,0.08);
-    --purple: #b877d9;
-    --cyan: #8ab8ff;
+    --g-bg-canvas: #111217;
+    --g-bg-primary: #181b1f;
+    --g-bg-secondary: #22252b;
+    --g-border-weak: #2c3035;
+    --g-border-medium: #34383e;
+    --g-text-primary: #ccccdc;
+    --g-text-secondary: #8e8ea0;
+    --g-text-disabled: #6e6e80;
+    --g-navbar-bg: #1d1f25;
+    --g-sidemenu-bg: #111217;
+    --g-green: #73bf69;
+    --g-yellow: #f2cc0c;
+    --g-orange: #ff9830;
+    --g-red: #f2495c;
+    --g-blue: #5794f2;
+    --g-purple: #b877d9;
+    --g-super-light-blue: #6e9fff;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: var(--bg-dark);
-    color: var(--text-primary);
-    font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+    background: var(--g-bg-canvas);
+    color: var(--g-text-primary);
+    font-family: Inter, 'Helvetica Neue', Arial, sans-serif;
     overflow: hidden;
     height: 100vh;
     width: 100vw;
-  }
-
-  /* ── Top bar ── */
-  .topbar {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 40px;
-    padding: 0 16px;
-    background: var(--bg-panel-header);
-    border-bottom: 1px solid var(--border);
-    font-size: 12px;
-  }
-  .topbar-left { display: flex; align-items: center; gap: 12px; }
-  .topbar-logo { width: 20px; height: 20px; }
-  .topbar-title { font-size: 15px; font-weight: 600; letter-spacing: 0.3px; }
-  .topbar-env {
-    background: var(--green);
-    color: #000;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-  .topbar-right { display: flex; align-items: center; gap: 16px; color: var(--text-secondary); }
-  .topbar-clock { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 500; }
-  .topbar-refresh { color: var(--text-muted); font-size: 11px; }
-
-  /* ── Column headers ── */
-  .col-headers {
-    display: grid;
-    grid-template-columns: 120px repeat(7, 1fr);
-    gap: 4px;
-    padding: 8px 8px 0 8px;
-  }
-  .col-header {
-    text-align: center;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-muted);
-    padding: 6px 0;
-  }
-  .col-header-icon { font-size: 13px; display: block; margin-bottom: 2px; }
-
-  /* ── Grid ── */
-  .dashboard {
-    display: grid;
-    grid-template-rows: repeat(4, 1fr);
-    gap: 4px;
-    padding: 4px 8px 8px 8px;
-    height: calc(100vh - 40px - 42px);
   }
 
-  .system-row {
-    display: grid;
-    grid-template-columns: 120px repeat(7, 1fr);
-    gap: 4px;
-  }
-
-  /* ── System label ── */
-  .system-label {
+  /* ════════════════════════════════════════
+     GRAFANA LEFT SIDEBAR (collapsed)
+     ════════════════════════════════════════ */
+  .g-sidemenu {
+    width: 56px;
+    min-width: 56px;
+    background: var(--g-sidemenu-bg);
+    border-right: 1px solid var(--g-border-weak);
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 8px 0;
+    z-index: 10;
+  }
+  .g-sidemenu-logo {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 16px;
+    padding: 4px;
+  }
+  .g-sidemenu-item {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
     border-radius: 4px;
-    padding: 8px;
+    margin-bottom: 2px;
+    color: var(--g-text-disabled);
+    cursor: pointer;
+    transition: background 0.15s;
   }
-  .system-name {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-  .system-cluster {
-    font-size: 9px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    letter-spacing: 0.5px;
-  }
-  .system-pods {
-    font-size: 10px;
-    color: var(--text-secondary);
-    margin-top: 6px;
-  }
-  .system-pods span {
-    color: var(--green);
-    font-weight: 600;
+  .g-sidemenu-item:hover { background: var(--g-bg-secondary); color: var(--g-text-primary); }
+  .g-sidemenu-item.active { background: var(--g-bg-secondary); color: #fff; }
+  .g-sidemenu-item svg { width: 20px; height: 20px; }
+  .g-sidemenu-spacer { flex: 1; }
+
+  /* ════════════════════════════════════════
+     MAIN CONTENT AREA
+     ════════════════════════════════════════ */
+  .g-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
   }
 
-  /* ── Panel ── */
-  .panel {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
+  /* ════════════════════════════════════════
+     GRAFANA TOP NAVBAR
+     ════════════════════════════════════════ */
+  .g-navbar {
+    height: 52px;
+    min-height: 52px;
+    background: var(--g-navbar-bg);
+    border-bottom: 1px solid var(--g-border-weak);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+  }
+  .g-navbar-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+  }
+  .g-navbar-folder {
+    color: var(--g-text-secondary);
+    font-size: 13px;
+  }
+  .g-navbar-sep {
+    color: var(--g-text-disabled);
+    font-size: 12px;
+  }
+  .g-navbar-title {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--g-text-primary);
+  }
+  .g-navbar-spacer { flex: 1; }
+  .g-navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .g-btn {
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--g-border-medium);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--g-text-secondary);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .g-btn:hover { color: var(--g-text-primary); border-color: var(--g-text-disabled); }
+  .g-btn svg { width: 14px; height: 14px; }
+  .g-time-picker {
+    background: var(--g-bg-secondary);
+    border: 1px solid var(--g-border-medium);
+    border-radius: 4px;
+    padding: 0 10px;
+    height: 32px;
+    color: var(--g-text-primary);
+    font-size: 12px;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .g-time-picker svg { width: 14px; height: 14px; color: var(--g-text-secondary); }
+  .g-refresh-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--g-border-medium);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--g-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .g-refresh-interval {
+    font-size: 12px;
+    color: var(--g-text-secondary);
+    border: 1px solid var(--g-border-medium);
+    border-radius: 4px;
+    padding: 0 8px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    background: transparent;
+  }
+  .g-cycle-view {
+    font-size: 12px;
+    color: var(--g-text-disabled);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .g-kiosk-indicator {
+    font-size: 10px;
+    color: var(--g-text-disabled);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border: 1px solid var(--g-border-weak);
+    border-radius: 3px;
+  }
+
+  /* ════════════════════════════════════════
+     DASHBOARD BODY — GRAFANA PANEL GRID
+     ════════════════════════════════════════ */
+  .g-dashboard-scroll {
+    flex: 1;
+    overflow: hidden;
+    padding: 8px;
+  }
+  .g-dashboard {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* ── Row header (Grafana collapsible row) ── */
+  .g-row-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px;
+    height: 28px;
+    min-height: 28px;
+    cursor: pointer;
+  }
+  .g-row-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--g-text-disabled);
+    transform: rotate(90deg);
+  }
+  .g-row-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--g-text-primary);
+  }
+  .g-row-tag {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .g-row-line {
+    flex: 1;
+    height: 1px;
+    background: var(--g-border-weak);
+  }
+  .g-row-tag-healthy { background: rgba(115,191,105,0.15); color: var(--g-green); }
+  .g-row-tag-warning { background: rgba(242,204,12,0.15); color: var(--g-yellow); }
+  .g-row-tag-critical { background: rgba(242,73,92,0.15); color: var(--g-red); }
+
+  /* ── Panel row grid ── */
+  .g-panel-row {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    min-height: 0;
+  }
+
+  /* ── Grafana Panel ── */
+  .g-panel {
+    background: var(--g-bg-primary);
+    border: 1px solid var(--g-border-weak);
     border-radius: 4px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
   }
-  .panel-body {
+  .g-panel:hover { border-color: var(--g-border-medium); }
+
+  .g-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    height: 28px;
+    min-height: 28px;
+    border-bottom: 1px solid var(--g-border-weak);
+  }
+  .g-panel-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--g-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .g-panel-menu {
+    color: var(--g-text-disabled);
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .g-panel:hover .g-panel-menu { opacity: 1; }
+
+  .g-panel-body {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 6px;
+    padding: 8px;
     position: relative;
+    min-height: 0;
   }
 
-  /* ── Stat value ── */
-  .stat-value {
-    font-size: clamp(22px, 3vw, 36px);
-    font-weight: 700;
+  /* ── Grafana Stat visualization ── */
+  .g-stat-value {
+    font-size: clamp(20px, 2.8vw, 38px);
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
     line-height: 1;
   }
-  .stat-unit {
-    font-size: 12px;
-    color: var(--text-muted);
+  .g-stat-unit {
+    font-size: 14px;
+    color: var(--g-text-disabled);
     font-weight: 400;
     margin-left: 2px;
   }
-  .stat-sub {
-    font-size: 10px;
-    color: var(--text-secondary);
+  .g-stat-description {
+    font-size: 11px;
+    color: var(--g-text-secondary);
     margin-top: 4px;
   }
-  .stat-trend {
-    font-size: 10px;
-    margin-top: 2px;
+
+  /* ── Grafana Gauge visualization ── */
+  .g-gauge-track {
+    width: 85%;
+    height: 8px;
+    background: var(--g-bg-secondary);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .g-gauge-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s ease;
+  }
+  .g-gauge-label {
+    width: 85%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--g-text-secondary);
+    margin-bottom: 2px;
+  }
+  .g-gauge-pct {
     font-weight: 600;
   }
-  .trend-up { color: var(--red); }
-  .trend-down { color: var(--green); }
-  .trend-flat { color: var(--text-muted); }
 
-  /* ── Status indicator ── */
-  .status-healthy .stat-value { color: var(--green); }
-  .status-warning .stat-value { color: var(--yellow); }
-  .status-degraded .stat-value { color: var(--orange); }
-  .status-critical .stat-value { color: var(--red); }
-
-  .status-dot {
-    width: 10px; height: 10px;
+  /* ── Status dot (Grafana style) ── */
+  .g-status-dot {
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
-  .status-dot.healthy { background: var(--green); box-shadow: 0 0 8px var(--green); }
-  .status-dot.warning { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
-  .status-dot.degraded { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
-  .status-dot.critical { background: var(--red); box-shadow: 0 0 8px var(--red); animation: pulse 1.5s infinite; }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--red); }
-    50% { opacity: 0.5; box-shadow: 0 0 16px var(--red); }
+  .g-status-dot.healthy { background: var(--g-green); box-shadow: 0 0 6px rgba(115,191,105,0.4); }
+  .g-status-dot.warning { background: var(--g-yellow); box-shadow: 0 0 6px rgba(242,204,12,0.4); }
+  .g-status-dot.critical {
+    background: var(--g-red);
+    box-shadow: 0 0 6px rgba(242,73,92,0.4);
+    animation: g-pulse 1.5s ease-in-out infinite;
   }
 
-  /* ── Sparkline ── */
-  .sparkline {
+  @keyframes g-pulse {
+    0%, 100% { box-shadow: 0 0 6px rgba(242,73,92,0.4); }
+    50% { box-shadow: 0 0 14px rgba(242,73,92,0.7); }
+  }
+
+  /* ── Color utilities ── */
+  .c-green { color: var(--g-green); }
+  .c-yellow { color: var(--g-yellow); }
+  .c-orange { color: var(--g-orange); }
+  .c-red { color: var(--g-red); }
+  .c-blue { color: var(--g-blue); }
+
+  /* ── Sparkline (Grafana graph panel mini) ── */
+  .g-sparkline {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 35%;
-    opacity: 0.25;
+    height: 40%;
+    opacity: 0.2;
+    pointer-events: none;
   }
-  .sparkline svg { width: 100%; height: 100%; }
-  .sparkline path { fill: none; stroke-width: 1.5; }
-  .sparkline .area { stroke: none; opacity: 0.3; }
-
-  /* ── Gauge bar ── */
-  .gauge-bar {
-    width: 80%;
-    height: 6px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 3px;
-    margin-top: 8px;
-    overflow: hidden;
-  }
-  .gauge-fill {
+  .g-sparkline svg {
+    width: 100%;
     height: 100%;
-    border-radius: 3px;
-    transition: width 1s ease;
+    display: block;
+  }
+  .g-sparkline .line { fill: none; stroke-width: 1.5; }
+  .g-sparkline .fill { stroke: none; opacity: 0.4; }
+
+  /* ── Grafana threshold bar at bottom ── */
+  .g-threshold-bar {
+    height: 3px;
+    width: 100%;
   }
 
-  /* ── Alert badges ── */
-  .alert-badges {
+  /* ── Trend indicator (Grafana style) ── */
+  .g-trend {
+    font-size: 10px;
+    font-weight: 500;
+    margin-top: 2px;
     display: flex;
-    gap: 6px;
     align-items: center;
-    margin-top: 4px;
+    gap: 2px;
   }
-  .alert-badge {
+  .g-trend svg { width: 10px; height: 10px; }
+  .g-trend-up { color: var(--g-red); }
+  .g-trend-down { color: var(--g-green); }
+  .g-trend-flat { color: var(--g-text-disabled); }
+
+  /* ── Alert badges (Grafana alert annotation style) ── */
+  .g-alert-stack {
     display: flex;
-    align-items: center;
-    gap: 3px;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .g-alert-tag {
+    font-size: 10px;
+    font-weight: 600;
     padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 11px;
-    font-weight: 700;
+    border-radius: 2px;
   }
-  .alert-badge.crit { background: var(--red-bg); color: var(--red); }
-  .alert-badge.warn { background: var(--yellow-bg); color: var(--yellow); }
-  .alert-badge.info { background: var(--blue-bg); color: var(--blue); }
-  .alert-badge.ok { background: var(--green-bg); color: var(--green); }
+  .g-alert-tag.crit { background: rgba(242,73,92,0.15); color: var(--g-red); }
+  .g-alert-tag.warn { background: rgba(242,204,12,0.15); color: var(--g-yellow); }
+  .g-alert-tag.info { background: rgba(87,148,242,0.15); color: var(--g-blue); }
+  .g-alert-tag.ok   { background: rgba(115,191,105,0.15); color: var(--g-green); }
 
-  /* ── SLA bar ── */
-  .sla-ring {
-    width: 48px;
-    height: 48px;
+  /* ── SLA Gauge (Grafana gauge panel) ── */
+  .g-sla-gauge {
     position: relative;
+    width: 70px;
+    height: 70px;
   }
-  .sla-ring svg { transform: rotate(-90deg); }
-  .sla-ring-text {
+  .g-sla-gauge svg { transform: rotate(-90deg); }
+  .g-sla-gauge-label {
     position: absolute;
     inset: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
-    font-weight: 700;
+  }
+  .g-sla-pct {
+    font-size: 14px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .g-sla-target {
+    font-size: 9px;
+    color: var(--g-text-disabled);
   }
 
-  /* ── Thresholds stripe ── */
-  .threshold-stripe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-  }
-  .threshold-stripe.green { background: var(--green); }
-  .threshold-stripe.yellow { background: var(--yellow); }
-  .threshold-stripe.orange { background: var(--orange); }
-  .threshold-stripe.red { background: var(--red); }
-
-  /* ── Tooltip ── */
-  .panel[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #000;
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    white-space: nowrap;
-    z-index: 10;
+  /* ── Grafana-like "no data" / empty ── */
+  .g-empty {
+    color: var(--g-text-disabled);
+    font-size: 12px;
   }
 </style>
 </head>
 <body>
 
-<!-- ── Top bar ── -->
-<div class="topbar">
-  <div class="topbar-left">
-    <svg class="topbar-logo" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#ff6600" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <span class="topbar-title">EKS Platform — System Observability</span>
-    <span class="topbar-env">PRODUCTION</span>
+<!-- ════════════════════════════════════════
+     GRAFANA LEFT SIDEBAR (collapsed mode)
+     ════════════════════════════════════════ -->
+<nav class="g-sidemenu">
+  <!-- Grafana logo -->
+  <svg class="g-sidemenu-logo" viewBox="0 0 60 60" fill="none">
+    <circle cx="30" cy="30" r="28" fill="none" stroke="#f46800" stroke-width="3"/>
+    <circle cx="30" cy="30" r="18" fill="none" stroke="#f46800" stroke-width="2.5"/>
+    <circle cx="30" cy="30" r="8" fill="#f46800"/>
+    <line x1="30" y1="2" x2="30" y2="10" stroke="#f46800" stroke-width="3" stroke-linecap="round"/>
+    <line x1="30" y1="50" x2="30" y2="58" stroke="#f46800" stroke-width="3" stroke-linecap="round"/>
+    <line x1="2" y1="30" x2="10" y2="30" stroke="#f46800" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="30" x2="58" y2="30" stroke="#f46800" stroke-width="3" stroke-linecap="round"/>
+    <line x1="9" y1="9" x2="15" y2="15" stroke="#f46800" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="45" y1="45" x2="51" y2="51" stroke="#f46800" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="51" y1="9" x2="45" y2="15" stroke="#f46800" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="15" y1="45" x2="9" y2="51" stroke="#f46800" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+
+  <!-- Search -->
+  <div class="g-sidemenu-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
   </div>
-  <div class="topbar-right">
-    <span class="topbar-refresh">Auto-refresh: 30s</span>
-    <span style="color:var(--text-muted)">|</span>
-    <span style="font-size:11px">Last 1h</span>
-    <span style="color:var(--text-muted)">|</span>
-    <span class="topbar-clock" id="clock"></span>
+  <!-- Dashboards -->
+  <div class="g-sidemenu-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+  </div>
+  <!-- Explore -->
+  <div class="g-sidemenu-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+  </div>
+  <!-- Alerting -->
+  <div class="g-sidemenu-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+  </div>
+
+  <div class="g-sidemenu-spacer"></div>
+
+  <!-- Admin -->
+  <div class="g-sidemenu-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </div>
+  <!-- User avatar -->
+  <div class="g-sidemenu-item" style="margin-top:4px">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════
+     MAIN CONTENT
+     ════════════════════════════════════════ -->
+<div class="g-main">
+
+  <!-- ── Grafana Top Navbar ── -->
+  <header class="g-navbar">
+    <div class="g-navbar-breadcrumb">
+      <span class="g-navbar-folder">Dashboards</span>
+      <span class="g-navbar-sep">/</span>
+      <span class="g-navbar-folder">Production</span>
+      <span class="g-navbar-sep">/</span>
+      <span class="g-navbar-title">EKS Platform Observability</span>
+    </div>
+    <div class="g-navbar-spacer"></div>
+    <div class="g-navbar-actions">
+      <span class="g-kiosk-indicator">TV MODE</span>
+
+      <button class="g-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Mark
+      </button>
+
+      <button class="g-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Share
+      </button>
+
+      <div class="g-time-picker">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Last 1 hour
+      </div>
+
+      <button class="g-refresh-btn" title="Refresh">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </button>
+
+      <div class="g-refresh-interval">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="6 9 12 15 18 9"/></svg>
+        30s
+      </div>
+
+      <div class="g-cycle-view" id="clock"></div>
+    </div>
+  </header>
+
+  <!-- ── Dashboard body ── -->
+  <div class="g-dashboard-scroll">
+    <div class="g-dashboard" id="dashboard"></div>
   </div>
 </div>
-
-<!-- ── Column headers ── -->
-<div class="col-headers">
-  <div class="col-header"></div>
-  <div class="col-header"><span class="col-header-icon">&#9679;</span>Health</div>
-  <div class="col-header"><span class="col-header-icon">&#8593;</span>Uptime / SLA</div>
-  <div class="col-header"><span class="col-header-icon">&#9201;</span>Latency P95</div>
-  <div class="col-header"><span class="col-header-icon">&#9889;</span>Error Rate</div>
-  <div class="col-header"><span class="col-header-icon">&#8644;</span>Throughput</div>
-  <div class="col-header"><span class="col-header-icon">&#9881;</span>Resources</div>
-  <div class="col-header"><span class="col-header-icon">&#9888;</span>Alerts</div>
-</div>
-
-<!-- ── Dashboard grid ── -->
-<div class="dashboard" id="dashboard"></div>
 
 <script>
-// ── Data model ──
+// ── System data ──
 const systems = [
   {
-    name: "System A",
-    cluster: "eks-prod-ap-southeast-1",
-    pods: { ready: 12, total: 12 },
-    health: "healthy",
-    uptime: 99.97,
-    slaTarget: 99.95,
-    latencyP95: 42,
-    latencyP50: 18,
-    latencyTrend: "down",
-    errorRate: 0.02,
-    errorTrend: "flat",
-    throughput: 3420,
-    throughputUnit: "rpm",
-    throughputTrend: "up",
-    cpu: 45,
-    memory: 62,
-    alerts: { critical: 0, warning: 0, info: 1 },
-    color: "#5794f2"
+    name: "System A", cluster: "eks-prod-apse1", namespace: "system-a-prod",
+    pods: { ready: 12, total: 12 }, health: "healthy",
+    uptime: 99.97, slaTarget: 99.95,
+    latencyP95: 42, latencyP50: 18, latencyTrend: "down",
+    errorRate: 0.02, errorTrend: "flat",
+    throughput: 3420, throughputTrend: "up",
+    cpu: 45, memory: 62,
+    alerts: { critical: 0, warning: 0, info: 1 }
   },
   {
-    name: "System B",
-    cluster: "eks-prod-ap-southeast-1",
-    pods: { ready: 8, total: 8 },
-    health: "warning",
-    uptime: 99.82,
-    slaTarget: 99.90,
-    latencyP95: 185,
-    latencyP50: 72,
-    latencyTrend: "up",
-    errorRate: 1.24,
-    errorTrend: "up",
-    throughput: 1850,
-    throughputUnit: "rpm",
-    throughputTrend: "flat",
-    cpu: 72,
-    memory: 78,
-    alerts: { critical: 0, warning: 2, info: 1 },
-    color: "#f2cc0c"
+    name: "System B", cluster: "eks-prod-apse1", namespace: "system-b-prod",
+    pods: { ready: 8, total: 8 }, health: "warning",
+    uptime: 99.82, slaTarget: 99.90,
+    latencyP95: 185, latencyP50: 72, latencyTrend: "up",
+    errorRate: 1.24, errorTrend: "up",
+    throughput: 1850, throughputTrend: "flat",
+    cpu: 72, memory: 78,
+    alerts: { critical: 0, warning: 2, info: 1 }
   },
   {
-    name: "System C",
-    cluster: "eks-prod-ap-southeast-1",
-    pods: { ready: 6, total: 6 },
-    health: "healthy",
-    uptime: 99.99,
-    slaTarget: 99.95,
-    latencyP95: 28,
-    latencyP50: 11,
-    latencyTrend: "flat",
-    errorRate: 0.01,
-    errorTrend: "down",
-    throughput: 8920,
-    throughputUnit: "rpm",
-    throughputTrend: "up",
-    cpu: 38,
-    memory: 51,
-    alerts: { critical: 0, warning: 0, info: 0 },
-    color: "#73bf69"
+    name: "System C", cluster: "eks-prod-apse1", namespace: "system-c-prod",
+    pods: { ready: 6, total: 6 }, health: "healthy",
+    uptime: 99.99, slaTarget: 99.95,
+    latencyP95: 28, latencyP50: 11, latencyTrend: "flat",
+    errorRate: 0.01, errorTrend: "down",
+    throughput: 8920, throughputTrend: "up",
+    cpu: 38, memory: 51,
+    alerts: { critical: 0, warning: 0, info: 0 }
   },
   {
-    name: "System D",
-    cluster: "eks-prod-ap-southeast-1",
-    pods: { ready: 3, total: 5 },
-    health: "critical",
-    uptime: 98.41,
-    slaTarget: 99.90,
-    latencyP95: 1240,
-    latencyP50: 420,
-    latencyTrend: "up",
-    errorRate: 8.73,
-    errorTrend: "up",
-    throughput: 620,
-    throughputUnit: "rpm",
-    throughputTrend: "down",
-    cpu: 94,
-    memory: 91,
-    alerts: { critical: 2, warning: 3, info: 1 },
-    color: "#f2495c"
+    name: "System D", cluster: "eks-prod-apse1", namespace: "system-d-prod",
+    pods: { ready: 3, total: 5 }, health: "critical",
+    uptime: 98.41, slaTarget: 99.90,
+    latencyP95: 1240, latencyP50: 420, latencyTrend: "up",
+    errorRate: 8.73, errorTrend: "up",
+    throughput: 620, throughputTrend: "down",
+    cpu: 94, memory: 91,
+    alerts: { critical: 2, warning: 3, info: 1 }
   }
 ];
 
-// ── Sparkline generator ──
-function sparklineSVG(color, trend, volatile) {
-  const pts = 30;
-  const vals = [];
-  let v = 50 + (Math.random() - 0.5) * 20;
-  for (let i = 0; i < pts; i++) {
-    v += (Math.random() - 0.5) * (volatile ? 18 : 8);
-    if (trend === "up") v += 0.6;
-    if (trend === "down") v -= 0.4;
-    v = Math.max(10, Math.min(90, v));
+// ── Helpers ──
+function sparkSVG(color, trend, jitter) {
+  const n = 40; const vals = []; let v = 50 + (Math.random() - 0.5) * 20;
+  for (let i = 0; i < n; i++) {
+    v += (Math.random() - 0.5) * (jitter ? 16 : 6);
+    if (trend === "up") v += 0.5;
+    if (trend === "down") v -= 0.3;
+    v = Math.max(5, Math.min(95, v));
     vals.push(v);
   }
-  const w = 200, h = 50;
-  const step = w / (pts - 1);
-  const points = vals.map((v, i) => `${i * step},${h - (v / 100) * h}`);
-  const line = `M${points.join(" L")}`;
-  const area = `${line} L${w},${h} L0,${h} Z`;
+  const w = 300, h = 60, step = w / (n - 1);
+  const pts = vals.map((v, i) => `${(i * step).toFixed(1)},${(h - v / 100 * h).toFixed(1)}`);
+  const line = `M${pts.join(" L")}`;
+  const fill = `${line} L${w},${h} L0,${h} Z`;
   return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
-    <path class="area" d="${area}" fill="${color}"/>
-    <path d="${line}" stroke="${color}"/>
+    <path class="fill" d="${fill}" fill="${color}"/>
+    <path class="line" d="${line}" stroke="${color}"/>
   </svg>`;
 }
 
-// ── SLA ring ──
-function slaRingSVG(pct, color) {
-  const r = 20, c = 24, circ = 2 * Math.PI * r;
+function slaGaugeSVG(pct, color) {
+  const r = 28, cx = 35, cy = 35, circ = 2 * Math.PI * r;
   const offset = circ * (1 - pct / 100);
-  return `<svg width="48" height="48" viewBox="0 0 48 48">
-    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4"/>
-    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${color}" stroke-width="4"
+  return `<svg width="70" height="70" viewBox="0 0 70 70">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--g-bg-secondary)" stroke-width="5"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="5"
       stroke-dasharray="${circ}" stroke-dashoffset="${offset}" stroke-linecap="round"/>
   </svg>`;
 }
 
-// ── Trend arrow ──
 function trendHTML(trend) {
-  if (trend === "up") return '<span class="stat-trend trend-up">&#9650; rising</span>';
-  if (trend === "down") return '<span class="stat-trend trend-down">&#9660; falling</span>';
-  return '<span class="stat-trend trend-flat">&#9644; stable</span>';
+  if (trend === "up") return `<div class="g-trend g-trend-up">
+    <svg viewBox="0 0 10 10"><path d="M5 1 L9 6 L6 6 L6 9 L4 9 L4 6 L1 6 Z" fill="currentColor"/></svg>rising</div>`;
+  if (trend === "down") return `<div class="g-trend g-trend-down">
+    <svg viewBox="0 0 10 10"><path d="M5 9 L9 4 L6 4 L6 1 L4 1 L4 4 L1 4 Z" fill="currentColor"/></svg>falling</div>`;
+  return `<div class="g-trend g-trend-flat">
+    <svg viewBox="0 0 10 10"><rect x="1" y="4" width="8" height="2" rx="1" fill="currentColor"/></svg>stable</div>`;
 }
 
-// ── Build rows ──
+function colorForHealth(h) {
+  return { healthy: "var(--g-green)", warning: "var(--g-yellow)", critical: "var(--g-red)" }[h] || "var(--g-text-disabled)";
+}
+function colorForLatency(ms) { return ms < 100 ? "var(--g-green)" : ms < 500 ? "var(--g-yellow)" : "var(--g-red)"; }
+function colorForError(e) { return e < 0.1 ? "var(--g-green)" : e < 1 ? "var(--g-yellow)" : e < 5 ? "var(--g-orange)" : "var(--g-red)"; }
+function colorForResource(v) { return v < 60 ? "var(--g-green)" : v < 80 ? "var(--g-yellow)" : "var(--g-red)"; }
+
+// ── Build dashboard ──
 const dashboard = document.getElementById("dashboard");
 
 systems.forEach(sys => {
-  const row = document.createElement("div");
-  row.className = "system-row";
-
-  const healthColor = { healthy: "var(--green)", warning: "var(--yellow)", degraded: "var(--orange)", critical: "var(--red)" }[sys.health];
-  const slaColor = sys.uptime >= sys.slaTarget ? "var(--green)" : "var(--red)";
+  const hc = colorForHealth(sys.health);
   const slaMet = sys.uptime >= sys.slaTarget;
-  const latColor = sys.latencyP95 < 100 ? "var(--green)" : sys.latencyP95 < 500 ? "var(--yellow)" : "var(--red)";
-  const latStripe = sys.latencyP95 < 100 ? "green" : sys.latencyP95 < 500 ? "yellow" : "red";
-  const errColor = sys.errorRate < 0.1 ? "var(--green)" : sys.errorRate < 1 ? "var(--yellow)" : sys.errorRate < 5 ? "var(--orange)" : "var(--red)";
-  const errStripe = sys.errorRate < 0.1 ? "green" : sys.errorRate < 1 ? "yellow" : sys.errorRate < 5 ? "orange" : "red";
-  const cpuColor = sys.cpu < 60 ? "var(--green)" : sys.cpu < 80 ? "var(--yellow)" : "var(--red)";
-  const memColor = sys.memory < 60 ? "var(--green)" : sys.memory < 80 ? "var(--yellow)" : "var(--red)";
-  const totalAlerts = sys.alerts.critical + sys.alerts.warning + sys.alerts.info;
+  const slaColor = slaMet ? "var(--g-green)" : "var(--g-red)";
+  const latC = colorForLatency(sys.latencyP95);
+  const errC = colorForError(sys.errorRate);
+  const cpuC = colorForResource(sys.cpu);
+  const memC = colorForResource(sys.memory);
+  const totAlerts = sys.alerts.critical + sys.alerts.warning + sys.alerts.info;
+  const alertColor = sys.alerts.critical > 0 ? "var(--g-red)" : totAlerts > 0 ? "var(--g-yellow)" : "var(--g-green)";
 
-  row.innerHTML = `
-    <!-- System label -->
-    <div class="system-label" style="border-left: 3px solid ${healthColor};">
-      <div class="system-name">${sys.name}</div>
-      <div class="system-cluster">${sys.cluster.split("-").slice(1).join("-")}</div>
-      <div class="system-pods">Pods <span>${sys.pods.ready}/${sys.pods.total}</span></div>
-    </div>
+  // Row header
+  const rowHeader = document.createElement("div");
+  rowHeader.className = "g-row-header";
+  const tagClass = { healthy: "g-row-tag-healthy", warning: "g-row-tag-warning", critical: "g-row-tag-critical" }[sys.health];
+  rowHeader.innerHTML = `
+    <svg class="g-row-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    <span class="g-row-title">${sys.name}</span>
+    <span class="g-row-tag ${tagClass}">${sys.health.toUpperCase()}</span>
+    <span style="font-size:11px;color:var(--g-text-disabled)">${sys.cluster} / ${sys.namespace}</span>
+    <span style="font-size:11px;color:var(--g-text-disabled)">Pods: ${sys.pods.ready}/${sys.pods.total}</span>
+    <div class="g-row-line"></div>
+  `;
 
-    <!-- 1. Health -->
-    <div class="panel status-${sys.health}">
-      <div class="panel-body">
-        <div class="status-dot ${sys.health}"></div>
-        <div class="stat-value">${sys.health.toUpperCase()}</div>
-        <div class="stat-sub">${sys.pods.ready}/${sys.pods.total} pods ready</div>
+  // Panel row
+  const panelRow = document.createElement("div");
+  panelRow.className = "g-panel-row";
+
+  panelRow.innerHTML = `
+    <!-- 1. Health Status -->
+    <div class="g-panel">
+      <div class="g-panel-header">
+        <span class="g-panel-title">Health Status</span>
+        <span class="g-panel-menu">&#8942;</span>
       </div>
+      <div class="g-panel-body">
+        <div class="g-status-dot ${sys.health}"></div>
+        <div class="g-stat-value" style="color:${hc}">${sys.health.toUpperCase()}</div>
+        <div class="g-stat-description">${sys.pods.ready}/${sys.pods.total} pods ready</div>
+      </div>
+      <div class="g-threshold-bar" style="background:${hc}"></div>
     </div>
 
     <!-- 2. Uptime / SLA -->
-    <div class="panel">
-      <div class="threshold-stripe ${slaMet ? 'green' : 'red'}"></div>
-      <div class="panel-body">
-        <div class="sla-ring">
-          ${slaRingSVG(sys.uptime, slaMet ? 'var(--green)' : 'var(--red)')}
-          <div class="sla-ring-text" style="color:${slaColor}">${sys.uptime.toFixed(1)}%</div>
-        </div>
-        <div class="stat-sub" style="margin-top:4px">SLA ${sys.slaTarget}% ${slaMet ? '<span style="color:var(--green)">MET</span>' : '<span style="color:var(--red)">BREACH</span>'}</div>
+    <div class="g-panel">
+      <div class="g-panel-header">
+        <span class="g-panel-title">Uptime / SLA</span>
+        <span class="g-panel-menu">&#8942;</span>
       </div>
+      <div class="g-panel-body">
+        <div class="g-sla-gauge">
+          ${slaGaugeSVG(sys.uptime, slaColor)}
+          <div class="g-sla-gauge-label">
+            <span class="g-sla-pct" style="color:${slaColor}">${sys.uptime.toFixed(2)}%</span>
+            <span class="g-sla-target">target ${sys.slaTarget}%</span>
+          </div>
+        </div>
+        <div class="g-stat-description" style="margin-top:6px">
+          SLA ${slaMet
+            ? '<span style="color:var(--g-green);font-weight:600">MET</span>'
+            : '<span style="color:var(--g-red);font-weight:600">BREACH</span>'}
+        </div>
+      </div>
+      <div class="g-threshold-bar" style="background:${slaColor}"></div>
     </div>
 
     <!-- 3. Latency P95 -->
-    <div class="panel">
-      <div class="threshold-stripe ${latStripe}"></div>
-      <div class="panel-body">
-        <div class="stat-value" style="color:${latColor}">${sys.latencyP95 >= 1000 ? (sys.latencyP95/1000).toFixed(1) : sys.latencyP95}<span class="stat-unit">${sys.latencyP95 >= 1000 ? 's' : 'ms'}</span></div>
-        <div class="stat-sub">P50: ${sys.latencyP50}ms</div>
-        ${trendHTML(sys.latencyTrend)}
-        <div class="sparkline">${sparklineSVG(latColor, sys.latencyTrend, sys.health === 'critical')}</div>
+    <div class="g-panel">
+      <div class="g-panel-header">
+        <span class="g-panel-title">Latency P95</span>
+        <span class="g-panel-menu">&#8942;</span>
       </div>
+      <div class="g-panel-body">
+        <div class="g-stat-value" style="color:${latC}">${
+          sys.latencyP95 >= 1000
+            ? (sys.latencyP95/1000).toFixed(1) + '<span class="g-stat-unit">s</span>'
+            : sys.latencyP95 + '<span class="g-stat-unit">ms</span>'
+        }</div>
+        <div class="g-stat-description">P50: ${sys.latencyP50}ms</div>
+        ${trendHTML(sys.latencyTrend)}
+        <div class="g-sparkline">${sparkSVG(latC, sys.latencyTrend, sys.health === 'critical')}</div>
+      </div>
+      <div class="g-threshold-bar" style="background:${latC}"></div>
     </div>
 
     <!-- 4. Error Rate -->
-    <div class="panel">
-      <div class="threshold-stripe ${errStripe}"></div>
-      <div class="panel-body">
-        <div class="stat-value" style="color:${errColor}">${sys.errorRate}<span class="stat-unit">%</span></div>
-        <div class="stat-sub">5xx / total</div>
-        ${trendHTML(sys.errorTrend)}
-        <div class="sparkline">${sparklineSVG(errColor, sys.errorTrend, sys.errorRate > 5)}</div>
+    <div class="g-panel">
+      <div class="g-panel-header">
+        <span class="g-panel-title">Error Rate</span>
+        <span class="g-panel-menu">&#8942;</span>
       </div>
+      <div class="g-panel-body">
+        <div class="g-stat-value" style="color:${errC}">${sys.errorRate}<span class="g-stat-unit">%</span></div>
+        <div class="g-stat-description">5xx / total requests</div>
+        ${trendHTML(sys.errorTrend)}
+        <div class="g-sparkline">${sparkSVG(errC, sys.errorTrend, sys.errorRate > 5)}</div>
+      </div>
+      <div class="g-threshold-bar" style="background:${errC}"></div>
     </div>
 
     <!-- 5. Throughput -->
-    <div class="panel">
-      <div class="panel-body">
-        <div class="stat-value" style="color:var(--blue)">${sys.throughput >= 1000 ? (sys.throughput/1000).toFixed(1) + 'K' : sys.throughput}<span class="stat-unit">${sys.throughputUnit}</span></div>
+    <div class="g-panel">
+      <div class="g-panel-header">
+        <span class="g-panel-title">Throughput</span>
+        <span class="g-panel-menu">&#8942;</span>
+      </div>
+      <div class="g-panel-body">
+        <div class="g-stat-value" style="color:var(--g-blue)">${
+          sys.throughput >= 1000
+            ? (sys.throughput/1000).toFixed(1) + 'K'
+            : sys.throughput
+        }<span class="g-stat-unit">rpm</span></div>
         ${trendHTML(sys.throughputTrend)}
-        <div class="sparkline">${sparklineSVG('var(--blue)', sys.throughputTrend, false)}</div>
+        <div class="g-sparkline">${sparkSVG('var(--g-blue)', sys.throughputTrend, false)}</div>
       </div>
+      <div class="g-threshold-bar" style="background:var(--g-blue)"></div>
     </div>
 
-    <!-- 6. Resources (CPU / Memory) -->
-    <div class="panel">
-      <div class="panel-body" style="gap:4px">
-        <div style="width:80%;display:flex;justify-content:space-between;font-size:10px;color:var(--text-secondary)">
-          <span>CPU</span><span style="color:${cpuColor};font-weight:700">${sys.cpu}%</span>
+    <!-- 6. Resources -->
+    <div class="g-panel">
+      <div class="g-panel-header">
+        <span class="g-panel-title">CPU / Memory</span>
+        <span class="g-panel-menu">&#8942;</span>
+      </div>
+      <div class="g-panel-body" style="gap:2px;justify-content:center">
+        <div class="g-gauge-label">
+          <span>CPU</span>
+          <span class="g-gauge-pct" style="color:${cpuC}">${sys.cpu}%</span>
         </div>
-        <div class="gauge-bar" style="width:80%">
-          <div class="gauge-fill" style="width:${sys.cpu}%;background:${cpuColor}"></div>
+        <div class="g-gauge-track">
+          <div class="g-gauge-fill" style="width:${sys.cpu}%;background:${cpuC}"></div>
         </div>
-        <div style="width:80%;display:flex;justify-content:space-between;font-size:10px;color:var(--text-secondary);margin-top:6px">
-          <span>MEM</span><span style="color:${memColor};font-weight:700">${sys.memory}%</span>
+        <div class="g-gauge-label" style="margin-top:8px">
+          <span>Memory</span>
+          <span class="g-gauge-pct" style="color:${memC}">${sys.memory}%</span>
         </div>
-        <div class="gauge-bar" style="width:80%">
-          <div class="gauge-fill" style="width:${sys.memory}%;background:${memColor}"></div>
+        <div class="g-gauge-track">
+          <div class="g-gauge-fill" style="width:${sys.memory}%;background:${memC}"></div>
         </div>
       </div>
+      <div class="g-threshold-bar" style="background:${sys.cpu > sys.memory ? cpuC : memC}"></div>
     </div>
 
-    <!-- 7. Alerts -->
-    <div class="panel">
-      <div class="panel-body">
-        <div class="stat-value" style="color:${sys.alerts.critical > 0 ? 'var(--red)' : totalAlerts > 0 ? 'var(--yellow)' : 'var(--green)'}">${totalAlerts}</div>
-        <div class="stat-sub">active</div>
-        <div class="alert-badges">
-          ${sys.alerts.critical > 0 ? `<span class="alert-badge crit">${sys.alerts.critical} CRIT</span>` : ''}
-          ${sys.alerts.warning > 0 ? `<span class="alert-badge warn">${sys.alerts.warning} WARN</span>` : ''}
-          ${sys.alerts.info > 0 ? `<span class="alert-badge info">${sys.alerts.info} INFO</span>` : ''}
-          ${totalAlerts === 0 ? '<span class="alert-badge ok">ALL CLEAR</span>' : ''}
+    <!-- 7. Active Alerts -->
+    <div class="g-panel">
+      <div class="g-panel-header">
+        <span class="g-panel-title">Active Alerts</span>
+        <span class="g-panel-menu">&#8942;</span>
+      </div>
+      <div class="g-panel-body">
+        <div class="g-stat-value" style="color:${alertColor}">${totAlerts}</div>
+        <div class="g-stat-description">firing</div>
+        <div class="g-alert-stack">
+          ${sys.alerts.critical > 0 ? `<span class="g-alert-tag crit">${sys.alerts.critical} P1</span>` : ''}
+          ${sys.alerts.warning > 0 ? `<span class="g-alert-tag warn">${sys.alerts.warning} P2</span>` : ''}
+          ${sys.alerts.info > 0 ? `<span class="g-alert-tag info">${sys.alerts.info} P3</span>` : ''}
+          ${totAlerts === 0 ? '<span class="g-alert-tag ok">ALL CLEAR</span>' : ''}
         </div>
       </div>
+      <div class="g-threshold-bar" style="background:${alertColor}"></div>
     </div>
   `;
 
-  dashboard.appendChild(row);
+  dashboard.appendChild(rowHeader);
+  dashboard.appendChild(panelRow);
 });
 
 // ── Clock ──
-function updateClock() {
+function tick() {
   const now = new Date();
-  document.getElementById("clock").textContent = now.toLocaleTimeString("en-GB", { hour12: false });
+  document.getElementById("clock").textContent =
+    now.toLocaleDateString("en-GB", { day:"2-digit", month:"short" }) + " " +
+    now.toLocaleTimeString("en-GB", { hour12: false });
 }
-updateClock();
-setInterval(updateClock, 1000);
+tick(); setInterval(tick, 1000);
 
-// ── Simulate live sparkline updates ──
+// ── Animate sparklines subtly ──
 setInterval(() => {
-  document.querySelectorAll('.sparkline').forEach(el => {
-    const svg = el.querySelector('svg');
-    if (!svg) return;
-    const path = svg.querySelector('path:last-child');
-    if (!path) return;
-    // subtle jitter to make it look alive
+  document.querySelectorAll('.g-sparkline .line').forEach(path => {
     const d = path.getAttribute('d');
-    if (d) {
-      const parts = d.split(' ');
-      // shift one random point slightly
-      const idx = Math.floor(Math.random() * parts.length);
-      if (parts[idx] && parts[idx].includes(',')) {
-        const [x, y] = parts[idx].replace(/[ML]/g, '').split(',').map(Number);
-        if (!isNaN(y)) {
-          const newY = Math.max(2, Math.min(48, y + (Math.random() - 0.5) * 4));
-          parts[idx] = parts[idx].replace(/[\d.]+$/, newY.toFixed(1));
-          path.setAttribute('d', parts.join(' '));
-        }
+    if (!d) return;
+    const segs = d.split(' ');
+    const idx = 2 + Math.floor(Math.random() * (segs.length - 4));
+    if (segs[idx] && segs[idx].includes(',')) {
+      const [x, y] = segs[idx].replace('L','').split(',').map(Number);
+      if (!isNaN(y)) {
+        const ny = Math.max(2, Math.min(58, y + (Math.random()-0.5) * 3));
+        segs[idx] = (segs[idx].startsWith('L') ? 'L' : '') + x.toFixed(1) + ',' + ny.toFixed(1);
+        path.setAttribute('d', segs.join(' '));
       }
     }
   });
-}, 2000);
+}, 2500);
 </script>
 </body>
 </html>
