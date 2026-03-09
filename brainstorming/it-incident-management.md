@@ -1,6 +1,6 @@
 # IT Incident Management — Brainstorming
 
-> **Context**: TC Life (life insurance, Vietnam). Small-to-mid IT team managing core insurance systems (policy admin, claims, billing, agency, digital channels) likely running on AWS in ap-southeast-1.
+> **Context**: A life insurance company in Vietnam. Small-to-mid IT team managing core insurance systems (policy admin, claims, billing, agency, digital channels) likely running on AWS in ap-southeast-1.
 >
 > **Existing work**: A process flowchart already exists at `solutions/incident-managment/lightweight.md` covering detection → triage → containment/fix → RCA → close. This brainstorming goes broader and deeper.
 
@@ -218,7 +218,7 @@ Using **functional decomposition** crossed with an **organizational lens** (peop
    — What if: The most damaging "incidents" for a life insurer aren't system outages but data quality issues — wrong premium calculations, incorrect policy values, miscalculated claims — that go undetected for weeks? These silent failures may not trigger any alert but have massive financial and regulatory impact. The incident management process should explicitly cover "delayed discovery" scenarios.
 
 3. **Assumption: 24/7 availability is necessary.**
-   — What if: Most of TC Life's business happens during Vietnamese business hours (8 AM - 6 PM, Mon-Sat)? If digital channels have low nighttime usage, business-hours-only support with automated failover for infrastructure failures might be sufficient and far cheaper than 24/7 on-call. Analyze actual traffic patterns before committing to round-the-clock staffing.
+   — What if: Most of the company's business happens during Vietnamese business hours (8 AM - 6 PM, Mon-Sat)? If digital channels have low nighttime usage, business-hours-only support with automated failover for infrastructure failures might be sufficient and far cheaper than 24/7 on-call. Analyze actual traffic patterns before committing to round-the-clock staffing.
 
 ### Cross-Domain Analogies
 
@@ -240,7 +240,7 @@ Using **functional decomposition** crossed with an **organizational lens** (peop
 
 ### The Simplest Version
 
-If TC Life had to implement incident management tomorrow with zero budget and minimal process overhead:
+If the team had to implement incident management tomorrow with zero budget and minimal process overhead:
 
 1. **A shared Slack/Teams channel** called `#incidents` — all incidents discussed here, nowhere else
 2. **A severity definition** on a single page taped to every monitor: SEV1 = customers can't transact, SEV2 = degraded, SEV3 = minor, SEV4 = cosmetic
