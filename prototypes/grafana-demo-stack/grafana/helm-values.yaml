@@ -1,0 +1,70 @@
+# kube-prometheus-stack Helm values — demo configuration
+# Optimised for low resource usage on a single-node Kind cluster.
+
+prometheus:
+  prometheusSpec:
+    # Scrape ServiceMonitors/Rules from ALL namespaces (not just Helm-labelled ones)
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    # Short retention — demo only
+    retention: 2h
+    resources:
+      requests:
+        memory: 400Mi
+        cpu: 200m
+      limits:
+        memory: 800Mi
+
+grafana:
+  adminPassword: admin
+  service:
+    type: NodePort
+    nodePort: 30080
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+    datasources:
+      # Disable the auto-generated datasource so we control the UID
+      defaultDatasourceEnabled: false
+  additionalDataSources:
+    - name: Prometheus
+      type: prometheus
+      uid: prometheus
+      access: proxy
+      isDefault: true
+      url: http://prometheus-operated:9090
+      jsonData:
+        timeInterval: 15s
+  # Anonymous access for TV / kiosk mode
+  grafana.ini:
+    auth.anonymous:
+      enabled: true
+      org_role: Viewer
+    security:
+      allow_embedding: true
+
+alertmanager:
+  alertmanagerSpec:
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 10m
+      limits:
+        memory: 128Mi
+
+prometheusOperator:
+  resources:
+    requests:
+      memory: 100Mi
+      cpu: 50m
+    limits:
+      memory: 200Mi
+
+kubeStateMetrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true

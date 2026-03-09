@@ -1,0 +1,126 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: __NAMESPACE__
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-app
+  namespace: __NAMESPACE__
+  labels:
+    app: metrics-app
+    system: __SYSTEM__
+spec:
+  replicas: __REPLICAS__
+  selector:
+    matchLabels:
+      app: metrics-app
+  template:
+    metadata:
+      labels:
+        app: metrics-app
+        system: __SYSTEM__
+    spec:
+      containers:
+        - name: app
+          image: metrics-app:latest
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: ERROR_RATE
+              value: "__ERROR_RATE__"
+            - name: LATENCY_BASE_MS
+              value: "__LATENCY_BASE__"
+            - name: LATENCY_JITTER_MS
+              value: "__LATENCY_JITTER__"
+            - name: TRAFFIC_RPS
+              value: "__TRAFFIC_RPS__"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metrics-app
+  namespace: __NAMESPACE__
+  labels:
+    app: metrics-app
+    system: __SYSTEM__
+spec:
+  selector:
+    app: metrics-app
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: metrics-app
+  namespace: __NAMESPACE__
+  labels:
+    app: metrics-app
+    system: __SYSTEM__
+spec:
+  selector:
+    matchLabels:
+      app: metrics-app
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: __SYSTEM__-alerts
+  namespace: __NAMESPACE__
+  labels:
+    app: metrics-app
+    system: __SYSTEM__
+spec:
+  groups:
+    - name: __SYSTEM__.rules
+      rules:
+        - alert: HighErrorRate
+          expr: >-
+            (sum(rate(http_requests_total{namespace="__NAMESPACE__", status=~"5.."}[5m]))
+            / sum(rate(http_requests_total{namespace="__NAMESPACE__"}[5m]))) * 100 > 10
+          for: 1m
+          labels:
+            severity: critical
+            namespace: __NAMESPACE__
+          annotations:
+            summary: "High error rate in __SYSTEM__"
+        - alert: HighLatency
+          expr: >-
+            histogram_quantile(0.95,
+              sum(rate(http_request_duration_seconds_bucket{namespace="__NAMESPACE__"}[5m])) by (le)) > 1
+          for: 1m
+          labels:
+            severity: warning
+            namespace: __NAMESPACE__
+          annotations:
+            summary: "High P95 latency in __SYSTEM__"
