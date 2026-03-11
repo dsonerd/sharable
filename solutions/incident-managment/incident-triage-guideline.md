@@ -1,307 +1,170 @@
 # Incident Triage Guideline
 
-> A practical guide for L1/L2 support and on-call engineers to correctly identify, classify, and triage IT incidents.
+> Practical guide for L1/L2 ITO and on-call engineers to classify and triage IT incidents.
 >
-> Related: [`swimlane-flow.md`](swimlane-flow.md) (process flow) · [`severity-triage.md`](severity-triage.md) (decision tree) · [`lightweight.md`](lightweight.md) (detailed flowchart)
+> Related: [`swimlane-flow.md`](swimlane-flow.md) · [`severity-triage.md`](severity-triage.md) · [`incident-knowledge-base.md`](incident-knowledge-base.md)
 
 ---
 
-## 1. Is "Production Defect" an ITIL Term?
+## 1. Incident Classification
 
-**No.** ITIL does not define "production defect", "production issue", or "bug". These are software development terms from the SDLC world.
+We classify incidents by **where the problem lives** — this determines who owns the fix.
 
-ITIL defines a precise vocabulary for service management. Understanding this vocabulary is essential to avoid confusion during triage.
+| Type | Definition | Owner |
+|------|-----------|-------|
+| **Infrastructure Incident** | The platform layer is broken — servers, network, database, cloud services. The application cannot run because the ground underneath it is broken. | Infra / DevOps |
+| **Application Incident** | Infrastructure is healthy, but the application layer has a problem — crash, wrong output, design flaw, logic error, missing information. | Dev / BA team |
 
-### What ITIL Actually Defines
+Both can be **any priority level**. An application design flaw silently miscalculating premiums for all customers is P1 — even though infra is green and no errors appear in logs.
 
-| ITIL Term | Definition | Key Point |
-|-----------|-----------|-----------|
-| **Incident** | An unplanned interruption to a service, or reduction in the quality of a service | Anything that disrupts what the user expects from a live service — whether the system is down OR producing wrong results |
-| **Service Request** | A request from a user for something that is part of normal service delivery — information, access, a standard change | Not a disruption. The user is asking for something, not reporting something broken. |
-| **Problem** | The underlying cause of one or more incidents | A problem is identified *after* incidents occur. It explains *why* the incident happened. |
-| **Known Error** | A problem that has been analyzed and has a documented root cause and workaround | The cause is understood, a workaround exists, but the permanent fix hasn't been deployed yet. |
-| **Event** | Any change of state that has significance for the management of a service | Not all events are incidents. An event becomes an incident only when it disrupts or degrades service. |
+### How This Maps to ITIL
 
-### So Where Does "Production Defect" Fit?
+"Infrastructure Incident" and "Application Incident" are not ITIL terms. ITIL defines only **Incident** (any unplanned service disruption). We split it into two types because the response teams and strategies differ.
 
-A **production defect** is a bug in code that exists in the production environment. In ITIL terms:
+Likewise, "production defect" / "production issue" / "bug" are SDLC terms, not ITIL. A production defect that impacts a live service **becomes an incident**. After resolution, the underlying defect is tracked as a **Problem** for permanent fix.
 
-- If the defect **disrupts service or produces incorrect results** → it is an **Incident** (because service quality is reduced)
-- After the incident is resolved (service restored or workaround applied) → the underlying bug is tracked as a **Problem**
-- Once the bug is analyzed and a workaround is documented → it becomes a **Known Error**
-- The code fix goes through **Change Management** → deployed via **Release Management**
+| ITIL Term | What It Means | When It Applies |
+|-----------|--------------|-----------------|
+| **Incident** | Unplanned service disruption or quality reduction | Something is broken in production |
+| **Service Request** | User asking for something (not reporting breakage) | Access, information, standard change |
+| **Problem** | Root cause of one or more incidents | After incident is resolved — "why did this happen?" |
+| **Known Error** | Problem with documented cause and workaround | Cause understood, permanent fix pending |
 
-**The defect itself is never triaged. The incident it causes is triaged.** This is an important distinction — during triage, you are classifying the *impact on service*, not diagnosing the *technical root cause*.
+---
+
+## 2. Triage Flow
+
+Triage answers: **(1) Is it an incident? (2) What type? (3) How urgent? (4) Who acts?**
 
 ```
-Production Defect (SDLC term)
-    │
-    ├── Is it impacting a live service? ── YES ──→ It's an INCIDENT (ITIL)
-    │                                                   │
-    │                                                   ├── Resolve the incident (restore/workaround)
-    │                                                   └── Track the bug as a PROBLEM (ITIL)
-    │                                                         └── Fix via CHANGE MANAGEMENT (ITIL)
-    │
-    └── Is it NOT impacting a live service? ── YES ──→ It's a BACKLOG ITEM (SDLC)
-                                                        Not an incident. Fix in the next sprint.
+Something reported / alert fires
+        │
+        ▼
+   Is it an incident?  ── NO ──→  Service Request / Backlog / Change
+        │                          (see "What Is NOT an Incident" below)
+       YES
+        │
+        ▼
+   Is infrastructure healthy?
+   (servers, network, DB, cloud)
+        │
+   ┌────┴─────────────────┐
+   │                      │
+   NO                    YES
+   │                      │
+   ▼                      ▼
+ INFRA INCIDENT        APPLICATION INCIDENT
+   │                      │
+   │                      │
+   ▼                      ▼
+ L1 assigns P            L1 assigns preliminary P
+ immediately             (check Knowledge Base for
+ (scope is clear)        known scenarios)
+   │                      │
+   ▼                      ▼
+ Escalate to             Collaborate with Tech Team
+ Infra / DevOps          (Dev + BA + Business)
+ NOW                     within 30 min
+                          │
+                          ▼
+                         Confirm / adjust P
+                         based on blast radius
+                         and business impact
 ```
 
----
+### Why Two Paths?
 
-## 2. What Happens During Triage?
+**Infrastructure Incidents are clear-cut.** System is down → L1 can see it → assign P based on scope → escalate immediately. No ambiguity.
 
-Triage is about answering **three questions fast**:
+**Application Incidents need collaboration.** Infra is fine but something is wrong at the application level. L1 cannot assess blast radius or business impact alone. They need tech team (Dev, BA) and sometimes business input to determine the real priority. This collaboration must happen **within 30 minutes** — L1 assigns a preliminary P and loops in the right people, who then confirm or adjust.
 
-1. **Is this actually an incident?** (or is it something else?)
-2. **How bad is it?** (severity)
-3. **Who needs to act?** (assignment and escalation)
+### The Knowledge Base
 
-Triage is explicitly **not** about:
-- Finding root cause (that's Problem Management)
-- Fixing anything (that's the Respond phase)
-- Deciding whether it's a "bug" or "infra issue" at a technical level
+L1 should check the [Incident Knowledge Base](incident-knowledge-base.md) during triage. It contains known scenarios from past incidents — matching symptoms to incident types, priorities, and response actions. This is especially critical for application incidents where the right priority isn't obvious.
 
-### Do We Classify "Production Defects" During Triage?
-
-**Not exactly.** During triage, we classify the **type of service impact**, not the technical root cause. We use two categories:
-
-| Classification | Service Impact | Example |
-|---|---|---|
-| **Technology Incident** | Service is **unavailable or degraded** — users cannot use the system | "The claims portal is down" |
-| **Production Issue** | Service is **running but producing incorrect results** — outputs are wrong | "Premium calculations are showing wrong amounts" |
-
-Both are **incidents** in ITIL terms. We split them because they require **different response strategies**:
-
-- Technology Incident → **restore service immediately** (restart, rollback, failover)
-- Production Issue → **assess impact first, then fix correctly** (investigate, test, deploy, remediate data)
-
-A "production defect" typically surfaces as a **Production Issue** — but the triage responder doesn't need to confirm it's a code bug. They only need to determine: *is the system down, or is it up but wrong?*
-
-### The Triage Flow
-
-```
-    Something is reported
-            │
-            ▼
-    ┌───────────────────┐
-    │ Is this actually   │
-    │ an incident?       │──── NO ──→ Route elsewhere (see Section 3)
-    └───────┬───────────┘
-            │ YES
-            ▼
-    ┌───────────────────┐
-    │ Can users access   │
-    │ the system?        │
-    └───────┬───────────┘
-            │
-     ┌──────┴──────┐
-     │             │
-     NO           YES
-     │             │
-     ▼             ▼
- TECHNOLOGY    ┌────────────────┐
- INCIDENT      │ Are results    │
-               │ correct?       │
-               └──────┬─────────┘
-                      │
-               ┌──────┴──────┐
-               │             │
-              YES            NO
-               │             │
-               ▼             ▼
-          Not an         PRODUCTION
-          incident       ISSUE
-          (close/monitor)
-```
-
-After classification, assign priority (P1–P4) based on business impact, then assign ownership and escalate per priority level.
+The knowledge base starts empty and grows from every RCA. After 20-30 incidents, it becomes L1's most valuable triage tool.
 
 ---
 
-## 3. What Is NOT a Technology Incident — Scenario-Based Guide
+## 3. What Is NOT an Incident
 
-This is where most triage confusion happens. The following scenarios walk through common situations and how to classify them correctly.
+| Situation | What It Actually Is | Route To |
+|-----------|-------------------|----------|
+| User asking for new functionality | **Service Request** | Product backlog |
+| User needs access / password reset | **Service Request** | Access management |
+| Bug found in UAT (not production) | **Defect** (SDLC) | Development backlog |
+| Planned maintenance | **Standard Change** | Change management |
+| Performance slightly below optimal but within SLA | **Event** (monitor) | No action |
+| Same bug reported again, workaround exists | **Known Error** | Apply workaround |
 
-### Scenario 1: "I can't log in to the system"
-
-| Question | Answer | Classification |
-|---|---|---|
-| Can other users log in? | Yes, it's just this one user | **Not an incident** — it's likely a user account issue |
-| What to do? | Check if the account is locked, password expired, or permissions missing | Route as a **Service Request** (access management) |
-
-**But if**: No users can log in → **Technology Incident** (authentication service may be down)
-
----
-
-### Scenario 2: "Can you add a new report to the dashboard?"
-
-| Question | Answer | Classification |
-|---|---|---|
-| Is something broken? | No — the user is asking for new functionality | **Not an incident** |
-| What to do? | Log as a **Service Request** or **Feature Request** | Route to product backlog |
-
-**Rule**: If the user is asking for something *new* rather than reporting something *broken*, it is never an incident.
+**Rules:**
+- If the user is asking for something *new* → never an incident
+- If it's not in production → never an incident
+- Planned downtime is not an incident (but overrunning the window *is*)
+- One user can't log in → likely a service request. All users can't log in → incident.
 
 ---
 
-### Scenario 3: "The system is slow today"
+## 4. Infrastructure Incident
 
-| Question | Answer | Classification |
-|---|---|---|
-| How slow? Can users complete transactions? | Takes 30 seconds instead of 3 seconds, but eventually works | **Technology Incident** — service quality is degraded below acceptable threshold |
-| How slow? | Takes 1-2 seconds longer than usual but within SLA | **Not an incident** — performance is within acceptable range. Monitor. |
+### What L1 Sees
 
-**Rule**: "Slow" becomes an incident when it degrades the service below the agreed service level or prevents users from completing tasks within a reasonable time.
-
----
-
-### Scenario 4: "The premium amount on this policy looks wrong"
-
-| Question | Answer | Classification |
-|---|---|---|
-| Is the system accessible? | Yes — running fine | Not a technology incident |
-| Is the output correct? | No — the premium amount is incorrect | **Production Issue** (incident caused by a defect) |
-| Is it one policy or many? | Need to investigate | Determines priority — one policy might be P3, systematic error across all policies is P1 |
-
----
-
-### Scenario 5: "The nightly batch didn't run"
-
-| Question | Answer | Classification |
-|---|---|---|
-| Did the job fail to start, or did it start and produce wrong results? | It didn't start at all | **Technology Incident** — scheduled job failure |
-| Did the job run but produce wrong data? | Yes, it completed but output files have wrong figures | **Production Issue** — logic/data error in batch processing |
-
----
-
-### Scenario 6: "We need to reset the database password"
-
-| Question | Answer | Classification |
-|---|---|---|
-| Is something broken? | No — the password is expiring per policy and needs rotation | **Not an incident** |
-| What to do? | This is a **Standard Change** — a pre-approved, routine operational task | Route via Change Management or as a Service Request |
-
-**But if**: The database password was compromised → **Technology Incident** (security event, likely P1)
-
----
-
-### Scenario 7: "This bug was found in UAT"
-
-| Question | Answer | Classification |
-|---|---|---|
-| Is it affecting a live production service? | No — it's in UAT (non-production) | **Not an incident** |
-| What to do? | Log as a **Defect** in the development backlog | Fix before release. This is SDLC, not incident management. |
-
-**Rule**: Incidents only apply to **live services in production**. Bugs found in testing environments are defects in the development pipeline — they never enter the incident management process.
-
----
-
-### Scenario 8: "The vendor's API changed and our integration is broken"
-
-| Question | Answer | Classification |
-|---|---|---|
-| Is a live service affected? | Yes — payment processing is failing | **Technology Incident** — third-party dependency failure |
-| Is it our system that's wrong? | No — the vendor changed their API without notice | Still our incident — we own the service to our users regardless of whose fault it is |
-
-**Rule**: Incident ownership follows the service, not the fault. If your users are impacted, it's your incident to manage — even if the root cause is a third party.
-
----
-
-### Scenario 9: "The system crashed last night but it's fine now"
-
-| Question | Answer | Classification |
-|---|---|---|
-| Is the service currently impacted? | No — it recovered on its own | The incident is **resolved**, but still needs to be **logged** |
-| What to do? | Log it as a past incident. Investigate to prevent recurrence. | Self-healing incidents often recur. Ignoring them is how intermittent outages become chronic. |
-
----
-
-### Scenario 10: "We're planning server maintenance this weekend"
-
-| Question | Answer | Classification |
-|---|---|---|
-| Is it unplanned? | No — it's planned and communicated | **Not an incident** — it's a **Planned Change** |
-| What if the maintenance goes wrong and service isn't restored on time? | Then it becomes a **Technology Incident** at the point when the planned maintenance window is exceeded |
-
-**Rule**: Planned downtime is not an incident. Unplanned extension of planned downtime *is* an incident.
-
----
-
-### Summary: Classification Quick Reference
-
-| Situation | Classification | Route To |
-|-----------|---------------|----------|
-| System is down or unreachable | **Technology Incident** | Incident Management |
-| System is up but producing wrong results | **Production Issue** (Incident) | Incident Management |
-| User asking for something new | **Service Request** | Service Desk / Backlog |
-| User needs access, password reset, permissions | **Service Request** | Access Management |
-| Planned maintenance or routine change | **Standard Change** | Change Management |
-| Bug found in non-production environment | **Defect** (SDLC) | Development Backlog |
-| Performance slightly below optimal but within SLA | **Event** (monitor) | Monitoring / No action |
-| Root cause investigation after incident is resolved | **Problem** | Problem Management |
-| Known bug with a documented workaround | **Known Error** | Problem Management |
-
----
-
-## 4. Technology Incident — Categories and Detection
+System is down, unreachable, returning errors, or severely degraded. Multiple users affected. Monitoring alerts firing.
 
 ### Categories
 
-| Category | Description | Examples |
-|----------|------------|---------|
-| **Infrastructure Failure** | Hardware or cloud infrastructure component fails | Server crash, disk full, EC2 instance terminated, RDS failover, AZ outage |
-| **Network / Connectivity** | Network path between components or to users is broken | DNS resolution failure, VPN tunnel down, load balancer misconfiguration, firewall rule blocking traffic |
-| **Platform / Middleware** | Application platform or middleware layer fails | Application server out of memory, message queue full, connection pool exhausted, certificate expired |
-| **Deployment-Related** | A recent deployment breaks the running service | Bad configuration pushed, incompatible dependency deployed, migration script failed, container image pull error |
-| **Security Event** | Unauthorized access or attack degrades service | DDoS attack, compromised credentials, ransomware, data breach |
-| **Third-Party / External** | External dependency becomes unavailable | Payment gateway down, SMS provider unreachable, cloud service outage, vendor API change |
-| **Capacity / Performance** | System overwhelmed by load or resource exhaustion | CPU/memory saturation, database connection limit, storage full, auto-scaling failure |
-| **Scheduled Job Failure** | Batch or scheduled process fails to run or complete | Nightly batch didn't start, ETL job timed out, report generation failed |
+| Category | Examples |
+|----------|---------|
+| **Server / Compute** | Server crash, disk full, EC2 terminated, OOM kill |
+| **Network** | DNS failure, VPN down, load balancer misconfigured, firewall blocking |
+| **Database** | DB crash, connections refused, replication lag, storage full |
+| **Cloud Service** | AWS/Azure outage, managed service degradation |
+| **Security** | DDoS, compromised credentials, ransomware, data breach |
+| **Deployment** | Bad config pushed, migration failed, container image pull error |
+| **Scheduled Job** | Batch didn't start, ETL timed out, scheduler failed |
 
-### Detection — Technology Incidents Are Loud
+### Detection
 
-| Detection Method | What It Catches | Tools / Sources |
-|-----------------|----------------|-----------------|
-| **Infrastructure monitoring** | Server down, CPU/memory/disk saturation, instance health | CloudWatch, Prometheus, Datadog, Zabbix |
-| **Application health checks** | Service unresponsive, endpoint returning errors | Load balancer health checks, K8s liveness/readiness probes |
-| **Synthetic monitoring** | End-to-end user journey broken | CloudWatch Synthetics, Pingdom, Uptime Robot |
-| **Error rate spike** | Sudden increase in HTTP 5xx, application exceptions | APM tools, CloudWatch Logs |
-| **Latency spike** | Response times above acceptable threshold | APM, CloudWatch, custom metrics |
-| **Heartbeat / dead man's switch** | Batch job didn't run or complete on time | Cron watchdog, CloudWatch Events |
-| **User reports** | System inaccessible, error pages | Help desk, Slack/Teams, phone |
-| **Cloud provider notifications** | AWS/Azure service degradation | AWS Health Dashboard, status pages |
+Infrastructure incidents are **loud** — monitoring catches them quickly.
 
-**Key signals**: HTTP 5xx surge, health check failure, DB connections refused, "connection timeout" in logs, CPU > 90% sustained, deployment just happened + errors started, multiple users reporting same access issue.
+Key signals: HTTP 5xx surge, health check failure, "connection timeout" in logs, CPU > 90% sustained, deployment just happened + errors started, multiple users reporting same issue.
+
+### L1 Response
+
+Assign P based on scope → escalate to Infra/DevOps immediately → do not debug, restore first.
 
 ---
 
-## 5. Production Issue — Categories and Detection
+## 5. Application Incident
+
+### What L1 Sees
+
+Infrastructure dashboards are green. No server errors. But something is wrong — users report incorrect data, unexpected behavior, or the application crashes despite healthy infra.
 
 ### Categories
 
-| Category | Description | Examples |
-|----------|------------|---------|
-| **Calculation / Logic Error** | Business logic produces wrong results | Premium calculated incorrectly, wrong tax rate, claim amount miscalculated |
-| **Data Integrity** | Data is corrupted, duplicated, or lost | Duplicate policy records, missing transactions, orphaned records |
-| **Integration Defect** | Data exchange between systems is incorrect | Wrong field mapping, message format mismatch, stale cache |
-| **UI / Display Error** | User interface shows incorrect information | Wrong policy status, amounts in wrong currency, incorrect name |
-| **Workflow / State Error** | Business process reaches an invalid state | Policy stuck in "pending", claim auto-approved when it shouldn't be |
-| **Report / Output Error** | Reports or exports contain wrong data | Regulatory report with wrong figures, reconciliation mismatch |
-| **Configuration Error** | Feature flag, rule, or parameter set incorrectly | Wrong interest rate configured, incorrect eligibility rule |
+| Category | Examples |
+|----------|---------|
+| **Application Crash** | App OOM, unhandled exception, deadlock — infra is fine but app won't run |
+| **Calculation / Logic Error** | Wrong premium, incorrect claim amount, wrong tax rate |
+| **Design Flaw** | Feature works as coded but produces wrong business outcome (never caught in testing) |
+| **Data Integrity** | Duplicate records, missing transactions, orphaned data |
+| **Integration Error** | Wrong field mapping, message format mismatch, stale cache |
+| **UI / Display** | Wrong status shown, amounts in wrong currency, missing information |
+| **Workflow / State** | Policy stuck in "pending", claim auto-approved incorrectly |
+| **Configuration** | Wrong interest rate, incorrect eligibility rule, feature flag misconfigured |
 
-### Detection — Production Issues Are Quiet
+### Detection
 
-| Detection Method | What It Catches | Tools / Sources |
-|-----------------|----------------|-----------------|
-| **Business metric anomaly** | Unusual pattern in KPIs (policy count, premium volume, claims rate) | BI dashboards, custom alerts |
-| **Data reconciliation** | Numbers don't match between systems | Scheduled reconciliation jobs, finance team |
-| **User / business report** | "This number doesn't look right" | Help desk, business unit escalation |
-| **QA / regression testing** | Previously passing test now fails | Test automation, manual QA |
-| **Audit / compliance check** | Regulatory report doesn't match source data | Internal audit, compliance review |
-| **Integration error logs** | Messages rejected by downstream system | Middleware logs, API error responses |
-| **Customer complaint** | Wrong statement, incorrect premium charge | Customer service, complaints channel |
+Application incidents are often **quiet** — the system looks healthy but the output is wrong.
 
-**Key signals**: Business metric deviates from historical pattern, finance reports reconciliation mismatch, customer complaints about specific values, batch completes but output data is wrong, one feature produces wrong results while everything else works.
+Key signals: Business metric deviates from pattern, finance reports reconciliation mismatch, customer complaints about specific values, batch completes but output is wrong, one feature broken while everything else works.
+
+**Important:** Some application incidents (design flaws, silent calculation errors) produce no alerts and no errors. They are detected by **people** — business users, finance team, customers — not by monitoring. This is the most dangerous type.
+
+### L1 Response
+
+Assign preliminary P → check Knowledge Base → collaborate with Tech Team (Dev + BA) within 30 min → confirm P based on blast radius → Tech Team owns the response.
 
 ---
 
@@ -309,138 +172,129 @@ This is where most triage confusion happens. The following scenarios walk throug
 
 | Priority | Name | Definition | Response | Resolution Target | Escalation |
 |----------|------|-----------|----------|-------------------|------------|
-| **P1** | Critical | Full outage, data breach, or financial data corruption | Immediate | < 1 hour | CTO 15 min, CEO 1 hr |
+| **P1** | Critical | Full outage, data breach, or financial data affected | Immediate | < 1 hour | CTO 15 min, CEO 1 hr |
 | **P2** | Major | Significant degradation, key function unavailable | < 15 min | < 4 hours | IT Manager 30 min |
 | **P3** | Minor | Partial impact, workaround available | < 1 hour | < 1 business day | Team lead if no progress 2 hrs |
 | **P4** | Low | Cosmetic, minimal impact | Next business day | < 5 business days | None |
 
-### Priority Decision Questions (in order)
+### Decision Questions (in order)
 
 1. Data breach or security event? → **P1**
-2. Financial data may be incorrect? (premiums, claims, policy values) → **P1**
+2. Financial data may be incorrect? → **P1**
 3. All users affected / full outage? → **P1**
-4. Many users affected + during business hours? → **P2**
-5. Few users / partial impact / workaround exists? → **P3**
+4. Many users affected + business hours? → **P2**
+5. Few users / workaround exists? → **P3**
 6. Cosmetic / no user impact? → **P4**
 
----
+### Infra vs Application — Priority Nuance
 
-## 7. Common Triage Mistakes
+For **Infrastructure Incidents**, L1 can assign P directly — the scope is visible (system down = P1/P2, partial = P3).
 
-| Mistake | Why It Happens | How to Avoid |
-|---------|---------------|--------------|
-| **Calling a service request an incident** | User says "urgent" so it gets logged as an incident | Ask: is something *broken*? Or is the user *requesting* something? |
-| **Calling a defect in UAT an incident** | QA found a bug and wants it fixed immediately | Incidents are for **production services only**. UAT bugs are development backlog items. |
-| **Treating a defect as an outage** | System returns errors for one feature, triage assumes full outage | Check: are other features working? Is the system accessible overall? |
-| **Treating an outage as a defect** | Service is slow, triage logs it as a bug for the dev team | Check: is response time below SLA? Are users unable to complete tasks? That's a technology incident. |
-| **Logging a known error as a new incident** | The same bug is reported again by a different user | Check the known error database first. Apply the documented workaround. |
-| **Under-classifying priority** | Fear of escalation, "it's probably not that bad" | When in doubt, escalate. Downgrading is easy. Explaining why you didn't escalate a P1 is not. |
-| **Over-classifying priority** | Business pressure, "everything is critical" | Require evidence: how many users? What function is impacted? |
-| **Debugging during P1** | Engineer instinct to understand before acting | Technology Incidents: restore first, investigate later. |
-| **Rushing a code fix without testing** | Pressure to resolve quickly | Production Issues: a bad fix creates a second incident. Test properly. |
-| **Ignoring "it fixed itself"** | Issue disappeared before investigation | Self-healing issues recur. Log it. Investigate when possible. |
-| **Confusing planned downtime with an incident** | Maintenance overran and triage doesn't know it was planned | Maintain a change calendar. Check it during triage. |
+For **Application Incidents**, L1 assigns a **preliminary P** based on initial report, then the Tech Team confirms or adjusts within 30 minutes. Common adjustments:
+
+| Initial report | Preliminary P | After investigation | Final P |
+|---|---|---|---|
+| "One policy has wrong premium" | P3 | "It's a formula bug affecting all policies" | **P1** |
+| "Report shows wrong total" | P3 | "Only affects one report, easy workaround" | **P3** (confirmed) |
+| "App crashes intermittently" | P2 | "Happens under specific load, affects 5% of users" | **P2** (confirmed) |
+| "Customer got wrong statement" | P3 | "Batch sent wrong statements to 2,000 customers" | **P1** |
 
 ---
 
-## 8. How It All Connects
+## 7. Scenario Guide
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                                                                             │
-│    User reports     Alert fires     Batch fails     Business finds          │
-│    "it's broken"    (monitoring)    (heartbeat)     wrong numbers           │
-│         │               │               │               │                  │
-│         └───────────────┴───────────────┴───────────────┘                  │
-│                                   │                                        │
-│                                   ▼                                        │
-│                        ┌─────────────────────┐                             │
-│                        │     TRIAGE           │                             │
-│                        │  (this document)     │                             │
-│                        │                      │                             │
-│                        │  1. Is it incident?  │──── NO ──→ Service Request │
-│                        │  2. What type?       │            Feature Request  │
-│                        │  3. How severe?      │            Standard Change  │
-│                        │  4. Who handles it?  │            Backlog item     │
-│                        └──────────┬───────────┘                             │
-│                                   │ YES — it's an incident                 │
-│                                   │                                        │
-│                    ┌──────────────┴──────────────┐                         │
-│                    │                             │                          │
-│                    ▼                             ▼                          │
-│           Technology Incident           Production Issue                    │
-│           (service unavailable)         (service incorrect)                │
-│                    │                             │                          │
-│                    ▼                             ▼                          │
-│            RESTORE SERVICE             ASSESS IMPACT                       │
-│            restart / rollback /        reproduce / quantify /              │
-│            failover                    stop if corrupting                   │
-│                    │                             │                          │
-│                    └──────────────┬──────────────┘                         │
-│                                   │                                        │
-│                                   ▼                                        │
-│                           SERVICE RESTORED                                 │
-│                           or workaround applied                            │
-│                                   │                                        │
-│                                   ▼                                        │
-│                        ┌─────────────────────┐                             │
-│                        │  PROBLEM MANAGEMENT  │                            │
-│                        │  (root cause)        │                            │
-│                        └──────────┬───────────┘                            │
-│                                   │                                        │
-│                                   ▼                                        │
-│                        ┌─────────────────────┐                             │
-│                        │  CHANGE MANAGEMENT   │                            │
-│                        │  (permanent fix)     │                            │
-│                        └──────────┬───────────┘                            │
-│                                   │                                        │
-│                                   ▼                                        │
-│                        ┌─────────────────────┐                             │
-│                        │  RELEASE MANAGEMENT  │                            │
-│                        │  (deploy fix)        │                            │
-│                        └─────────────────────┘                             │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+### Infra Scenarios
+
+| Scenario | Classification | P | Why |
+|----------|---------------|---|-----|
+| Core system unreachable, all agents blocked | Infra Incident | P1 | Full outage, revenue impact |
+| Portal loads in 30s instead of 3s | Infra Incident | P2 | Degraded but functional |
+| Nightly batch scheduler didn't trigger | Infra Incident | P2 | Job platform failed, not code |
+| Vendor API changed, integration broken | Infra Incident | P1-P2 | External dependency, we own the service |
+| DB password compromised | Infra Incident | P1 | Security event |
+
+### Application Scenarios
+
+| Scenario | Classification | P | Why |
+|----------|---------------|---|-----|
+| Premium calculation wrong for all products | App Incident | P1 | Financial data, all customers |
+| One report shows wrong totals | App Incident | P3 | Limited scope, workaround exists |
+| Claim auto-approved when it shouldn't be | App Incident | P1 | Financial + compliance risk |
+| UI shows wrong currency symbol | App Incident | P4 | Cosmetic |
+| Batch ran but output has wrong figures | App Incident | P1-P2 | Depends on blast radius |
+| App crashes under specific load (5% users) | App Incident | P2 | Partial availability, app-level issue |
+| Design flaw: missing info on customer statement | App Incident | P1-P3 | Depends on regulatory/customer impact |
+
+### Not an Incident
+
+| Scenario | What It Is |
+|----------|-----------|
+| "Can you add a report to the dashboard?" | Service Request |
+| "I can't log in" (only this user) | Service Request |
+| "Bug found in UAT" | Development backlog |
+| "Server maintenance this weekend" | Planned Change |
+| "DB password expiring, need rotation" | Standard Change |
+| "It fixed itself last night" | Log it, investigate — self-healing issues recur |
 
 ---
 
-## 9. Triage Checklist (Quick Reference)
+## 8. Common Triage Mistakes
+
+| Mistake | How to Avoid |
+|---------|-------------|
+| Calling a service request an incident | Ask: is something *broken*? Or is the user *requesting* something? |
+| UAT bug logged as an incident | Incidents are production only |
+| L1 assigning final P for application incidents alone | Application incidents need Tech Team collaboration within 30 min |
+| Debugging during P1 infra incident | Restore first, investigate later |
+| Rushing an application fix without testing | A bad fix creates a second incident |
+| Ignoring "it fixed itself" | Self-healing issues recur. Log and investigate. |
+| Not checking the Knowledge Base | Check known scenarios before escalating blind |
+
+---
+
+## 9. Triage Checklist
 
 ```
 INCIDENT TRIAGE CHECKLIST
 ─────────────────────────
 
 □ 1. IS THIS AN INCIDENT?
-     □ Is something broken in production?           → YES = continue
-     □ Is this a request for something new?         → NO  = Service Request
-     □ Is this a bug in a test environment?          → NO  = Development backlog
-     □ Is this planned maintenance?                  → NO  = Change Management
-     □ Is this a known error with a workaround?      → NO  = Apply workaround, link to problem
+     □ Is something broken in production?              → YES = continue
+     □ Is this a service request / feature request?    → Route to service desk
+     □ Is this a non-production bug?                   → Route to dev backlog
+     □ Is this a known error with workaround?          → Apply workaround
 
-□ 2. CLASSIFY THE IMPACT:
-     □ Can users access the system?                 → NO  = Technology Incident
-     □ Is the system producing correct results?     → NO  = Production Issue
+□ 2. CLASSIFY:
+     □ Is infrastructure healthy?                      → NO  = Infrastructure Incident
+                                                       → YES = Application Incident
 
-□ 3. ASSIGN PRIORITY:
-     □ Data breach / security event?                → P1
-     □ Financial data incorrect?                    → P1
-     □ Full outage / all users affected?            → P1
-     □ Major degradation + business hours?          → P2
-     □ Partial impact / few users?                  → P3
-     □ Cosmetic / no user impact?                   → P4
+□ 3. CHECK KNOWLEDGE BASE:
+     □ Search for matching scenario in Knowledge Base
+     □ If match found → follow documented P and response
+     □ If no match → continue with assessment
 
-□ 4. IMMEDIATE ACTIONS:
-     □ Technology Incident → attempt restore (restart / rollback / failover)
-     □ Production Issue    → assess blast radius, stop writes if data corrupting
-     □ Open incident ticket with: type, priority, affected system, description
+□ 4. ASSIGN PRIORITY:
+     INFRA INCIDENT: assign P now (scope is clear)
+     APP INCIDENT: assign preliminary P, then collaborate
 
-□ 5. ASSIGN & ESCALATE:
+     □ Data breach / security event?                   → P1
+     □ Financial data affected?                        → P1
+     □ Full outage / all users?                        → P1
+     □ Major degradation + business hours?             → P2
+     □ Partial impact / workaround exists?             → P3
+     □ Cosmetic / no user impact?                      → P4
+
+□ 5. COLLABORATE (Application Incidents):
+     □ Loop in Tech Team (Dev + BA) within 30 min
+     □ Assess blast radius and business impact together
+     □ Confirm or adjust priority
+
+□ 6. ESCALATE:
      □ P1/P2 → assign Incident Commander, notify management
      □ P3/P4 → assign engineer, notify team channel
 
-□ 6. COMMUNICATE:
-     □ Post initial status in #incidents channel
+□ 7. COMMUNICATE:
+     □ Post in #incidents channel
      □ Notify affected business units (P1/P2)
      □ Set next update time
 ```
@@ -452,16 +306,12 @@ INCIDENT TRIAGE CHECKLIST
 | Term | Definition |
 |------|-----------|
 | **Incident** | Unplanned interruption or reduction in quality of a live service |
-| **Technology Incident** | Incident where the service is down, unreachable, or degraded — an availability problem |
-| **Production Issue** | Incident where the service is running but producing incorrect results — a correctness problem. Not a formal ITIL term; used operationally to distinguish from availability incidents. |
-| **Service Request** | A user request for information, access, or a standard change — not a disruption |
+| **Infrastructure Incident** | Incident caused by failure in the platform layer — servers, network, DB, cloud |
+| **Application Incident** | Incident caused by the application layer — crash, logic error, design flaw, wrong output. Infra is healthy. |
+| **Service Request** | User request for information, access, or a standard change — not a disruption |
 | **Problem** | The underlying root cause of one or more incidents |
-| **Known Error** | A problem with a documented root cause and workaround |
-| **Event** | Any change of state significant to a service — not all events are incidents |
-| **Standard Change** | A pre-approved, low-risk, routine change (e.g., password rotation, scheduled patching) |
-| **Workaround** | A temporary solution that reduces impact without resolving root cause |
-| **RCA** | Root Cause Analysis — structured investigation into why an incident occurred |
-| **MTTR** | Mean Time To Restore — average time from detection to service restoration |
-| **MTTD** | Mean Time To Detect — average time from occurrence to detection |
-| **IC** | Incident Commander — person coordinating the incident response |
-| **Blast Radius** | The scope of impact — how many users, records, transactions, or systems are affected |
+| **Known Error** | A problem with documented cause and workaround |
+| **Knowledge Base** | Library of known incident scenarios, symptoms, and responses — built from RCAs over time |
+| **IC** | Incident Commander — coordinates the response |
+| **Blast Radius** | Scope of impact — how many users, records, or transactions are affected |
+| **Preliminary P** | Initial priority assigned by L1 for application incidents, subject to confirmation by Tech Team |
