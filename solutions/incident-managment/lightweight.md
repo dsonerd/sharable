@@ -15,7 +15,7 @@ flowchart TD
     %% ── Triage ──
     D --> T["⚖️ <b>TRIAGE &amp; CLASSIFY</b><br/><i>Target: &lt; 10 min</i>"]
     T --> T1["Confirm incident is real"]
-    T1 --> T2["Assign severity<br/>SEV1 → SEV4"]
+    T1 --> T2["Assign priority<br/>P1 → P4"]
     T2 --> T3["Assign Incident Commander"]
     T3 --> FORK{"🔀 <b>What type<br/>of incident?</b><br/><i>System down or<br/>behaving wrong?</i>"}
 
@@ -95,7 +95,7 @@ flowchart TD
     %% COMMUNICATION — parallel swim lane
     %% ══════════════════════════════════
     COMMS["📢 <b>COMMUNICATION</b><br/><i>Runs parallel — all phases</i>"]
-    COMMS -.- |"SEV1: every 30 min<br/>SEV2: every 1 hr"| T
+    COMMS -.- |"P1: every 30 min<br/>P2: every 1 hr"| T
     COMMS -.- |"Status page<br/>updates"| IC
     COMMS -.- |"Customer<br/>notification"| AA
     COMMS -.- |"All-clear<br/>message"| MERGE
@@ -103,12 +103,12 @@ flowchart TD
     %% ══════════════════════════════════
     %% SEVERITY LEGEND (as a subgraph)
     %% ══════════════════════════════════
-    subgraph SEV ["📊 Severity Matrix"]
+    subgraph SEV ["📊 Priority Matrix"]
         direction LR
-        S1["<b>SEV1</b> Critical<br/>Full outage / data breach<br/><i>All hands 24/7</i>"]
-        S2["<b>SEV2</b> Major<br/>Significant degradation<br/><i>On-call + escalation</i>"]
-        S3["<b>SEV3</b> Minor<br/>Partial impact<br/><i>Business hours</i>"]
-        S4["<b>SEV4</b> Low<br/>Cosmetic issue<br/><i>Next business day</i>"]
+        S1["<b>P1</b> Critical<br/>Full outage / data breach<br/><i>All hands 24/7</i>"]
+        S2["<b>P2</b> Major<br/>Significant degradation<br/><i>On-call + escalation</i>"]
+        S3["<b>P3</b> Minor<br/>Partial impact<br/><i>Business hours</i>"]
+        S4["<b>P4</b> Low<br/>Cosmetic issue<br/><i>Next business day</i>"]
     end
 
     %% ══════════════════════════════════

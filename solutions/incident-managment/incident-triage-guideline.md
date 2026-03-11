@@ -114,7 +114,7 @@ A "production defect" typically surfaces as a **Production Issue** — but the t
           (close/monitor)
 ```
 
-After classification, assign severity (SEV 1–4) based on business impact, then assign ownership and escalate per severity level.
+After classification, assign priority (P1–P4) based on business impact, then assign ownership and escalate per priority level.
 
 ---
 
@@ -161,7 +161,7 @@ This is where most triage confusion happens. The following scenarios walk throug
 |---|---|---|
 | Is the system accessible? | Yes — running fine | Not a technology incident |
 | Is the output correct? | No — the premium amount is incorrect | **Production Issue** (incident caused by a defect) |
-| Is it one policy or many? | Need to investigate | Determines severity — one policy might be SEV 3, systematic error across all policies is SEV 1 |
+| Is it one policy or many? | Need to investigate | Determines priority — one policy might be P3, systematic error across all policies is P1 |
 
 ---
 
@@ -181,7 +181,7 @@ This is where most triage confusion happens. The following scenarios walk throug
 | Is something broken? | No — the password is expiring per policy and needs rotation | **Not an incident** |
 | What to do? | This is a **Standard Change** — a pre-approved, routine operational task | Route via Change Management or as a Service Request |
 
-**But if**: The database password was compromised → **Technology Incident** (security event, likely SEV 1)
+**But if**: The database password was compromised → **Technology Incident** (security event, likely P1)
 
 ---
 
@@ -305,23 +305,23 @@ This is where most triage confusion happens. The following scenarios walk throug
 
 ---
 
-## 6. Severity Assignment
+## 6. Priority Assignment
 
-| Severity | Name | Definition | Response | Resolution Target | Escalation |
+| Priority | Name | Definition | Response | Resolution Target | Escalation |
 |----------|------|-----------|----------|-------------------|------------|
-| **SEV 1** | Critical | Full outage, data breach, or financial data corruption | Immediate | < 1 hour | CTO 15 min, CEO 1 hr |
-| **SEV 2** | Major | Significant degradation, key function unavailable | < 15 min | < 4 hours | IT Manager 30 min |
-| **SEV 3** | Minor | Partial impact, workaround available | < 1 hour | < 1 business day | Team lead if no progress 2 hrs |
-| **SEV 4** | Low | Cosmetic, minimal impact | Next business day | < 5 business days | None |
+| **P1** | Critical | Full outage, data breach, or financial data corruption | Immediate | < 1 hour | CTO 15 min, CEO 1 hr |
+| **P2** | Major | Significant degradation, key function unavailable | < 15 min | < 4 hours | IT Manager 30 min |
+| **P3** | Minor | Partial impact, workaround available | < 1 hour | < 1 business day | Team lead if no progress 2 hrs |
+| **P4** | Low | Cosmetic, minimal impact | Next business day | < 5 business days | None |
 
-### Severity Decision Questions (in order)
+### Priority Decision Questions (in order)
 
-1. Data breach or security event? → **SEV 1**
-2. Financial data may be incorrect? (premiums, claims, policy values) → **SEV 1**
-3. All users affected / full outage? → **SEV 1**
-4. Many users affected + during business hours? → **SEV 2**
-5. Few users / partial impact / workaround exists? → **SEV 3**
-6. Cosmetic / no user impact? → **SEV 4**
+1. Data breach or security event? → **P1**
+2. Financial data may be incorrect? (premiums, claims, policy values) → **P1**
+3. All users affected / full outage? → **P1**
+4. Many users affected + during business hours? → **P2**
+5. Few users / partial impact / workaround exists? → **P3**
+6. Cosmetic / no user impact? → **P4**
 
 ---
 
@@ -334,9 +334,9 @@ This is where most triage confusion happens. The following scenarios walk throug
 | **Treating a defect as an outage** | System returns errors for one feature, triage assumes full outage | Check: are other features working? Is the system accessible overall? |
 | **Treating an outage as a defect** | Service is slow, triage logs it as a bug for the dev team | Check: is response time below SLA? Are users unable to complete tasks? That's a technology incident. |
 | **Logging a known error as a new incident** | The same bug is reported again by a different user | Check the known error database first. Apply the documented workaround. |
-| **Under-classifying severity** | Fear of escalation, "it's probably not that bad" | When in doubt, escalate. Downgrading is easy. Explaining why you didn't escalate a SEV 1 is not. |
-| **Over-classifying severity** | Business pressure, "everything is critical" | Require evidence: how many users? What function is impacted? |
-| **Debugging during SEV 1** | Engineer instinct to understand before acting | Technology Incidents: restore first, investigate later. |
+| **Under-classifying priority** | Fear of escalation, "it's probably not that bad" | When in doubt, escalate. Downgrading is easy. Explaining why you didn't escalate a P1 is not. |
+| **Over-classifying priority** | Business pressure, "everything is critical" | Require evidence: how many users? What function is impacted? |
+| **Debugging during P1** | Engineer instinct to understand before acting | Technology Incidents: restore first, investigate later. |
 | **Rushing a code fix without testing** | Pressure to resolve quickly | Production Issues: a bad fix creates a second incident. Test properly. |
 | **Ignoring "it fixed itself"** | Issue disappeared before investigation | Self-healing issues recur. Log it. Investigate when possible. |
 | **Confusing planned downtime with an incident** | Maintenance overran and triage doesn't know it was planned | Maintain a change calendar. Check it during triage. |
@@ -422,26 +422,26 @@ INCIDENT TRIAGE CHECKLIST
      □ Can users access the system?                 → NO  = Technology Incident
      □ Is the system producing correct results?     → NO  = Production Issue
 
-□ 3. ASSIGN SEVERITY:
-     □ Data breach / security event?                → SEV 1
-     □ Financial data incorrect?                    → SEV 1
-     □ Full outage / all users affected?            → SEV 1
-     □ Major degradation + business hours?          → SEV 2
-     □ Partial impact / few users?                  → SEV 3
-     □ Cosmetic / no user impact?                   → SEV 4
+□ 3. ASSIGN PRIORITY:
+     □ Data breach / security event?                → P1
+     □ Financial data incorrect?                    → P1
+     □ Full outage / all users affected?            → P1
+     □ Major degradation + business hours?          → P2
+     □ Partial impact / few users?                  → P3
+     □ Cosmetic / no user impact?                   → P4
 
 □ 4. IMMEDIATE ACTIONS:
      □ Technology Incident → attempt restore (restart / rollback / failover)
      □ Production Issue    → assess blast radius, stop writes if data corrupting
-     □ Open incident ticket with: type, severity, affected system, description
+     □ Open incident ticket with: type, priority, affected system, description
 
 □ 5. ASSIGN & ESCALATE:
-     □ SEV 1/2 → assign Incident Commander, notify management
-     □ SEV 3/4 → assign engineer, notify team channel
+     □ P1/P2 → assign Incident Commander, notify management
+     □ P3/P4 → assign engineer, notify team channel
 
 □ 6. COMMUNICATE:
      □ Post initial status in #incidents channel
-     □ Notify affected business units (SEV 1/2)
+     □ Notify affected business units (P1/P2)
      □ Set next update time
 ```
 

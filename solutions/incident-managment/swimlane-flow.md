@@ -18,14 +18,14 @@
 
 ---
 
-## Severity Matrix
+## Priority Matrix
 
-| Severity | Name | Definition | Response Time | Resolution Target | Who's Involved |
+| Priority | Name | Definition | Response Time | Resolution Target | Who's Involved |
 |----------|------|-----------|---------------|-------------------|----------------|
-| **SEV 1** | Critical | Full service outage or data breach affecting customers | Immediate | < 1 hour | All hands: IC + Tech + Mgmt + Comms |
-| **SEV 2** | Major | Significant degradation, key function unavailable | < 15 min | < 4 hours | IC + On-call team + Mgmt notified |
-| **SEV 3** | Minor | Partial impact, workaround available | < 1 hour | < 1 business day | On-call / assigned team |
-| **SEV 4** | Low | Cosmetic, minimal impact | Next business day | < 5 business days | Assigned developer |
+| **P1** | Critical | Full service outage or data breach affecting customers | Immediate | < 1 hour | All hands: IC + Tech + Mgmt + Comms |
+| **P2** | Major | Significant degradation, key function unavailable | < 15 min | < 4 hours | IC + On-call team + Mgmt notified |
+| **P3** | Minor | Partial impact, workaround available | < 1 hour | < 1 business day | On-call / assigned team |
+| **P4** | Low | Cosmetic, minimal impact | Next business day | < 5 business days | Assigned developer |
 
 ---
 
@@ -35,7 +35,7 @@
 
 ```
  STAGE ▸       ① DETECT         ② TRIAGE          ③ RESPOND & FIX      ④ VERIFY          ⑤ CLOSE
-               (< 5 min)        (< 15 min)        (SEV-dependent)      (< 30 min)        (< 48 hrs)
+               (< 5 min)        (< 15 min)        (Priority-dependent)      (< 30 min)        (< 48 hrs)
 ─────────────┬────────────────┬─────────────────┬──────────────────────┬─────────────────┬──────────────────
              │                │                 │                      │                 │
  ANYONE      │ Report issue   │                 │                      │                 │
@@ -48,12 +48,12 @@
  (On-call /  │ acknowledge    │ Classify:       │                      │                 │
   Help Desk) │                │  Tech Incident  │                      │                 │
              │                │  or Prod Issue? │                      │                 │
-             │                │ Assign SEV 1–4  │                      │                 │
+             │                │ Assign P1–4  │                      │                 │
              │                │                 │                      │                 │
 ─────────────┼────────────────┼─────────────────┼──────────────────────┼─────────────────┼──────────────────
              │                │                 │                      │                 │
  INCIDENT    │                │ Assigned as IC  │ Coordinate team      │ Confirm service │ Lead RCA meeting
- COMMANDER   │                │ (SEV1/2 only)   │ Manage comms         │ restored or fix │ Publish report
+ COMMANDER   │                │ (P1/P2 only)   │ Manage comms         │ restored or fix │ Publish report
  (IC)        │                │                 │ Decide: rollback?    │ deployed        │ Track action
              │                │                 │   escalate? war room?│                 │ items
              │                │                 │                      │                 │
@@ -79,9 +79,9 @@
 ─────────────┼────────────────┼─────────────────┼──────────────────────┼─────────────────┼──────────────────
              │                │                 │                      │                 │
  MANAGEMENT  │                │ Notified        │ Receive status       │ Approve service │ Review RCA
- (IT Mgr /   │                │ (SEV1/2)        │ updates              │ restoration     │ Sign off
-  CTO)       │                │ Approve         │ (SEV1: every 30 min, │                 │ action items
-             │                │ escalation      │  SEV2: every 1 hr)   │                 │
+ (IT Mgr /   │                │ (P1/P2)        │ updates              │ restoration     │ Sign off
+  CTO)       │                │ Approve         │ (P1: every 30 min, │                 │ action items
+             │                │ escalation      │  P2: every 1 hr)   │                 │
              │                │                 │                      │                 │
 ─────────────┴────────────────┴─────────────────┴──────────────────────┴─────────────────┴──────────────────
 ```
@@ -93,7 +93,7 @@
 | Stage | L1 Support | Incident Commander | Tech Team | QA | Management |
 |-------|-----------|-------------------|-----------|-----|------------|
 | ① Detect | **R** | I | I | — | — |
-| ② Triage | **R/A** | **A** (SEV1/2) | **C** | — | **I** (SEV1/2) |
+| ② Triage | **R/A** | **A** (P1/P2) | **C** | — | **I** (P1/P2) |
 | ③ Respond & Fix | I | **A** | **R** | **R** (Prod Issue) | **I** |
 | ④ Verify | I | **A** | **R** | **R** | **I** |
 | ⑤ Close (RCA) | — | **R** | **C** | **C** | **A** |
@@ -110,7 +110,7 @@
 | **Priority** | Restore service availability | Fix correctness, remediate data |
 | **Typical actions** | Failover, restart, rollback, maintenance mode | Reproduce, root cause, fix, test, deploy, data remediation |
 | **Typical owner** | Infra / DevOps | Dev team |
-| **RCA trigger** | Always for SEV1/2 | Always for SEV1/2 + if financial/data impact |
+| **RCA trigger** | Always for P1/P2 | Always for P1/P2 + if financial/data impact |
 | **Data remediation** | Rarely needed | Often needed |
 
 ---
@@ -137,7 +137,7 @@ flowchart TD
     subgraph S2["② TRIAGE  •  Target: < 15 min"]
         direction TB
         B1["<b>L1 Support</b><br/>Confirm incident is real"]
-        B2["<b>L1 Support</b><br/>Assign severity SEV 1–4"]
+        B2["<b>L1 Support</b><br/>Assign severity P1–4"]
         B3["<b>L1 Support</b><br/>Classify type"]
         B1 --> B2 --> B3
     end
@@ -156,7 +156,7 @@ flowchart TD
         C1["<b>Incident Commander</b><br/>Activate war room<br/>Coordinate response"]
         C2["<b>Tech Team — Infra/DevOps</b><br/>Rollback / Restart / Failover"]
         C3["<b>Tech Team — Infra/DevOps</b><br/>Apply infrastructure fix"]
-        C4["<b>IC</b><br/>Send status updates<br/>SEV1: 30 min · SEV2: 1 hr"]
+        C4["<b>IC</b><br/>Send status updates<br/>P1: 30 min · P2: 1 hr"]
         C1 --> C2 --> C3
         C1 --> C4
     end
@@ -211,9 +211,9 @@ flowchart TD
     %% ═══════════════════════════════════════
     %% MANAGEMENT — parallel notification
     %% ═══════════════════════════════════════
-    MGT["<b>Management</b><br/>Notified SEV1/2<br/>Receives status updates"]
+    MGT["<b>Management</b><br/>Notified P1/P2<br/>Receives status updates"]
 
-    B2 -. "SEV1/2<br/>notification" .-> MGT
+    B2 -. "P1/P2<br/>notification" .-> MGT
     C4 -. "status<br/>updates" .-> MGT
     E3 -. "all-clear" .-> MGT
 
@@ -271,16 +271,16 @@ flowchart LR
     class TI_FOCUS,TI_OWNER,TI_ACTION,PI_FOCUS,PI_OWNER,PI_ACTION detail
 ```
 
-### Severity Levels
+### Priority Levels
 
 ```mermaid
 flowchart LR
-    subgraph SEV["Severity Matrix"]
+    subgraph SEV["Priority Matrix"]
         direction TB
-        S1["🔴 <b>SEV 1 — Critical</b><br/>Full outage · Data breach<br/><i>Respond: Immediate · Resolve: < 1 hr</i><br/>All hands + IC + Management"]
-        S2["🟠 <b>SEV 2 — Major</b><br/>Significant degradation · Key function down<br/><i>Respond: < 15 min · Resolve: < 4 hrs</i><br/>IC + On-call + Mgmt notified"]
-        S3["🔵 <b>SEV 3 — Minor</b><br/>Partial impact · Workaround exists<br/><i>Respond: < 1 hr · Resolve: < 1 day</i><br/>On-call / assigned engineer"]
-        S4["🟢 <b>SEV 4 — Low</b><br/>Cosmetic · Minimal impact<br/><i>Respond: Next day · Resolve: < 5 days</i><br/>Assigned developer"]
+        S1["🔴 <b>P1 — Critical</b><br/>Full outage · Data breach<br/><i>Respond: Immediate · Resolve: < 1 hr</i><br/>All hands + IC + Management"]
+        S2["🟠 <b>P2 — Major</b><br/>Significant degradation · Key function down<br/><i>Respond: < 15 min · Resolve: < 4 hrs</i><br/>IC + On-call + Mgmt notified"]
+        S3["🔵 <b>P3 — Minor</b><br/>Partial impact · Workaround exists<br/><i>Respond: < 1 hr · Resolve: < 1 day</i><br/>On-call / assigned engineer"]
+        S4["🟢 <b>P4 — Low</b><br/>Cosmetic · Minimal impact<br/><i>Respond: Next day · Resolve: < 5 days</i><br/>Assigned developer"]
         S1 ~~~ S2 ~~~ S3 ~~~ S4
     end
 
@@ -301,5 +301,5 @@ flowchart LR
 
 - **Slide 1**: Swimlane flow as the main visual. Use horizontal lanes per role, left-to-right stage progression. Color-code Technology Incident path (red) vs Production Issue path (amber). Place classification table as a header or callout.
 - **Slide 2**: Severity matrix (color-coded red→green) + RACI grid + Quick Reference comparison (two side-by-side boxes).
-- **Colors**: SEV1 = Red, SEV2 = Orange, SEV3 = Blue, SEV4 = Green.
+- **Colors**: P1 = Red, P2 = Orange, P3 = Blue, P4 = Green.
 - **Font**: 14pt minimum for screen/projector readability.

@@ -42,8 +42,8 @@ Using **functional decomposition** crossed with an **organizational lens** (peop
 
 | # | Idea | Feasibility | Notes |
 |---|------|-------------|-------|
-| B1 | **Insurance-aware severity matrix** — SEV levels tied to business impact, not technical impact. E.g., "claims payment system down" = SEV1 regardless of technical simplicity | High | Existing flowchart has SEV1-4. Enrich with insurance-specific criteria. |
-| B2 | **Decision tree for first responder** — Runbook-style: "Is core policy system affected? → Is it during premium collection window? → SEV1" | High | Reduces triage time. Empowers junior staff. |
+| B1 | **Insurance-aware severity matrix** — priority levels tied to business impact, not technical impact. E.g., "claims payment system down" = P1 regardless of technical simplicity | High | Existing flowchart has P1-4. Enrich with insurance-specific criteria. |
+| B2 | **Decision tree for first responder** — Runbook-style: "Is core policy system affected? → Is it during premium collection window? → P1" | High | Reduces triage time. Empowers junior staff. |
 | B3 | **Auto-classification from alert source** — Alerts from specific systems automatically tagged with severity and owning team | Medium | Reduces manual triage. Requires good alert taxonomy. |
 | B4 | **Regulatory impact flag** — Every incident triage includes explicit check: "Does this affect regulatory reporting? Data privacy? Financial transactions?" | High | Critical for insurance. A data breach has different handling than a UI bug. MoF reporting obligations kick in for certain incident types. |
 | B5 | **Customer-impact estimation** — Quick formula: affected system × active users at time of day × duration estimate = impact score | Medium | Helps prioritize. "50 agents can't submit applications during peak hours" vs "3 users see a styling bug" |
@@ -54,22 +54,22 @@ Using **functional decomposition** crossed with an **organizational lens** (peop
 |---|------|-------------|-------|
 | C1 | **Pre-built playbooks per system** — Runbooks for the top 10 failure modes of each critical system (policy admin, claims, billing, digital channels) | High | Highest-ROI investment. Most incidents are variations of known failures. |
 | C2 | **"Rollback first, investigate later"** culture — Default action for any deployment-related incident is immediate rollback | High | Requires good deployment practices (blue/green, immutable artifacts). Dramatically reduces MTTR. |
-| C3 | **Break-glass access procedures** — Pre-approved emergency access to production for incident commanders, with audit trail | Medium | Balances speed (no waiting for approvals during SEV1) with security (audit log, auto-revoke). |
+| C3 | **Break-glass access procedures** — Pre-approved emergency access to production for incident commanders, with audit trail | Medium | Balances speed (no waiting for approvals during P1) with security (audit log, auto-revoke). |
 | C4 | **Data remediation playbook** — Step-by-step process for when an incident corrupts financial data (premium allocations, policy values, claim payments) | High | Insurance-specific. Financial data corruption can have regulatory consequences. The existing flowchart covers this path. |
 | C5 | **Circuit breaker + graceful degradation patterns** — If claims system is down, policy servicing should still work. Design for partial availability. | Medium | Requires loose coupling between systems. May need architectural changes. |
-| C6 | **War room automation** — Script that creates a Slack/Teams channel, adds relevant people, posts initial context, starts a timeline doc | Medium | Reduces coordination overhead during SEV1/2. |
-| C7 | **Pair debugging for SEV1** — Two engineers on the problem simultaneously, one driving, one reviewing/researching | High | Simple, effective, reduces tunnel vision. |
+| C6 | **War room automation** — Script that creates a Slack/Teams channel, adds relevant people, posts initial context, starts a timeline doc | Medium | Reduces coordination overhead during P1/2. |
+| C7 | **Pair debugging for P1** — Two engineers on the problem simultaneously, one driving, one reviewing/researching | High | Simple, effective, reduces tunnel vision. |
 
 ### D. Communication
 
 | # | Idea | Feasibility | Notes |
 |---|------|-------------|-------|
-| D1 | **Tiered notification matrix** — SEV1: CEO, CTO, business heads, regulators (if applicable). SEV2: IT management + affected business units. SEV3-4: IT team only | High | Must be pre-agreed with business. No improvising during an incident. |
+| D1 | **Tiered notification matrix** — P1: CEO, CTO, business heads, regulators (if applicable). P2: IT management + affected business units. P3-4: IT team only | High | Must be pre-agreed with business. No improvising during an incident. |
 | D2 | **Status page (internal)** — Single URL showing current system health. Business users check this before calling IT. | Medium | Reduces "is the system down?" calls during incidents. Can be as simple as a static page updated manually. |
 | D3 | **Template-based updates** — Pre-written templates: "We are aware of issue with [system]. Impact: [X]. ETA: [Y]. Next update: [Z]." | High | Removes cognitive load of writing updates during crisis. Ensures consistent, professional communication. |
 | D4 | **Regulatory notification checklist** — For incidents involving data breach, system outages affecting policyholder access, or financial transaction errors: specific notification requirements to MoF/ISA | High | Vietnam regulatory context — certain incidents trigger mandatory reporting. Must be codified. |
 | D5 | **Agent/distribution channel notification** — Insurance agents in the field need to know if quoting/application systems are down, with workarounds | Medium | Agents are the front line. If they can't sell, revenue stops. |
-| D6 | **Dedicated incident communication role** — During SEV1, one person handles all comms so engineers can focus on fixing | High | Prevents engineers from being pulled into status update meetings. |
+| D6 | **Dedicated incident communication role** — During P1, one person handles all comms so engineers can focus on fixing | High | Prevents engineers from being pulled into status update meetings. |
 
 ### E. Post-Incident Learning
 
@@ -105,7 +105,7 @@ Using **functional decomposition** crossed with an **organizational lens** (peop
 | G4 | **Cross-training and knowledge sharing** — No single point of failure in people. At least 2 people can handle each critical system. | High | Bus factor > 1 for every critical system. Document operational knowledge in runbooks. |
 | G5 | **Incident response drills for new hires** — Part of onboarding: walk through a past incident, role-play the response | Medium | Accelerates new hire readiness. Low cost. |
 | G6 | **Burnout monitoring** — Track on-call load, incident frequency per person, time-to-acknowledge at 3 AM. Redistribute if uneven. | Medium | Sustainable operations require this. Easy to neglect until someone quits. |
-| G7 | **External escalation contacts** — Pre-arranged contacts at key vendors (core system vendor, AWS support, network provider) for critical incidents | High | During SEV1 is not the time to figure out how to reach AWS Enterprise Support. |
+| G7 | **External escalation contacts** — Pre-arranged contacts at key vendors (core system vendor, AWS support, network provider) for critical incidents | High | During P1 is not the time to figure out how to reach AWS Enterprise Support. |
 
 ### H. Governance & Compliance
 
@@ -152,13 +152,13 @@ Using **functional decomposition** crossed with an **organizational lens** (peop
 
 **Trade-off**: You're investing in documentation (boring, invisible work) over tooling (visible, exciting). **You give up**: the feeling of progress that comes from building new tools. **You gain**: dramatically faster response by junior staff and on-call engineers who aren't the system's original developer.
 
-**Risk**: Runbooks become stale and misleading. Following an outdated runbook during a SEV1 could make things worse. **Response**: Mitigate — review runbooks quarterly, test during fire drills (E6), mark runbooks with "last verified" dates.
+**Risk**: Runbooks become stale and misleading. Following an outdated runbook during a P1 could make things worse. **Response**: Mitigate — review runbooks quarterly, test during fire drills (E6), mark runbooks with "last verified" dates.
 
 ---
 
 ### Candidate 3: Blameless Post-Mortems with Sprint-Tracked Action Items (E1 + E2)
 
-**What**: Mandatory blameless RCA for every SEV1/SEV2, with action items injected directly into team sprint backlogs (not a separate RCA tracker).
+**What**: Mandatory blameless RCA for every P1/P2, with action items injected directly into team sprint backlogs (not a separate RCA tracker).
 
 | Criterion | Assessment |
 |-----------|------------|
@@ -184,9 +184,9 @@ Using **functional decomposition** crossed with an **organizational lens** (peop
 | **Maintenance burden** | Low — update annually or when regulations change |
 | **Reversibility** | Easily reversible |
 
-**Trade-off**: You're investing in governance upfront (slows down initial setup) for correct prioritization during incidents (speeds up response when it matters). **You give up**: simplicity — a generic SEV1-4 scale is easier to explain. **You gain**: alignment between IT and business on what matters, and regulatory compliance.
+**Trade-off**: You're investing in governance upfront (slows down initial setup) for correct prioritization during incidents (speeds up response when it matters). **You give up**: simplicity — a generic P1-4 scale is easier to explain. **You gain**: alignment between IT and business on what matters, and regulatory compliance.
 
-**Risk**: Over-classification — if everything is SEV1, nothing is. Business stakeholders tend to escalate everything. **Response**: Mitigate — strict criteria with examples. Quarterly review of severity assignments to calibrate.
+**Risk**: Over-classification — if everything is P1, nothing is. Business stakeholders tend to escalate everything. **Response**: Mitigate — strict criteria with examples. Quarterly review of severity assignments to calibrate.
 
 ---
 
@@ -243,9 +243,9 @@ Using **functional decomposition** crossed with an **organizational lens** (peop
 If the team had to implement incident management tomorrow with zero budget and minimal process overhead:
 
 1. **A shared Slack/Teams channel** called `#incidents` — all incidents discussed here, nowhere else
-2. **A severity definition** on a single page taped to every monitor: SEV1 = customers can't transact, SEV2 = degraded, SEV3 = minor, SEV4 = cosmetic
+2. **A severity definition** on a single page taped to every monitor: P1 = customers can't transact, P2 = degraded, P3 = minor, P4 = cosmetic
 3. **One runbook per critical system** — even if it's just "restart steps + who to call"
-4. **A post-mortem template** in Google Docs — filled out within 48 hours for SEV1/2
+4. **A post-mortem template** in Google Docs — filled out within 48 hours for P1/2
 5. **CloudWatch alarms** on the 3 most critical metrics per system, sending to the #incidents channel
 
 This gets you 80% of the value. Everything else is optimization.
@@ -315,7 +315,7 @@ Phase 4 (Month 6+): Optimization
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
 │  STAGE ▸   ① DETECT        ② TRIAGE         ③ RESPOND & FIX    ④ VERIFY        ⑤ CLOSE    │
-│            (< 5 min)       (< 15 min)       (SEV-dependent)    (< 30 min)      (< 48 hrs) │
+│            (< 5 min)       (< 15 min)       (Priority-dependent)    (< 30 min)      (< 48 hrs) │
 ├─────────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                             │
 │  ANYONE     Report issue ─────────────────────────────────────────────────────────────────▶ │
@@ -329,12 +329,12 @@ Phase 4 (Month 6+): Optimization
 │   Help Desk)              Tech Incident or                                                  │
 │                           Prod Issue?                                                       │
 │                           Assign severity                                                   │
-│                           (SEV 1-4)                                                         │
+│                           (P1-4)                                                         │
 │                                                                                             │
 ├─────────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                             │
 │  INCIDENT    ◄──────────  Assigned as IC  ─▶ Coordinate        Confirm         Lead RCA     │
-│  COMMANDER                (SEV1/2 only)      response team     service         meeting      │
+│  COMMANDER                (P1/2 only)      response team     service         meeting      │
 │  (IC)                                        Manage comms      restored        Publish      │
 │                                              Make decisions     or fix          report       │
 │                                              (rollback? war     deployed        Track        │
@@ -362,9 +362,9 @@ Phase 4 (Month 6+): Optimization
 ├─────────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                             │
 │  MANAGEMENT  ◄─ Notified  Approve           Receive status     Approve         Review RCA   │
-│  (IT Mgr /   (SEV1/2)    escalation         updates            service         Sign off     │
-│   CTO)                   if needed          (SEV1: 30min,      restoration     action items │
-│                                              SEV2: 1hr)                                     │
+│  (IT Mgr /   (P1/2)    escalation         updates            service         Sign off     │
+│   CTO)                   if needed          (P1: 30min,      restoration     action items │
+│                                              P2: 1hr)                                     │
 │                                                                                             │
 └─────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -375,17 +375,17 @@ Phase 4 (Month 6+): Optimization
 
 | Severity | Name | Definition | Response Time | Resolution Target | Who's Involved |
 |----------|------|-----------|---------------|-------------------|----------------|
-| **SEV 1** | Critical | Full service outage or data breach affecting customers | Immediate | < 1 hour | All hands: IC + Tech + Mgmt + Comms |
-| **SEV 2** | Major | Significant degradation, key function unavailable | < 15 min | < 4 hours | IC + On-call team + Mgmt notified |
-| **SEV 3** | Minor | Partial impact, workaround available | < 1 hour | < 1 business day | On-call / assigned team |
-| **SEV 4** | Low | Cosmetic, minimal impact | Next business day | < 5 business days | Assigned developer |
+| **P1** | Critical | Full service outage or data breach affecting customers | Immediate | < 1 hour | All hands: IC + Tech + Mgmt + Comms |
+| **P2** | Major | Significant degradation, key function unavailable | < 15 min | < 4 hours | IC + On-call team + Mgmt notified |
+| **P3** | Minor | Partial impact, workaround available | < 1 hour | < 1 business day | On-call / assigned team |
+| **P4** | Low | Cosmetic, minimal impact | Next business day | < 5 business days | Assigned developer |
 
 #### RACI per Stage
 
 | Stage | L1 Support | Incident Commander | Tech Team | QA | Management |
 |-------|-----------|-------------------|-----------|-----|------------|
 | ① Detect | **R** | I | I | - | - |
-| ② Triage | **R/A** | **A** (SEV1/2) | **C** | - | **I** (SEV1/2) |
+| ② Triage | **R/A** | **A** (P1/2) | **C** | - | **I** (P1/2) |
 | ③ Respond & Fix | I | **A** | **R** | **R** (Prod Issue) | **I** |
 | ④ Verify | I | **A** | **R** | **R** | **I** |
 | ⑤ Close (RCA) | - | **R** | **C** | **C** | **A** |
@@ -405,7 +405,7 @@ Actions:                                Actions:
 • Apply infrastructure fix              • Deploy via normal CI/CD
 • Monitor for stability                 • Remediate corrupted data
 
-RCA trigger: Always for SEV1/2          RCA trigger: Always for SEV1/2
+RCA trigger: Always for P1/2          RCA trigger: Always for P1/2
                                         + if financial/data impact
 
 Typical owner: Infra / DevOps          Typical owner: Dev team
@@ -416,7 +416,7 @@ Typical owner: Infra / DevOps          Typical owner: Dev team
 - **Slide 1**: Use the swimlane table as a visual flow (horizontal lanes per role, left-to-right progression through stages). Color-code Tech Incident path (red) vs Production Issue path (amber). Place the classification table as a callout box.
 - **Slide 2**: Severity matrix as a colored table (red → green gradient). RACI as a compact grid. Quick reference comparison as two side-by-side boxes.
 - **Font**: Keep to 14pt minimum for readability on screen/projector.
-- **Colors**: SEV1=Red, SEV2=Orange, SEV3=Blue, SEV4=Green (standard convention).
+- **Colors**: P1=Red, P2=Orange, P3=Blue, P4=Green (standard convention).
 
 ---
 

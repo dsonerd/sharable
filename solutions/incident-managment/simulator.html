@@ -557,7 +557,7 @@ function addComms(text) {
 function setSevBanner(sev) {
   const b = $id('sevBanner');
   b.className = `sev-banner s${sev}`;
-  const labels = { 1: 'SEV1 — CRITICAL INCIDENT', 2: 'SEV2 — MAJOR INCIDENT', 3: 'SEV3 — MINOR INCIDENT', 4: 'SEV4 — LOW PRIORITY' };
+  const labels = { 1: 'P1 — CRITICAL INCIDENT', 2: 'P2 — MAJOR INCIDENT', 3: 'P3 — MINOR INCIDENT', 4: 'P4 — LOW PRIORITY' };
   b.textContent = labels[sev] || '';
 }
 
@@ -598,7 +598,7 @@ function renderScenarioSelect(el) {
         <div class="scenario-card" onclick="selectScenario('${s.id}')">
           <h4>${s.title}</h4>
           <p>${s.desc}</p>
-          <span class="sev-tag s${s.sev}">SEV${s.sev}</span>
+          <span class="sev-tag s${s.sev}">P${s.sev}</span>
         </div>
       `).join('')}
     </div>
@@ -669,8 +669,8 @@ function renderTriage(el) {
       <li onclick="toggleCheck(this)" data-action="Incident confirmed as real">
         <span class="check"></span> Confirm this incident is real (not a false alarm)
       </li>
-      <li onclick="toggleCheck(this)" data-action="Severity assigned: SEV${sc.sev}">
-        <span class="check"></span> Assign severity: <strong style="color:${sc.sev===1?'var(--red)':sc.sev===2?'var(--orange)':'var(--blue)'}">SEV${sc.sev}</strong>
+      <li onclick="toggleCheck(this)" data-action="Severity assigned: P${sc.sev}">
+        <span class="check"></span> Assign severity: <strong style="color:${sc.sev===1?'var(--red)':sc.sev===2?'var(--orange)':'var(--blue)'}">P${sc.sev}</strong>
       </li>
       <li onclick="toggleCheck(this)" data-action="Incident Commander assigned">
         <span class="check"></span> Assign Incident Commander
@@ -684,7 +684,7 @@ function renderTriage(el) {
 
   setSevBanner(sc.sev);
   addTimeline('triage', `Incident: ${sc.title}`);
-  addComms(`Incident declared: ${sc.title} — SEV${sc.sev}`);
+  addComms(`Incident declared: ${sc.title} — P${sc.sev}`);
   $id('commsBadge').classList.remove('off');
 }
 
@@ -983,7 +983,7 @@ function renderClosed(el) {
   el.innerHTML = `<div class="stage-card" style="text-align:center;">
     <div style="font-size: 48px; margin-bottom: 12px;">&#127937;</div>
     <h2>Incident Closed</h2>
-    <p class="subtitle">${state.scenario.title} — SEV${state.severity}</p>
+    <p class="subtitle">${state.scenario.title} — P${state.severity}</p>
 
     <div class="summary-grid">
       <div class="summary-stat">
