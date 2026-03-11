@@ -293,4 +293,131 @@ Phase 4 (Month 6+): Optimization
 
 ---
 
-*Brainstormed on 2026-03-08. Builds on the process flowchart in `solutions/incident-managment/lightweight.md`.*
+---
+
+## 6. Slide-Ready Incident Management Flow (ITIL-Lean)
+
+> **Goal**: A 1-2 slide presentation showing who does what at each stage. ITIL-aligned but lean. Includes classification of Technology Incident vs Production Issue.
+
+### Slide 1 — Incident Classification & Swimlane Flow
+
+#### Incident Classification
+
+| Category | Definition | Examples | Trigger |
+|----------|-----------|----------|---------|
+| **Technology Incident** | An unplanned interruption or degradation of an IT service. The system is **down, unreachable, or performing below acceptable thresholds**. Focus: **restore service ASAP**. | Server/network outage, database crash, SSL certificate expiry, infrastructure failure, DDoS, cloud service disruption | Monitoring alert, user unable to access system, health check failure |
+| **Production Issue (Defect)** | The system is **running but producing incorrect results** — a bug or defect in production. Data integrity or business logic is wrong. Focus: **fix the defect, remediate bad data**. | Wrong premium calculation, incorrect policy status, failed batch processing with wrong output, UI displaying wrong data, integration sending malformed messages | User report, QA finding, data reconciliation mismatch, business metric anomaly |
+
+**Key Difference**: Technology Incident = **service availability** problem. Production Issue = **correctness** problem. Both follow the same flow but diverge at the Fix stage.
+
+#### Swimlane Flow — Who Does What
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│  STAGE ▸   ① DETECT        ② TRIAGE         ③ RESPOND & FIX    ④ VERIFY        ⑤ CLOSE    │
+│            (< 5 min)       (< 15 min)       (SEV-dependent)    (< 30 min)      (< 48 hrs) │
+├─────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                             │
+│  ANYONE     Report issue ─────────────────────────────────────────────────────────────────▶ │
+│  (User/     via channel                                                                     │
+│   Alert)    or alert fires                                                                  │
+│                                                                                             │
+├─────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                             │
+│  L1 SUPPORT  ──────────▶  Confirm real?     ──────────────────────────────────────────────▶ │
+│  (On-call /               Classify type:                                                    │
+│   Help Desk)              Tech Incident or                                                  │
+│                           Prod Issue?                                                       │
+│                           Assign severity                                                   │
+│                           (SEV 1-4)                                                         │
+│                                                                                             │
+├─────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                             │
+│  INCIDENT    ◄──────────  Assigned as IC  ─▶ Coordinate        Confirm         Lead RCA     │
+│  COMMANDER                (SEV1/2 only)      response team     service         meeting      │
+│  (IC)                                        Manage comms      restored        Publish      │
+│                                              Make decisions     or fix          report       │
+│                                              (rollback? war     deployed        Track        │
+│                                               room? escalate?)                 actions      │
+│                                                                                             │
+├─────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                             │
+│  TECH TEAM   ◄──────────────────────────────▶ TECH INCIDENT:   Monitor for                  │
+│  (Dev /                                       → Rollback /      regression                  │
+│   Infra /                                       restart /       (15 min                     │
+│   DBA)                                          failover        watch)                      │
+│                                               PROD ISSUE:                                   │
+│                                               → Root cause                                  │
+│                                               → Develop fix                                 │
+│                                               → Test & deploy                               │
+│                                               → Remediate data                              │
+│                                                                                             │
+├─────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                             │
+│  QA          ◄──────────────────────────────────────────────▶  Validate fix    Verify no     │
+│                                                                in staging      regression    │
+│                                                                (Prod Issue                   │
+│                                                                 only)                       │
+│                                                                                             │
+├─────────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                             │
+│  MANAGEMENT  ◄─ Notified  Approve           Receive status     Approve         Review RCA   │
+│  (IT Mgr /   (SEV1/2)    escalation         updates            service         Sign off     │
+│   CTO)                   if needed          (SEV1: 30min,      restoration     action items │
+│                                              SEV2: 1hr)                                     │
+│                                                                                             │
+└─────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Slide 2 — Severity Matrix & RACI
+
+#### Severity Levels (ITIL-aligned)
+
+| Severity | Name | Definition | Response Time | Resolution Target | Who's Involved |
+|----------|------|-----------|---------------|-------------------|----------------|
+| **SEV 1** | Critical | Full service outage or data breach affecting customers | Immediate | < 1 hour | All hands: IC + Tech + Mgmt + Comms |
+| **SEV 2** | Major | Significant degradation, key function unavailable | < 15 min | < 4 hours | IC + On-call team + Mgmt notified |
+| **SEV 3** | Minor | Partial impact, workaround available | < 1 hour | < 1 business day | On-call / assigned team |
+| **SEV 4** | Low | Cosmetic, minimal impact | Next business day | < 5 business days | Assigned developer |
+
+#### RACI per Stage
+
+| Stage | L1 Support | Incident Commander | Tech Team | QA | Management |
+|-------|-----------|-------------------|-----------|-----|------------|
+| ① Detect | **R** | I | I | - | - |
+| ② Triage | **R/A** | **A** (SEV1/2) | **C** | - | **I** (SEV1/2) |
+| ③ Respond & Fix | I | **A** | **R** | **R** (Prod Issue) | **I** |
+| ④ Verify | I | **A** | **R** | **R** | **I** |
+| ⑤ Close (RCA) | - | **R** | **C** | **C** | **A** |
+
+> R = Responsible (does the work) · A = Accountable (owns the outcome) · C = Consulted · I = Informed
+
+#### Quick Reference — Technology Incident vs Production Issue
+
+```
+Technology Incident (Service Down)     Production Issue (Defect)
+──────────────────────────────         ──────────────────────────
+Priority: RESTORE SERVICE              Priority: FIX CORRECTNESS
+
+Actions:                                Actions:
+• Failover / restart / rollback         • Reproduce & root cause
+• Enable maintenance mode               • Develop & test fix
+• Apply infrastructure fix              • Deploy via normal CI/CD
+• Monitor for stability                 • Remediate corrupted data
+
+RCA trigger: Always for SEV1/2          RCA trigger: Always for SEV1/2
+                                        + if financial/data impact
+
+Typical owner: Infra / DevOps          Typical owner: Dev team
+```
+
+### Design Notes for PPT
+
+- **Slide 1**: Use the swimlane table as a visual flow (horizontal lanes per role, left-to-right progression through stages). Color-code Tech Incident path (red) vs Production Issue path (amber). Place the classification table as a callout box.
+- **Slide 2**: Severity matrix as a colored table (red → green gradient). RACI as a compact grid. Quick reference comparison as two side-by-side boxes.
+- **Font**: Keep to 14pt minimum for readability on screen/projector.
+- **Colors**: SEV1=Red, SEV2=Orange, SEV3=Blue, SEV4=Green (standard convention).
+
+---
+
+*Updated on 2026-03-11. Added slide-ready swimlane flow with ITIL-lean stages, role assignments (RACI), and Technology Incident vs Production Issue classification.*
