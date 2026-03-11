@@ -1,20 +1,22 @@
 # IT Incident Management — Swimlane Flow
 
-> Lean ITIL-aligned incident management process.
-> Designed for 1–2 slide presentation. Shows who does what at each stage.
+> Lean incident management process. Shows who does what at each stage.
+> Designed for 1–2 slide presentation.
 >
-> Related: [`lightweight.md`](lightweight.md) (detailed flowchart) · [`severity-triage.md`](severity-triage.md) (decision tree)
+> Related: [`incident-triage-guideline.md`](incident-triage-guideline.md) · [`lightweight.md`](lightweight.md) · [`severity-triage.md`](severity-triage.md) · [`incident-knowledge-base.md`](incident-knowledge-base.md)
 
 ---
 
 ## Incident Classification
 
-| Category | Definition | Examples | Trigger |
-|----------|-----------|----------|---------|
-| **Technology Incident** | An unplanned interruption or degradation of an IT service. The system is **down, unreachable, or performing below acceptable thresholds**. Focus: **restore service ASAP**. | Server/network outage, database crash, SSL cert expiry, infrastructure failure, cloud service disruption | Monitoring alert, user unable to access system, health check failure |
-| **Production Issue (Defect)** | The system is **running but producing incorrect results** — a bug or defect in production. Data integrity or business logic is wrong. Focus: **fix the defect, remediate bad data**. | Wrong premium calculation, incorrect policy status, failed batch with wrong output, integration sending malformed messages | User report, QA finding, data reconciliation mismatch, business metric anomaly |
+| Type | Definition | Owner | Examples |
+|------|-----------|-------|---------|
+| **Infrastructure Incident** | Platform layer is broken — servers, network, DB, cloud services. Application cannot run. | Infra / DevOps | Server crash, network outage, DB down, cloud service disruption, certificate expired |
+| **Application Incident** | Infrastructure is healthy. Problem is at the application layer — crash, wrong output, logic error, design flaw. | Dev / BA team | App OOM, wrong calculation, missing info display, design flaw affecting all customers, data corruption |
 
-**Key Difference**: Technology Incident = **service availability** problem. Production Issue = **correctness** problem.
+**Key question**: Is infrastructure healthy? NO → Infra Incident. YES → Application Incident.
+
+Both can be **any priority**. A silent design flaw miscalculating premiums for all customers = P1 Application Incident.
 
 ---
 
@@ -22,7 +24,7 @@
 
 | Priority | Name | Definition | Response Time | Resolution Target | Who's Involved |
 |----------|------|-----------|---------------|-------------------|----------------|
-| **P1** | Critical | Full service outage or data breach affecting customers | Immediate | < 1 hour | All hands: IC + Tech + Mgmt + Comms |
+| **P1** | Critical | Full outage, data breach, or financial data affected | Immediate | < 1 hour | All hands: IC + Tech + Mgmt + Comms |
 | **P2** | Major | Significant degradation, key function unavailable | < 15 min | < 4 hours | IC + On-call team + Mgmt notified |
 | **P3** | Minor | Partial impact, workaround available | < 1 hour | < 1 business day | On-call / assigned team |
 | **P4** | Low | Cosmetic, minimal impact | Next business day | < 5 business days | Assigned developer |
@@ -31,87 +33,95 @@
 
 ## Swimlane Flow — Who Does What
 
-### Slide Layout (5 Stages × 6 Roles)
+### Slide Layout (6 Stages × 6 Roles)
 
 ```
- STAGE ▸       ① DETECT         ② TRIAGE          ③ RESPOND & FIX      ④ VERIFY          ⑤ CLOSE
-               (< 5 min)        (< 15 min)        (Priority-dependent)      (< 30 min)        (< 48 hrs)
-─────────────┬────────────────┬─────────────────┬──────────────────────┬─────────────────┬──────────────────
-             │                │                 │                      │                 │
- ANYONE      │ Report issue   │                 │                      │                 │
- (User /     │ via channel    │                 │                      │                 │
-  Alert)     │ or alert fires │                 │                      │                 │
-             │                │                 │                      │                 │
-─────────────┼────────────────┼─────────────────┼──────────────────────┼─────────────────┼──────────────────
-             │                │                 │                      │                 │
- L1 SUPPORT  │ Receive &      │ Confirm real?   │                      │                 │
- (On-call /  │ acknowledge    │ Classify:       │                      │                 │
-  Help Desk) │                │  Tech Incident  │                      │                 │
-             │                │  or Prod Issue? │                      │                 │
-             │                │ Assign P1–4  │                      │                 │
-             │                │                 │                      │                 │
-─────────────┼────────────────┼─────────────────┼──────────────────────┼─────────────────┼──────────────────
-             │                │                 │                      │                 │
- INCIDENT    │                │ Assigned as IC  │ Coordinate team      │ Confirm service │ Lead RCA meeting
- COMMANDER   │                │ (P1/P2 only)   │ Manage comms         │ restored or fix │ Publish report
- (IC)        │                │                 │ Decide: rollback?    │ deployed        │ Track action
-             │                │                 │   escalate? war room?│                 │ items
-             │                │                 │                      │                 │
-─────────────┼────────────────┼─────────────────┼──────────────────────┼─────────────────┼──────────────────
-             │                │                 │                      │                 │
- TECH TEAM   │                │ Provide initial │ TECH INCIDENT:       │ Monitor 15 min  │ Contribute to
- (Dev /      │                │ assessment      │  → Rollback/restart/ │ for regression  │ RCA findings
-  Infra /    │                │                 │    failover          │                 │
-  DBA)       │                │                 │  → Apply infra fix   │                 │
-             │                │                 │                      │                 │
-             │                │                 │ PROD ISSUE:          │                 │
-             │                │                 │  → Root cause        │                 │
-             │                │                 │  → Develop & test fix│                 │
-             │                │                 │  → Deploy via CI/CD  │                 │
-             │                │                 │  → Remediate bad data│                 │
-             │                │                 │                      │                 │
-─────────────┼────────────────┼─────────────────┼──────────────────────┼─────────────────┼──────────────────
-             │                │                 │                      │                 │
- QA          │                │                 │                      │ Validate fix in │ Verify no
-             │                │                 │                      │ staging (Prod   │ regression
-             │                │                 │                      │ Issue only)     │
-             │                │                 │                      │                 │
-─────────────┼────────────────┼─────────────────┼──────────────────────┼─────────────────┼──────────────────
-             │                │                 │                      │                 │
- MANAGEMENT  │                │ Notified        │ Receive status       │ Approve service │ Review RCA
- (IT Mgr /   │                │ (P1/P2)        │ updates              │ restoration     │ Sign off
-  CTO)       │                │ Approve         │ (P1: every 30 min, │                 │ action items
-             │                │ escalation      │  P2: every 1 hr)   │                 │
-             │                │                 │                      │                 │
-─────────────┴────────────────┴─────────────────┴──────────────────────┴─────────────────┴──────────────────
+ STAGE ▸       ① DETECT         ② TRIAGE            ②b COLLABORATE       ③ RESPOND & FIX      ④ VERIFY          ⑤ CLOSE
+               (< 5 min)        (< 15 min)          (< 30 min, App only) (Priority-dependent)  (< 30 min)        (< 48 hrs)
+─────────────┬────────────────┬───────────────────┬────────────────────┬──────────────────────┬─────────────────┬──────────────────
+             │                │                   │                    │                      │                 │
+ ANYONE      │ Report issue   │                   │                    │                      │                 │
+ (User /     │ via channel    │                   │                    │                      │                 │
+  Alert)     │ or alert fires │                   │                    │                      │                 │
+             │                │                   │                    │                      │                 │
+─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
+             │                │                   │                    │                      │                 │
+ L1/L2 ITO   │ Receive &      │ Confirm real?     │ App Incident:      │                      │                 │
+ (On-call /  │ acknowledge    │ Check infra       │ Loop in Tech Team  │                      │                 │
+  Help Desk) │                │ health            │ + BA within 30 min │                      │                 │
+             │                │ Check Knowledge   │ Share preliminary P │                      │                 │
+             │                │ Base for known    │                    │                      │                 │
+             │                │ scenarios         │ Infra Incident:    │                      │                 │
+             │                │ Classify: Infra   │ (skip — escalate   │                      │                 │
+             │                │ or Application?   │  immediately)      │                      │                 │
+             │                │ Assign P (or      │                    │                      │                 │
+             │                │ preliminary P)    │                    │                      │                 │
+             │                │                   │                    │                      │                 │
+─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
+             │                │                   │                    │                      │                 │
+ INCIDENT    │                │ Assigned as IC    │                    │ Coordinate team      │ Confirm service │ Lead RCA meeting
+ COMMANDER   │                │ (P1/P2 only)      │                    │ Manage comms         │ restored or fix │ Publish report
+ (IC)        │                │                   │                    │ Decide: rollback?    │ deployed        │ Track actions
+             │                │                   │                    │   escalate? war room?│                 │ Update Knowledge
+             │                │                   │                    │                      │                 │ Base
+             │                │                   │                    │                      │                 │
+─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
+             │                │                   │                    │                      │                 │
+ TECH TEAM   │                │                   │ App Incident:      │ INFRA INCIDENT:      │ Monitor 15 min  │ Contribute to
+ (Dev /      │                │                   │ Assess blast       │  → Rollback/restart/ │ for regression  │ RCA findings
+  Infra /    │                │                   │ radius with L1     │    failover          │                 │
+  BA / DBA)  │                │                   │ Confirm or         │  → Apply infra fix   │                 │
+             │                │                   │ adjust P           │                      │                 │
+             │                │                   │                    │ APP INCIDENT:        │                 │
+             │                │                   │                    │  → Root cause        │                 │
+             │                │                   │                    │  → Develop & test fix│                 │
+             │                │                   │                    │  → Deploy via CI/CD  │                 │
+             │                │                   │                    │  → Remediate bad data│                 │
+             │                │                   │                    │                      │                 │
+─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
+             │                │                   │                    │                      │                 │
+ QA          │                │                   │                    │                      │ Validate fix in │ Verify no
+             │                │                   │                    │                      │ staging (App    │ regression
+             │                │                   │                    │                      │ Incident only)  │
+             │                │                   │                    │                      │                 │
+─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
+             │                │                   │                    │                      │                 │
+ MANAGEMENT  │                │ Notified          │                    │ Receive status       │ Approve service │ Review RCA
+ (IT Mgr /   │                │ (P1/P2)           │                    │ updates              │ restoration     │ Sign off
+  CTO)       │                │ Approve           │                    │ (P1: every 30 min,   │                 │ action items
+             │                │ escalation        │                    │  P2: every 1 hr)     │                 │
+             │                │                   │                    │                      │                 │
+─────────────┴────────────────┴───────────────────┴────────────────────┴──────────────────────┴─────────────────┴──────────────────
 ```
 
 ---
 
 ## RACI Matrix
 
-| Stage | L1 Support | Incident Commander | Tech Team | QA | Management |
+| Stage | L1/L2 ITO | Incident Commander | Tech Team | QA | Management |
 |-------|-----------|-------------------|-----------|-----|------------|
 | ① Detect | **R** | I | I | — | — |
 | ② Triage | **R/A** | **A** (P1/P2) | **C** | — | **I** (P1/P2) |
-| ③ Respond & Fix | I | **A** | **R** | **R** (Prod Issue) | **I** |
+| ②b Collaborate (App Incident) | **R** | I | **R/A** | — | — |
+| ③ Respond & Fix | I | **A** | **R** | **R** (App Incident) | **I** |
 | ④ Verify | I | **A** | **R** | **R** | **I** |
 | ⑤ Close (RCA) | — | **R** | **C** | **C** | **A** |
 
-> **R** = Responsible (does the work) · **A** = Accountable (owns the outcome) · **C** = Consulted · **I** = Informed
+> **R** = Responsible · **A** = Accountable · **C** = Consulted · **I** = Informed
 
 ---
 
-## Quick Reference — Technology Incident vs Production Issue
+## Quick Reference — Infrastructure vs Application Incident
 
-| | Technology Incident | Production Issue (Defect) |
+| | Infrastructure Incident | Application Incident |
 |---|---|---|
-| **System state** | Down or degraded | Running but incorrect |
-| **Priority** | Restore service availability | Fix correctness, remediate data |
-| **Typical actions** | Failover, restart, rollback, maintenance mode | Reproduce, root cause, fix, test, deploy, data remediation |
-| **Typical owner** | Infra / DevOps | Dev team |
+| **Infra health** | Broken | Healthy |
+| **Problem layer** | Server, network, DB, cloud | App code, logic, design, config, data |
+| **Priority assignment** | L1 assigns directly (scope is clear) | L1 assigns preliminary P → Tech Team confirms within 30 min |
+| **Response** | Restore immediately (rollback, restart, failover) | Assess blast radius → fix correctly → remediate data |
+| **Owner** | Infra / DevOps | Dev / BA team |
+| **Detection** | Loud — monitoring catches it | Often quiet — detected by people, not alerts |
 | **RCA trigger** | Always for P1/P2 | Always for P1/P2 + if financial/data impact |
-| **Data remediation** | Rarely needed | Often needed |
 
 ---
 
@@ -124,21 +134,21 @@ flowchart TD
     %% ═══════════════════════════════════════
     %% STAGE 1: DETECT
     %% ═══════════════════════════════════════
-    subgraph S1["① DETECT  •  Target: < 5 min"]
+    subgraph S1["① DETECT  •  < 5 min"]
         direction TB
-        A1["🔔 Monitoring alert fires"]
-        A2["👤 User / stakeholder reports"]
-        A3["💓 Health check fails"]
+        A1["Monitoring alert fires"]
+        A2["User / stakeholder reports"]
+        A3["Health check fails"]
     end
 
     %% ═══════════════════════════════════════
     %% STAGE 2: TRIAGE
     %% ═══════════════════════════════════════
-    subgraph S2["② TRIAGE  •  Target: < 15 min"]
+    subgraph S2["② TRIAGE  •  < 15 min"]
         direction TB
-        B1["<b>L1 Support</b><br/>Confirm incident is real"]
-        B2["<b>L1 Support</b><br/>Assign severity P1–4"]
-        B3["<b>L1 Support</b><br/>Classify type"]
+        B1["<b>L1/L2 ITO</b><br/>Confirm incident is real"]
+        B2["<b>L1/L2 ITO</b><br/>Check Knowledge Base"]
+        B3["<b>L1/L2 ITO</b><br/>Is infra healthy?"]
         B1 --> B2 --> B3
     end
 
@@ -146,41 +156,43 @@ flowchart TD
     A2 --> B1
     A3 --> B1
 
-    B3 --> FORK{"What type?"}
+    B3 --> FORK{"Infra healthy?"}
 
     %% ═══════════════════════════════════════
-    %% STAGE 3a: TECH INCIDENT PATH
+    %% INFRA INCIDENT PATH
     %% ═══════════════════════════════════════
-    subgraph S3A["③ RESPOND — Technology Incident"]
+    subgraph S3A["③ RESPOND — Infrastructure Incident"]
         direction TB
+        C0["<b>L1</b> assigns P immediately"]
         C1["<b>Incident Commander</b><br/>Activate war room<br/>Coordinate response"]
-        C2["<b>Tech Team — Infra/DevOps</b><br/>Rollback / Restart / Failover"]
-        C3["<b>Tech Team — Infra/DevOps</b><br/>Apply infrastructure fix"]
-        C4["<b>IC</b><br/>Send status updates<br/>P1: 30 min · P2: 1 hr"]
-        C1 --> C2 --> C3
+        C2["<b>Infra / DevOps</b><br/>Rollback / Restart / Failover"]
+        C3["<b>Infra / DevOps</b><br/>Apply infrastructure fix"]
+        C4["<b>IC</b><br/>Status updates<br/>P1: 30 min · P2: 1 hr"]
+        C0 --> C1 --> C2 --> C3
         C1 --> C4
     end
 
     %% ═══════════════════════════════════════
-    %% STAGE 3b: PRODUCTION ISSUE PATH
+    %% APPLICATION INCIDENT PATH
     %% ═══════════════════════════════════════
-    subgraph S3B["③ RESPOND — Production Issue"]
+    subgraph S3B["②b + ③ — Application Incident"]
         direction TB
-        D1["<b>Incident Commander</b><br/>Coordinate response<br/>Manage communications"]
-        D2["<b>Tech Team — Dev</b><br/>Reproduce & root cause"]
-        D3["<b>Tech Team — Dev</b><br/>Develop fix + tests"]
-        D4["<b>QA</b><br/>Validate fix in staging"]
-        D5["<b>Tech Team — Dev/DBA</b><br/>Deploy & remediate data"]
-        D1 --> D2 --> D3 --> D4 --> D5
+        D0["<b>L1</b> assigns preliminary P"]
+        D0B["<b>L1 + Tech Team + BA</b><br/>Collaborate within 30 min<br/>Assess blast radius<br/>Confirm / adjust P"]
+        D1["<b>Incident Commander</b><br/>Coordinate response"]
+        D2["<b>Dev Team</b><br/>Root cause & develop fix"]
+        D3["<b>QA</b><br/>Validate fix in staging"]
+        D4["<b>Dev / DBA</b><br/>Deploy & remediate data"]
+        D0 --> D0B --> D1 --> D2 --> D3 --> D4
     end
 
-    FORK -->|"System DOWN<br/>or unreachable"| C1
-    FORK -->|"System UP but<br/>producing wrong results"| D1
+    FORK -->|"NO — infra broken"| C0
+    FORK -->|"YES — infra healthy"| D0
 
     %% ═══════════════════════════════════════
     %% STAGE 4: VERIFY
     %% ═══════════════════════════════════════
-    subgraph S4["④ VERIFY  •  Target: < 30 min"]
+    subgraph S4["④ VERIFY  •  < 30 min"]
         direction TB
         E1["<b>Tech Team</b><br/>Monitor 15 min for regression"]
         E2["<b>QA</b><br/>Confirm fix correctness"]
@@ -190,30 +202,31 @@ flowchart TD
     end
 
     C3 --> E1
-    D5 --> E1
-    D5 --> E2
+    D4 --> E1
+    D4 --> E2
 
     %% ═══════════════════════════════════════
     %% STAGE 5: CLOSE
     %% ═══════════════════════════════════════
     subgraph S5["⑤ CLOSE  •  Within 48 hrs"]
         direction TB
-        F1["<b>IC</b><br/>Lead blameless RCA meeting"]
-        F2["<b>Tech Team</b><br/>Build timeline &<br/>identify root cause"]
-        F3["<b>IC</b><br/>Define action items<br/>with owners & dates"]
-        F4["<b>Management</b><br/>Review & sign off"]
-        F5["📋 <b>INCIDENT CLOSED</b><br/>RCA published<br/>Actions tracked in backlog"]
-        F1 --> F2 --> F3 --> F4 --> F5
+        F1["<b>IC</b><br/>Lead blameless RCA"]
+        F2["<b>Tech Team</b><br/>Identify root cause"]
+        F3["<b>IC</b><br/>Define action items"]
+        F4["<b>IC</b><br/>Update Knowledge Base"]
+        F5["<b>Management</b><br/>Review & sign off"]
+        F6["<b>INCIDENT CLOSED</b><br/>RCA published · Actions in backlog<br/>Knowledge Base updated"]
+        F1 --> F2 --> F3 --> F4 --> F5 --> F6
     end
 
     E3 --> F1
 
     %% ═══════════════════════════════════════
-    %% MANAGEMENT — parallel notification
+    %% MANAGEMENT — parallel
     %% ═══════════════════════════════════════
-    MGT["<b>Management</b><br/>Notified P1/P2<br/>Receives status updates"]
+    MGT["<b>Management</b><br/>Notified P1/P2<br/>Status updates"]
 
-    B2 -. "P1/P2<br/>notification" .-> MGT
+    B3 -. "P1/P2<br/>notification" .-> MGT
     C4 -. "status<br/>updates" .-> MGT
     E3 -. "all-clear" .-> MGT
 
@@ -222,8 +235,8 @@ flowchart TD
     %% ═══════════════════════════════════════
     classDef stageDetect fill:#1E293B,stroke:#6366F1,stroke-width:2px,color:#E2E8F0
     classDef stageTriage fill:#1E293B,stroke:#8B5CF6,stroke-width:2px,color:#E2E8F0
-    classDef stageTech fill:#1C1917,stroke:#EF4444,stroke-width:2px,color:#FCA5A5
-    classDef stageProd fill:#1C1917,stroke:#F59E0B,stroke-width:2px,color:#FDE68A
+    classDef stageInfra fill:#1C1917,stroke:#EF4444,stroke-width:2px,color:#FCA5A5
+    classDef stageApp fill:#1C1917,stroke:#F59E0B,stroke-width:2px,color:#FDE68A
     classDef stageVerify fill:#1E293B,stroke:#10B981,stroke-width:2px,color:#A7F3D0
     classDef stageClose fill:#1E293B,stroke:#0EA5E9,stroke-width:2px,color:#BAE6FD
     classDef forkNode fill:#1E1B3A,stroke:#A78BFA,stroke-width:2.5px,color:#DDD6FE
@@ -232,55 +245,55 @@ flowchart TD
 
     class S1 stageDetect
     class S2 stageTriage
-    class S3A stageTech
-    class S3B stageProd
+    class S3A stageInfra
+    class S3B stageApp
     class S4 stageVerify
     class S5 stageClose
     class FORK forkNode
     class MGT mgtNode
-    class F5 doneNode
+    class F6 doneNode
 ```
 
 ### Incident Classification Decision
 
 ```mermaid
 flowchart LR
-    START["🚨 Incident<br/>Reported"] --> Q1{"Is the system<br/>accessible and<br/>running?"}
+    START["Incident<br/>Reported"] --> Q1{"Is infrastructure<br/>healthy?"}
 
-    Q1 -->|"NO — down,<br/>unreachable,<br/>or degraded"| TI["🔴 <b>Technology<br/>Incident</b>"]
-    Q1 -->|"YES — running<br/>but wrong<br/>results"| PI["🟠 <b>Production<br/>Issue (Defect)</b>"]
+    Q1 -->|"NO — server, network,<br/>DB, or cloud broken"| II["<b>Infrastructure<br/>Incident</b>"]
+    Q1 -->|"YES — infra healthy,<br/>problem is in the app"| AI["<b>Application<br/>Incident</b>"]
 
-    TI --> TI_FOCUS["<b>Focus:</b> Restore<br/>service ASAP"]
-    TI --> TI_OWNER["<b>Owner:</b><br/>Infra / DevOps"]
-    TI --> TI_ACTION["<b>Actions:</b><br/>Failover · Restart<br/>Rollback · Fix infra"]
+    II --> II_P["L1 assigns P<br/>immediately"]
+    II --> II_OWNER["<b>Owner:</b><br/>Infra / DevOps"]
+    II --> II_ACTION["<b>Actions:</b><br/>Failover · Restart<br/>Rollback · Fix infra"]
 
-    PI --> PI_FOCUS["<b>Focus:</b> Fix correctness<br/>Remediate data"]
-    PI --> PI_OWNER["<b>Owner:</b><br/>Dev Team"]
-    PI --> PI_ACTION["<b>Actions:</b><br/>Root cause · Fix & test<br/>Deploy · Data remediation"]
+    AI --> AI_P["L1 assigns preliminary P<br/>→ Collaborate with<br/>Tech Team within 30 min"]
+    AI --> AI_OWNER["<b>Owner:</b><br/>Dev / BA team"]
+    AI --> AI_ACTION["<b>Actions:</b><br/>Assess blast radius<br/>Root cause · Fix & test<br/>Deploy · Remediate data"]
 
     classDef start fill:#1E1B3A,stroke:#6366F1,stroke-width:2px,color:#E8E6FF,rx:10
     classDef question fill:#1E1B3A,stroke:#A78BFA,stroke-width:2px,color:#DDD6FE
-    classDef tech fill:#450A0A,stroke:#EF4444,stroke-width:2.5px,color:#FCA5A5,rx:10
-    classDef prod fill:#451A03,stroke:#F59E0B,stroke-width:2.5px,color:#FCD34D,rx:10
+    classDef infra fill:#450A0A,stroke:#EF4444,stroke-width:2.5px,color:#FCA5A5,rx:10
+    classDef app fill:#451A03,stroke:#F59E0B,stroke-width:2.5px,color:#FCD34D,rx:10
     classDef detail fill:#1E293B,stroke:#475569,stroke-width:1px,color:#CBD5E1,rx:6
 
     class START start
     class Q1 question
-    class TI tech
-    class PI prod
-    class TI_FOCUS,TI_OWNER,TI_ACTION,PI_FOCUS,PI_OWNER,PI_ACTION detail
+    class II infra
+    class AI app
+    class II_P,II_OWNER,II_ACTION,AI_P,AI_OWNER,AI_ACTION detail
 ```
 
 ### Priority Levels
 
 ```mermaid
 flowchart LR
-    subgraph SEV["Priority Matrix"]
+    subgraph PRI["Priority Matrix"]
         direction TB
-        S1["🔴 <b>P1 — Critical</b><br/>Full outage · Data breach<br/><i>Respond: Immediate · Resolve: < 1 hr</i><br/>All hands + IC + Management"]
-        S2["🟠 <b>P2 — Major</b><br/>Significant degradation · Key function down<br/><i>Respond: < 15 min · Resolve: < 4 hrs</i><br/>IC + On-call + Mgmt notified"]
-        S3["🔵 <b>P3 — Minor</b><br/>Partial impact · Workaround exists<br/><i>Respond: < 1 hr · Resolve: < 1 day</i><br/>On-call / assigned engineer"]
-        S4["🟢 <b>P4 — Low</b><br/>Cosmetic · Minimal impact<br/><i>Respond: Next day · Resolve: < 5 days</i><br/>Assigned developer"]
+        S1["P1 — Critical<br/>Full outage · Data breach · Financial data affected<br/><i>Respond: Immediate · Resolve: < 1 hr</i><br/>All hands + IC + Management"]
+        S2["P2 — Major<br/>Significant degradation · Key function down<br/><i>Respond: < 15 min · Resolve: < 4 hrs</i><br/>IC + On-call + Mgmt notified"]
+        S3["P3 — Minor<br/>Partial impact · Workaround exists<br/><i>Respond: < 1 hr · Resolve: < 1 day</i><br/>On-call / assigned engineer"]
+        S4["P4 — Low<br/>Cosmetic · Minimal impact<br/><i>Respond: Next day · Resolve: < 5 days</i><br/>Assigned developer"]
         S1 ~~~ S2 ~~~ S3 ~~~ S4
     end
 
@@ -299,7 +312,7 @@ flowchart LR
 
 ## PPT Design Notes
 
-- **Slide 1**: Swimlane flow as the main visual. Use horizontal lanes per role, left-to-right stage progression. Color-code Technology Incident path (red) vs Production Issue path (amber). Place classification table as a header or callout.
-- **Slide 2**: Severity matrix (color-coded red→green) + RACI grid + Quick Reference comparison (two side-by-side boxes).
+- **Slide 1**: Swimlane flow. Horizontal lanes per role, left-to-right stages. Infra Incident path (red) vs Application Incident path (amber). Note the collaboration step (②b) in the App path.
+- **Slide 2**: Priority matrix (color-coded) + RACI grid + Quick Reference comparison.
 - **Colors**: P1 = Red, P2 = Orange, P3 = Blue, P4 = Green.
-- **Font**: 14pt minimum for screen/projector readability.
+- **Font**: 14pt minimum for readability.
