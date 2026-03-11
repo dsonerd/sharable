@@ -115,6 +115,188 @@
 
 ---
 
+## Mermaid Diagrams
+
+### Main Flow — Incident Management Process
+
+```mermaid
+flowchart TD
+    %% ═══════════════════════════════════════
+    %% STAGE 1: DETECT
+    %% ═══════════════════════════════════════
+    subgraph S1["① DETECT  •  Target: < 5 min"]
+        direction TB
+        A1["🔔 Monitoring alert fires"]
+        A2["👤 User / stakeholder reports"]
+        A3["💓 Health check fails"]
+    end
+
+    %% ═══════════════════════════════════════
+    %% STAGE 2: TRIAGE
+    %% ═══════════════════════════════════════
+    subgraph S2["② TRIAGE  •  Target: < 15 min"]
+        direction TB
+        B1["<b>L1 Support</b><br/>Confirm incident is real"]
+        B2["<b>L1 Support</b><br/>Assign severity SEV 1–4"]
+        B3["<b>L1 Support</b><br/>Classify type"]
+        B1 --> B2 --> B3
+    end
+
+    A1 --> B1
+    A2 --> B1
+    A3 --> B1
+
+    B3 --> FORK{"What type?"}
+
+    %% ═══════════════════════════════════════
+    %% STAGE 3a: TECH INCIDENT PATH
+    %% ═══════════════════════════════════════
+    subgraph S3A["③ RESPOND — Technology Incident"]
+        direction TB
+        C1["<b>Incident Commander</b><br/>Activate war room<br/>Coordinate response"]
+        C2["<b>Tech Team — Infra/DevOps</b><br/>Rollback / Restart / Failover"]
+        C3["<b>Tech Team — Infra/DevOps</b><br/>Apply infrastructure fix"]
+        C4["<b>IC</b><br/>Send status updates<br/>SEV1: 30 min · SEV2: 1 hr"]
+        C1 --> C2 --> C3
+        C1 --> C4
+    end
+
+    %% ═══════════════════════════════════════
+    %% STAGE 3b: PRODUCTION ISSUE PATH
+    %% ═══════════════════════════════════════
+    subgraph S3B["③ RESPOND — Production Issue"]
+        direction TB
+        D1["<b>Incident Commander</b><br/>Coordinate response<br/>Manage communications"]
+        D2["<b>Tech Team — Dev</b><br/>Reproduce & root cause"]
+        D3["<b>Tech Team — Dev</b><br/>Develop fix + tests"]
+        D4["<b>QA</b><br/>Validate fix in staging"]
+        D5["<b>Tech Team — Dev/DBA</b><br/>Deploy & remediate data"]
+        D1 --> D2 --> D3 --> D4 --> D5
+    end
+
+    FORK -->|"System DOWN<br/>or unreachable"| C1
+    FORK -->|"System UP but<br/>producing wrong results"| D1
+
+    %% ═══════════════════════════════════════
+    %% STAGE 4: VERIFY
+    %% ═══════════════════════════════════════
+    subgraph S4["④ VERIFY  •  Target: < 30 min"]
+        direction TB
+        E1["<b>Tech Team</b><br/>Monitor 15 min for regression"]
+        E2["<b>QA</b><br/>Confirm fix correctness"]
+        E3["<b>IC</b><br/>Confirm service restored"]
+        E1 --> E3
+        E2 --> E3
+    end
+
+    C3 --> E1
+    D5 --> E1
+    D5 --> E2
+
+    %% ═══════════════════════════════════════
+    %% STAGE 5: CLOSE
+    %% ═══════════════════════════════════════
+    subgraph S5["⑤ CLOSE  •  Within 48 hrs"]
+        direction TB
+        F1["<b>IC</b><br/>Lead blameless RCA meeting"]
+        F2["<b>Tech Team</b><br/>Build timeline &<br/>identify root cause"]
+        F3["<b>IC</b><br/>Define action items<br/>with owners & dates"]
+        F4["<b>Management</b><br/>Review & sign off"]
+        F5["📋 <b>INCIDENT CLOSED</b><br/>RCA published<br/>Actions tracked in backlog"]
+        F1 --> F2 --> F3 --> F4 --> F5
+    end
+
+    E3 --> F1
+
+    %% ═══════════════════════════════════════
+    %% MANAGEMENT — parallel notification
+    %% ═══════════════════════════════════════
+    MGT["<b>Management</b><br/>Notified SEV1/2<br/>Receives status updates"]
+
+    B2 -. "SEV1/2<br/>notification" .-> MGT
+    C4 -. "status<br/>updates" .-> MGT
+    E3 -. "all-clear" .-> MGT
+
+    %% ═══════════════════════════════════════
+    %% STYLES
+    %% ═══════════════════════════════════════
+    classDef stageDetect fill:#1E293B,stroke:#6366F1,stroke-width:2px,color:#E2E8F0
+    classDef stageTriage fill:#1E293B,stroke:#8B5CF6,stroke-width:2px,color:#E2E8F0
+    classDef stageTech fill:#1C1917,stroke:#EF4444,stroke-width:2px,color:#FCA5A5
+    classDef stageProd fill:#1C1917,stroke:#F59E0B,stroke-width:2px,color:#FDE68A
+    classDef stageVerify fill:#1E293B,stroke:#10B981,stroke-width:2px,color:#A7F3D0
+    classDef stageClose fill:#1E293B,stroke:#0EA5E9,stroke-width:2px,color:#BAE6FD
+    classDef forkNode fill:#1E1B3A,stroke:#A78BFA,stroke-width:2.5px,color:#DDD6FE
+    classDef mgtNode fill:#0C2340,stroke:#0EA5E9,stroke-width:1.5px,color:#BAE6FD,rx:8
+    classDef doneNode fill:#052E16,stroke:#22C55E,stroke-width:2.5px,color:#BBF7D0,rx:12
+
+    class S1 stageDetect
+    class S2 stageTriage
+    class S3A stageTech
+    class S3B stageProd
+    class S4 stageVerify
+    class S5 stageClose
+    class FORK forkNode
+    class MGT mgtNode
+    class F5 doneNode
+```
+
+### Incident Classification Decision
+
+```mermaid
+flowchart LR
+    START["🚨 Incident<br/>Reported"] --> Q1{"Is the system<br/>accessible and<br/>running?"}
+
+    Q1 -->|"NO — down,<br/>unreachable,<br/>or degraded"| TI["🔴 <b>Technology<br/>Incident</b>"]
+    Q1 -->|"YES — running<br/>but wrong<br/>results"| PI["🟠 <b>Production<br/>Issue (Defect)</b>"]
+
+    TI --> TI_FOCUS["<b>Focus:</b> Restore<br/>service ASAP"]
+    TI --> TI_OWNER["<b>Owner:</b><br/>Infra / DevOps"]
+    TI --> TI_ACTION["<b>Actions:</b><br/>Failover · Restart<br/>Rollback · Fix infra"]
+
+    PI --> PI_FOCUS["<b>Focus:</b> Fix correctness<br/>Remediate data"]
+    PI --> PI_OWNER["<b>Owner:</b><br/>Dev Team"]
+    PI --> PI_ACTION["<b>Actions:</b><br/>Root cause · Fix & test<br/>Deploy · Data remediation"]
+
+    classDef start fill:#1E1B3A,stroke:#6366F1,stroke-width:2px,color:#E8E6FF,rx:10
+    classDef question fill:#1E1B3A,stroke:#A78BFA,stroke-width:2px,color:#DDD6FE
+    classDef tech fill:#450A0A,stroke:#EF4444,stroke-width:2.5px,color:#FCA5A5,rx:10
+    classDef prod fill:#451A03,stroke:#F59E0B,stroke-width:2.5px,color:#FCD34D,rx:10
+    classDef detail fill:#1E293B,stroke:#475569,stroke-width:1px,color:#CBD5E1,rx:6
+
+    class START start
+    class Q1 question
+    class TI tech
+    class PI prod
+    class TI_FOCUS,TI_OWNER,TI_ACTION,PI_FOCUS,PI_OWNER,PI_ACTION detail
+```
+
+### Severity Levels
+
+```mermaid
+flowchart LR
+    subgraph SEV["Severity Matrix"]
+        direction TB
+        S1["🔴 <b>SEV 1 — Critical</b><br/>Full outage · Data breach<br/><i>Respond: Immediate · Resolve: < 1 hr</i><br/>All hands + IC + Management"]
+        S2["🟠 <b>SEV 2 — Major</b><br/>Significant degradation · Key function down<br/><i>Respond: < 15 min · Resolve: < 4 hrs</i><br/>IC + On-call + Mgmt notified"]
+        S3["🔵 <b>SEV 3 — Minor</b><br/>Partial impact · Workaround exists<br/><i>Respond: < 1 hr · Resolve: < 1 day</i><br/>On-call / assigned engineer"]
+        S4["🟢 <b>SEV 4 — Low</b><br/>Cosmetic · Minimal impact<br/><i>Respond: Next day · Resolve: < 5 days</i><br/>Assigned developer"]
+        S1 ~~~ S2 ~~~ S3 ~~~ S4
+    end
+
+    classDef sev1 fill:#450A0A,stroke:#EF4444,stroke-width:2px,color:#FCA5A5,rx:8
+    classDef sev2 fill:#451A03,stroke:#F59E0B,stroke-width:2px,color:#FCD34D,rx:8
+    classDef sev3 fill:#0C2340,stroke:#3B82F6,stroke-width:2px,color:#93C5FD,rx:8
+    classDef sev4 fill:#052E16,stroke:#10B981,stroke-width:2px,color:#6EE7B7,rx:8
+
+    class S1 sev1
+    class S2 sev2
+    class S3 sev3
+    class S4 sev4
+```
+
+---
+
 ## PPT Design Notes
 
 - **Slide 1**: Swimlane flow as the main visual. Use horizontal lanes per role, left-to-right stage progression. Color-code Technology Incident path (red) vs Production Issue path (amber). Place classification table as a header or callout.
