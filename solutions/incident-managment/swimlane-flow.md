@@ -46,16 +46,29 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
              │                │                   │                    │                      │                 │
 ─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
              │                │                   │                    │                      │                 │
- L1/L2 ITO   │ Receive &      │ Confirm real?     │ App Incident:      │                      │                 │
- (On-call /  │ acknowledge    │ Check infra       │ Loop in Tech Team  │                      │                 │
-  Help Desk) │                │ health            │ + BA within 30 min │                      │                 │
-             │                │ Check Knowledge   │ Share preliminary P │                      │                 │
-             │                │ Base for known    │                    │                      │                 │
-             │                │ scenarios         │ Infra Incident:    │                      │                 │
-             │                │ Classify: Infra   │ (skip — escalate   │                      │                 │
-             │                │ or Application?   │  immediately)      │                      │                 │
-             │                │ Assign P (or      │                    │                      │                 │
-             │                │ preliminary P)    │                    │                      │                 │
+ L1/L2 ITO   │ Receive &      │ Confirm real?     │ KB NO MATCH:         │                      │                 │
+ (On-call /  │ acknowledge    │ Check infra       │  App Incident:     │                      │                 │
+  Help Desk) │                │ health            │  Loop in Tech Team │                      │                 │
+             │                │ Classify: Infra   │  + BA within 30 min│                      │                 │
+             │                │ or Application?   │  Share prelim P    │                      │                 │
+             │                │                   │                    │                      │                 │
+             │                │ Check Knowledge   │  Infra Incident:   │                      │                 │
+             │                │ Base for known    │  (skip — escalate  │                      │                 │
+             │                │ scenarios         │   immediately)     │                      │                 │
+             │                │                   │                    │                      │                 │
+             │                │ KB MATCH:         │ KB MATCH:          │                      │                 │
+             │                │ → Assign P from   │ (already acted —   │                      │                 │
+             │                │   KB immediately  │  tech team can     │                      │                 │
+             │                │ → Execute first   │  re-evaluate P)    │                      │                 │
+             │                │   response        │                    │                      │                 │
+             │                │ → Notify tech     │                    │                      │                 │
+             │                │   team (don't     │                    │                      │                 │
+             │                │   wait)           │                    │                      │                 │
+             │                │                   │                    │                      │                 │
+             │                │ KB NO MATCH:      │                    │                      │                 │
+             │                │ → Assign P (infra)│                    │                      │                 │
+             │                │ → Assign prelim   │                    │                      │                 │
+             │                │   P (app)         │                    │                      │                 │
              │                │                   │                    │                      │                 │
 ─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
              │                │                   │                    │                      │                 │
@@ -117,7 +130,7 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
 |---|---|---|
 | **Infra health** | Broken | Healthy |
 | **Problem layer** | Server, network, DB, cloud | App code, logic, design, config, data |
-| **Priority assignment** | L1 assigns directly (scope is clear) | L1 assigns preliminary P → Tech Team confirms within 30 min |
+| **Priority assignment** | KB match → assign P from KB. No match → assign by scope. | KB match → assign P from KB, act immediately, notify tech team. No match → preliminary P → Tech Team confirms within 30 min. |
 | **Response** | Restore immediately (rollback, restart, failover) | Assess blast radius → fix correctly → remediate data |
 | **Owner** | Infra / DevOps | Dev / BA team |
 | **Detection** | Loud — monitoring catches it | Often quiet — detected by people, not alerts |
@@ -147,8 +160,8 @@ flowchart TD
     subgraph S2["② TRIAGE  •  < 15 min"]
         direction TB
         B1["<b>L1/L2 ITO</b><br/>Confirm incident is real"]
-        B2["<b>L1/L2 ITO</b><br/>Check Knowledge Base"]
-        B3["<b>L1/L2 ITO</b><br/>Is infra healthy?"]
+        B2["<b>L1/L2 ITO</b><br/>Classify: Is infra healthy?"]
+        B3["<b>L1/L2 ITO</b><br/>Check Knowledge Base"]
         B1 --> B2 --> B3
     end
 
@@ -161,33 +174,46 @@ flowchart TD
     %% ═══════════════════════════════════════
     %% INFRA INCIDENT PATH
     %% ═══════════════════════════════════════
+    FORK -->|"NO — infra broken"| KB_I{"KB match?"}
+
     subgraph S3A["③ RESPOND — Infrastructure Incident"]
         direction TB
-        C0["<b>L1</b> assigns P immediately"]
+        C0["<b>L1</b> assigns P from KB<br/>Execute documented response"]
+        C0N["<b>L1</b> assigns P by scope"]
         C1["<b>Incident Commander</b><br/>Activate war room<br/>Coordinate response"]
         C2["<b>Infra / DevOps</b><br/>Rollback / Restart / Failover"]
         C3["<b>Infra / DevOps</b><br/>Apply infrastructure fix"]
         C4["<b>IC</b><br/>Status updates<br/>P1: 30 min · P2: 1 hr"]
-        C0 --> C1 --> C2 --> C3
+        C0 --> C1
+        C0N --> C1
+        C1 --> C2 --> C3
         C1 --> C4
     end
+
+    KB_I -->|"YES"| C0
+    KB_I -->|"NO"| C0N
 
     %% ═══════════════════════════════════════
     %% APPLICATION INCIDENT PATH
     %% ═══════════════════════════════════════
+    FORK -->|"YES — infra healthy"| KB_A{"KB match?"}
+
     subgraph S3B["②b + ③ — Application Incident"]
         direction TB
+        D0K["<b>L1</b> assigns P from KB<br/>Execute documented response<br/>Notify tech team (don't wait)"]
         D0["<b>L1</b> assigns preliminary P"]
         D0B["<b>L1 + Tech Team + BA</b><br/>Collaborate within 30 min<br/>Assess blast radius<br/>Confirm / adjust P"]
         D1["<b>Incident Commander</b><br/>Coordinate response"]
-        D2["<b>Dev Team</b><br/>Root cause & develop fix"]
+        D2["<b>Dev Team</b><br/>Root cause & develop fix<br/>(re-evaluate P if needed)"]
         D3["<b>QA</b><br/>Validate fix in staging"]
         D4["<b>Dev / DBA</b><br/>Deploy & remediate data"]
-        D0 --> D0B --> D1 --> D2 --> D3 --> D4
+        D0K --> D1
+        D0 --> D0B --> D1
+        D1 --> D2 --> D3 --> D4
     end
 
-    FORK -->|"NO — infra broken"| C0
-    FORK -->|"YES — infra healthy"| D0
+    KB_A -->|"YES"| D0K
+    KB_A -->|"NO"| D0
 
     %% ═══════════════════════════════════════
     %% STAGE 4: VERIFY
@@ -249,7 +275,7 @@ flowchart TD
     class S3B stageApp
     class S4 stageVerify
     class S5 stageClose
-    class FORK forkNode
+    class FORK,KB_I,KB_A forkNode
     class MGT mgtNode
     class F6 doneNode
 ```
@@ -263,11 +289,15 @@ flowchart LR
     Q1 -->|"NO — server, network,<br/>DB, or cloud broken"| II["<b>Infrastructure<br/>Incident</b>"]
     Q1 -->|"YES — infra healthy,<br/>problem is in the app"| AI["<b>Application<br/>Incident</b>"]
 
-    II --> II_P["L1 assigns P<br/>immediately"]
+    II --> II_KB{"KB match?"}
+    II_KB -->|"YES"| II_P1["Assign P from KB<br/>Execute response"]
+    II_KB -->|"NO"| II_P2["Assign P by scope"]
     II --> II_OWNER["<b>Owner:</b><br/>Infra / DevOps"]
     II --> II_ACTION["<b>Actions:</b><br/>Failover · Restart<br/>Rollback · Fix infra"]
 
-    AI --> AI_P["L1 assigns preliminary P<br/>→ Collaborate with<br/>Tech Team within 30 min"]
+    AI --> AI_KB{"KB match?"}
+    AI_KB -->|"YES"| AI_P1["Assign P from KB<br/>Act immediately<br/>Notify tech team"]
+    AI_KB -->|"NO"| AI_P2["Assign preliminary P<br/>→ Collaborate with<br/>Tech Team within 30 min"]
     AI --> AI_OWNER["<b>Owner:</b><br/>Dev / BA team"]
     AI --> AI_ACTION["<b>Actions:</b><br/>Assess blast radius<br/>Root cause · Fix & test<br/>Deploy · Remediate data"]
 
@@ -279,9 +309,12 @@ flowchart LR
 
     class START start
     class Q1 question
+    classDef kbNode fill:#1E1B3A,stroke:#A78BFA,stroke-width:2px,color:#DDD6FE
+
     class II infra
     class AI app
-    class II_P,II_OWNER,II_ACTION,AI_P,AI_OWNER,AI_ACTION detail
+    class II_KB,AI_KB kbNode
+    class II_P1,II_P2,II_OWNER,II_ACTION,AI_P1,AI_P2,AI_OWNER,AI_ACTION detail
 ```
 
 ### Priority Levels

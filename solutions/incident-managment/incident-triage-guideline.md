@@ -55,21 +55,26 @@ Something reported / alert fires
    ▼                      ▼
  INFRA INCIDENT        APPLICATION INCIDENT
    │                      │
-   │                      │
    ▼                      ▼
- L1 assigns P            L1 assigns preliminary P
- immediately             (check Knowledge Base for
- (scope is clear)        known scenarios)
-   │                      │
-   ▼                      ▼
- Escalate to             Collaborate with Tech Team
- Infra / DevOps          (Dev + BA + Business)
- NOW                     within 30 min
-                          │
-                          ▼
-                         Confirm / adjust P
-                         based on blast radius
-                         and business impact
+ Check Knowledge Base   Check Knowledge Base
+        │                      │
+   ┌────┴────┐            ┌────┴────┐
+ MATCH    NO MATCH      MATCH    NO MATCH
+   │         │            │         │
+   ▼         ▼            ▼         ▼
+ Assign P  Assign P     Assign P  Assign
+ from KB   by scope     from KB   preliminary P
+   │         │            │         │
+   ▼         ▼            ▼         ▼
+ Escalate  Escalate     Execute   Collaborate
+ to Infra  to Infra     response  with Tech Team
+ / DevOps  / DevOps     from KB   within 30 min
+                          │         │
+                          ▼         ▼
+                        Notify    Confirm /
+                        Tech Team adjust P
+                        (don't    based on
+                         wait)    blast radius
 ```
 
 ### Why Two Paths?
@@ -78,9 +83,20 @@ Something reported / alert fires
 
 **Application Incidents need collaboration.** Infra is fine but something is wrong at the application level. L1 cannot assess blast radius or business impact alone. They need tech team (Dev, BA) and sometimes business input to determine the real priority. This collaboration must happen **within 30 minutes** — L1 assigns a preliminary P and loops in the right people, who then confirm or adjust.
 
-### The Knowledge Base
+### The Knowledge Base — Fast Lane
 
-L1 should check the [Incident Knowledge Base](incident-knowledge-base.md) during triage. It contains known scenarios from past incidents — matching symptoms to incident types, priorities, and response actions. This is especially critical for application incidents where the right priority isn't obvious.
+L1 should check the [Incident Knowledge Base](incident-knowledge-base.md) during triage **before assigning priority**. It contains known scenarios from past incidents — matching symptoms to incident types, priorities, and response actions.
+
+**If a KB match is found:**
+- **Assign P directly** from the KB entry — no need for a preliminary P
+- **Execute the documented first response** immediately
+- **Notify the tech team** (inform, don't wait) — they can intervene if they see something off
+- The tech team session still happens and **can re-evaluate P** if investigation reveals the situation differs from the KB scenario
+
+**If no KB match:**
+- Follow the standard path — preliminary P for application incidents, collaborate within 30 min
+
+The KB effectively gives L1 **confidence to act immediately** on known scenarios, while the tech team review still provides a safety net.
 
 The knowledge base starts empty and grows from every RCA. After 20-30 incidents, it becomes L1's most valuable triage tool.
 
@@ -131,7 +147,7 @@ Key signals: HTTP 5xx surge, health check failure, "connection timeout" in logs,
 
 ### L1 Response
 
-Assign P based on scope → escalate to Infra/DevOps immediately → do not debug, restore first.
+Check Knowledge Base → if match, assign P from KB and follow documented response → if no match, assign P based on scope → escalate to Infra/DevOps immediately → do not debug, restore first.
 
 ---
 
@@ -164,7 +180,7 @@ Key signals: Business metric deviates from pattern, finance reports reconciliati
 
 ### L1 Response
 
-Assign preliminary P → check Knowledge Base → collaborate with Tech Team (Dev + BA) within 30 min → confirm P based on blast radius → Tech Team owns the response.
+Check Knowledge Base → **if match: assign P from KB, execute documented response immediately, notify tech team (don't wait)** → **if no match: assign preliminary P, collaborate with Tech Team (Dev + BA) within 30 min** → confirm or re-evaluate P based on blast radius → Tech Team owns the response.
 
 ---
 
@@ -188,9 +204,13 @@ Assign preliminary P → check Knowledge Base → collaborate with Tech Team (De
 
 ### Infra vs Application — Priority Nuance
 
-For **Infrastructure Incidents**, L1 can assign P directly — the scope is visible (system down = P1/P2, partial = P3).
+For **Infrastructure Incidents**, L1 can assign P directly — the scope is visible (system down = P1/P2, partial = P3). If a KB match exists, use the documented P.
 
-For **Application Incidents**, L1 assigns a **preliminary P** based on initial report, then the Tech Team confirms or adjusts within 30 minutes. Common adjustments:
+For **Application Incidents**, the path depends on the Knowledge Base:
+- **KB match**: L1 assigns P from KB and acts immediately. Tech team is notified and can re-evaluate P in their session.
+- **No KB match**: L1 assigns a **preliminary P** based on initial report, then the Tech Team confirms or adjusts within 30 minutes.
+
+Common adjustments during tech team session:
 
 | Initial report | Preliminary P | After investigation | Final P |
 |---|---|---|---|
@@ -270,10 +290,14 @@ INCIDENT TRIAGE CHECKLIST
 
 □ 3. CHECK KNOWLEDGE BASE:
      □ Search for matching scenario in Knowledge Base
-     □ If match found → follow documented P and response
-     □ If no match → continue with assessment
+     □ If match found:
+       □ Assign P from KB entry
+       □ Execute documented first response immediately
+       □ Notify tech team (inform, don't wait)
+       □ Go to step 6 (tech team can re-evaluate P later)
+     □ If no match → continue to step 4
 
-□ 4. ASSIGN PRIORITY:
+□ 4. ASSIGN PRIORITY (no KB match):
      INFRA INCIDENT: assign P now (scope is clear)
      APP INCIDENT: assign preliminary P, then collaborate
 
@@ -284,7 +308,7 @@ INCIDENT TRIAGE CHECKLIST
      □ Partial impact / workaround exists?             → P3
      □ Cosmetic / no user impact?                      → P4
 
-□ 5. COLLABORATE (Application Incidents):
+□ 5. COLLABORATE (Application Incidents, no KB match):
      □ Loop in Tech Team (Dev + BA) within 30 min
      □ Assess blast radius and business impact together
      □ Confirm or adjust priority
@@ -311,7 +335,7 @@ INCIDENT TRIAGE CHECKLIST
 | **Service Request** | User request for information, access, or a standard change — not a disruption |
 | **Problem** | The underlying root cause of one or more incidents |
 | **Known Error** | A problem with documented cause and workaround |
-| **Knowledge Base** | Library of known incident scenarios, symptoms, and responses — built from RCAs over time |
+| **Knowledge Base** | Library of known incident scenarios, symptoms, and responses — built from RCAs over time. A KB match allows L1 to assign P and act immediately (fast lane). |
 | **IC** | Incident Commander — coordinates the response |
 | **Blast Radius** | Scope of impact — how many users, records, or transactions are affected |
 | **Preliminary P** | Initial priority assigned by L1 for application incidents, subject to confirmation by Tech Team |

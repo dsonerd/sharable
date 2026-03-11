@@ -2,7 +2,12 @@
 
 > Known incident scenarios built from real incidents and RCAs. Used by L1/L2 during triage to match symptoms to known patterns.
 >
-> **How to use**: When triaging, search this page for matching symptoms. If found, follow the documented priority and response.
+> **How to use**: When triaging, search this page for matching symptoms. If a match is found:
+> 1. **Assign priority (P)** from the KB entry — no need for a preliminary P
+> 2. **Execute the documented first response** immediately
+> 3. **Notify the tech team** (inform, don't wait) — they can re-evaluate P in their session if investigation reveals something different
+>
+> If no match is found, follow the standard triage path (see [incident-triage-guideline.md](incident-triage-guideline.md)).
 >
 > **How to grow**: After every RCA, add one entry. This is not a separate task — it's part of closing the incident.
 
