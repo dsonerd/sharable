@@ -2,7 +2,7 @@
 
 > Practical guide for L1/L2 ITO and on-call engineers to classify and triage IT incidents.
 >
-> Related: [`swimlane-flow.md`](swimlane-flow.md) · [`severity-triage.md`](severity-triage.md) · [`incident-knowledge-base.md`](incident-knowledge-base.md)
+> Related: [`swimlane-flow.md`](swimlane-flow.md) · [`severity-triage.md`](severity-triage.md) · [`incident-knowledge-base.md`](incident-knowledge-base.md) · [`scenario-1.md`](scenario-1.md)
 
 ---
 
