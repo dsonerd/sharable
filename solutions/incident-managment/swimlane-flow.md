@@ -22,12 +22,14 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
 
 ## Priority Matrix
 
-| Priority | Name | Definition | Response Time | Resolution Target | Who's Involved |
-|----------|------|-----------|---------------|-------------------|----------------|
-| **P1** | Critical | Full outage, data breach, or financial data affected | Immediate | < 1 hour | All hands: IC + Tech + Mgmt + Comms |
-| **P2** | Major | Significant degradation, key function unavailable | < 15 min | < 4 hours | IC + On-call team + Mgmt notified |
-| **P3** | Minor | Partial impact, workaround available | < 1 hour | < 1 business day | On-call / assigned team |
-| **P4** | Low | Cosmetic, minimal impact | Next business day | < 5 business days | Assigned developer |
+| Priority | Name | Definition | Response Time | Containment | Full Resolution | Who's Involved |
+|----------|------|-----------|---------------|-------------|-----------------|----------------|
+| **P1** | Critical | Full outage, data breach, or financial data affected | < 15 min | < 2 hours | < 24 hours | All hands: IC + Tech + Mgmt + Comms |
+| **P2** | Major | Significant degradation, key function unavailable | < 30 min | < 4 hours | < 5 business days | IC + On-call team + Mgmt notified |
+| **P3** | Minor | Partial impact, workaround available | < 2 hours | < 1 business day | < 10 business days | Assigned engineer |
+| **P4** | Low | Cosmetic, minimal impact | Next business day | — | < 15 business days | Assigned developer |
+
+> **Containment** = service usable (even if degraded or feature disabled). **Full Resolution** = root cause fixed + data remediated.
 
 ---
 
@@ -43,16 +45,34 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
 ─────────────┬────────────────┬───────────────────┬────────────────────┬──────────────────────┬─────────────────┬──────────────────
              │                │                   │                    │                      │                 │
  ANYONE      │ Report issue   │                   │                    │                      │                 │
- (User /     │ via channel    │                   │                    │                      │                 │
-  Alert)     │ or alert fires │                   │                    │                      │                 │
+ (User /     │ via call/chat/ │                   │                    │                      │                 │
+  Alert)     │ ticket — or    │                   │                    │                      │                 │
+             │ alert fires    │                   │                    │                      │                 │
              │                │                   │                    │                      │                 │
 ─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
              │                │                   │                    │                      │                 │
  L1/L2 ITO   │ Receive &      │ Confirm real?     │ Loop in Tech Team  │                      │                 │
  (On-call /  │ acknowledge    │ Check infra       │ + BA within 30 min │                      │                 │
   Help Desk) │                │ health            │ Share preliminary P│                      │                 │
-             │                │ Classify: Infra   │ Confirm / adjust P │                      │                 │
+             │ ✉ 1st: Ack     │                    │ Confirm / adjust P │                      │                 │
+             │ reporter       │ NOT AN INCIDENT?  │                    │                      │                 │
+             │ "Received,     │ → Route out:      │                    │                      │                 │
+             │  looking       │   Service Request │                    │                      │                 │
+             │  into it"      │   / User error    │                    │                      │                 │
+             │                │   / Backlog       │                    │                      │                 │
+             │                │   Notify reporter │                    │                      │                 │
+             │                │   & close ticket  │                    │                      │                 │
+             │                │                   │                    │                      │                 │
+             │                │ IS AN INCIDENT:   │                    │                      │                 │
+             │                │ ⏱ Log INC-xxxx    │                    │                      │                 │
+             │                │ (SLA clock starts)│                    │                      │                 │
+             │                │                   │                    │                      │                 │
+             │                │ Classify: Infra   │                    │                      │                 │
              │                │ or Application?   │                    │                      │                 │
+             │                │                   │                    │                      │                 │
+             │                │ ✉ 2nd: Notify     │                    │                      │                 │
+             │                │ reporter of P &   │                    │                      │                 │
+             │                │ expected timeline  │                    │                      │                 │
              │                │                   │                    │                      │                 │
              │                │ Check Knowledge   │                    │                      │                 │
              │                │ Base for known    │                    │                      │                 │
@@ -81,6 +101,10 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
              │                │                   │                    │   escalate? war room?│                 │ Update Knowledge
              │                │                   │                    │ Status updates       │                 │ Base
              │                │                   │                    │ (P1: 30m · P2: 1hr)  │                 │
+             │                │                   │                    │ ✉ During: Include    │ ✉ Last: Notify  │
+             │                │                   │                    │ reporter in updates  │ reporter —      │
+             │                │                   │                    │                      │ "Resolved, you  │
+             │                │                   │                    │                      │  can resume"    │
              │                │                   │                    │                      │                 │
 ─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
              │                │                   │                    │                      │                 │
@@ -111,7 +135,51 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
 ─────────────┴────────────────┴───────────────────┴────────────────────┴──────────────────────┴─────────────────┴──────────────────
 ```
 
-> **P3/P4 note:** No Incident Commander assigned. Team lead coordinates directly. Simplified post-incident review instead of full RCA — escalate to full RCA only if financial or data impact.
+> **P3/P4 note:** No Incident Commander assigned. Details below.
+
+### P3/P4 Handling — The Bulk of Daily Work
+
+Most incidents are P3/P4. The full IC / war-room machinery doesn't apply, but they still need structure — otherwise tickets rot or the team over-invests treating every cosmetic bug like a crisis.
+
+| Aspect | P3 — Minor | P4 — Low |
+|--------|------------|----------|
+| **Coordinator** | Senior L1 or team lead | Assigned engineer (self-managed) |
+| **Triage** | Same flow: classify → KB check → assign P | Same flow, lower urgency |
+| **Response window** | Business hours, assigned engineer starts within 2 hours | Next business day |
+| **Reporter updates** | At triage + resolution. On request in between. | At triage + resolution only. |
+| **Post-incident review** | Simplified note in ticket (due within 5 business days): what broke, what fixed it, any follow-up needed. | Not required unless recurs 3+ times. |
+| **Escalate to full RCA** | If financial/data impact found, or same incident recurs 3+ times. | Same trigger. |
+| **KB update** | Add to Knowledge Base if likely to recur. | Only if a pattern emerges across multiple tickets. |
+
+> **P3/P4 do NOT get:**
+> - An Incident Commander
+> - A war room or bridge call
+> - Periodic status updates (only on-demand)
+> - Management notification (unless escalated)
+> - A formal RCA (unless triggered by financial/data impact or recurrence)
+
+### When Does the Incident Start? (⏱)
+
+The **SLA clock starts at Triage**, when L1 confirms "this is a real incident" and logs `INC-xxxx` — not when the report is received.
+
+| Moment | What happens | SLA clock |
+|--------|-------------|-----------|
+| User reports / alert fires | L1 receives, acknowledges reporter (✉ 1st) | Not started |
+| L1 confirms: **not an incident** | Route to service request / user error / backlog. Notify reporter. Close. | N/A |
+| L1 confirms: **is an incident** | Log `INC-xxxx`. Classify. Assign priority. ✉ 2nd notification. | **Starts here** |
+
+> **Confirmation must happen within the Detect window (< 5 min for alerts, < 15 min for user reports).** This prevents gaming — L1 cannot delay confirmation to buy time on the SLA.
+
+### Reporter Notification Sequence (✉)
+
+| # | Stage | Who Sends | Message | Channel |
+|---|-------|-----------|---------|---------|
+| **1st** | ① Detect | L1/L2 | "Received, we're on it" | Same channel as report (call/chat/ticket) |
+| **2nd** | ② Triage | L1/L2 | "Classified as P__, target resolution: __" | Ticket update |
+| **During** | ③ Respond | IC / Team Lead | Include reporter in periodic status updates | Ticket update / chat |
+| **Last** | ④ Verify | IC / Team Lead | "Resolved, you can resume normal work" | Ticket update + direct notify |
+
+> For P3/P4 (no IC): team lead or assigned engineer handles all reporter notifications.
 
 ---
 
@@ -128,7 +196,7 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
 
 > **R** = Responsible · **A** = Accountable · **C** = Consulted · **I** = Informed
 >
-> For P3/P4: team lead assumes IC accountability. No formal IC role assigned.
+> For P3/P4: senior L1 or team lead assumes IC accountability. No formal IC role assigned. See "P3/P4 Handling" section for details.
 
 ---
 
@@ -167,8 +235,10 @@ flowchart TD
     %% ═══════════════════════════════════════
     subgraph S2["② TRIAGE  •  < 15 min"]
         direction TB
-        B1["<b>L1/L2 ITO</b><br/>Confirm incident is real"]
-        B2["<b>L1/L2 ITO</b><br/>Classify: Is infra healthy?"]
+        B1["<b>L1/L2 ITO</b><br/>Confirm: is this a real incident?"]
+        B_REAL{"Real incident?"}
+        B_EXIT["<b>NOT AN INCIDENT</b><br/>Route to: Service Request<br/>/ User error / Backlog<br/>Notify reporter & close"]
+        B2["<b>L1/L2 ITO</b><br/>⏱ Log INC-xxxx (SLA clock starts)<br/>Classify: Is infra healthy?"]
         FORK{"Infra healthy?"}
         KB_I{"Check KB<br/>Match found?"}
         KB_A{"Check KB<br/>Match found?"}
@@ -177,7 +247,10 @@ flowchart TD
         T_A_KB["<b>L1</b> assigns P from KB<br/>Execute first response<br/>Notify tech team (don't wait)"]
         T_A_NK["<b>L1</b> assigns preliminary P"]
 
-        B1 --> B2 --> FORK
+        B1 --> B_REAL
+        B_REAL -->|"NO"| B_EXIT
+        B_REAL -->|"YES"| B2
+        B2 --> FORK
         FORK -->|"NO — infra broken"| KB_I
         FORK -->|"YES — infra healthy"| KB_A
         KB_I -->|"YES"| T_I_KB
@@ -280,6 +353,7 @@ flowchart TD
     classDef forkNode fill:#1E1B3A,stroke:#A78BFA,stroke-width:2.5px,color:#DDD6FE
     classDef mgtNode fill:#0C2340,stroke:#0EA5E9,stroke-width:1.5px,color:#BAE6FD,rx:8
     classDef doneNode fill:#052E16,stroke:#22C55E,stroke-width:2.5px,color:#BBF7D0,rx:12
+    classDef exitNode fill:#1C1917,stroke:#6B7280,stroke-width:2px,color:#9CA3AF,rx:8
 
     class S1 stageDetect
     class S2 stageTriage
@@ -288,9 +362,10 @@ flowchart TD
     class S3B stageApp
     class S4 stageVerify
     class S5 stageClose
-    class FORK,KB_I,KB_A forkNode
+    class FORK,KB_I,KB_A,B_REAL forkNode
     class MGT mgtNode
     class F6 doneNode
+    class B_EXIT exitNode
 ```
 
 ### Incident Classification Decision
@@ -336,10 +411,10 @@ flowchart LR
 flowchart LR
     subgraph PRI["Priority Matrix"]
         direction TB
-        S1["P1 — Critical<br/>Full outage · Data breach · Financial data affected<br/><i>Respond: Immediate · Resolve: < 1 hr</i><br/>All hands + IC + Management"]
-        S2["P2 — Major<br/>Significant degradation · Key function down<br/><i>Respond: < 15 min · Resolve: < 4 hrs</i><br/>IC + On-call + Mgmt notified"]
-        S3["P3 — Minor<br/>Partial impact · Workaround exists<br/><i>Respond: < 1 hr · Resolve: < 1 day</i><br/>On-call / assigned engineer"]
-        S4["P4 — Low<br/>Cosmetic · Minimal impact<br/><i>Respond: Next day · Resolve: < 5 days</i><br/>Assigned developer"]
+        S1["P1 — Critical<br/>Full outage · Data breach · Financial data affected<br/><i>Respond: < 15 min · Contain: < 2 hrs</i><br/>All hands + IC + Management"]
+        S2["P2 — Major<br/>Significant degradation · Key function down<br/><i>Respond: < 30 min · Contain: < 4 hrs</i><br/>IC + On-call + Mgmt notified"]
+        S3["P3 — Minor<br/>Partial impact · Workaround exists<br/><i>Respond: < 2 hrs · Contain: < 1 day</i><br/>Assigned engineer"]
+        S4["P4 — Low<br/>Cosmetic · Minimal impact<br/><i>Respond: Next day · Resolve: < 15 days</i><br/>Assigned developer"]
         S1 ~~~ S2 ~~~ S3 ~~~ S4
     end
 
