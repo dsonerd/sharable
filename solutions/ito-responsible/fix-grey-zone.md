@@ -1,82 +1,87 @@
-# Fix: Grey Zone Between IT Operation and Operation Department
+# Cross-Team Issue Handling — IT Operation and Operation Department
 
-## The problem
+## Context
 
-The current capability declaration draws a clean line:
-- **IT Operation** → technical support
-- **Operation Department** → business decisions
+IT Operation owns technical support. The Operation Department owns business support. However, many frontline issues do not fall cleanly into one side. When ownership is unclear, the risk is that the user gets bounced between teams with no resolution.
 
-In practice, many frontline issues sit in the middle. The user calls IT, IT says "that's business," Operations says "that's a system issue," and the user gets bounced. This is the single biggest source of frustration in dual-support models.
+This document defines the handling protocol for issues that sit between technical and business support.
 
-### Real grey-zone examples
+---
 
-| User reports | Looks like IT | Looks like Operations |
+## Grey-zone examples
+
+| User reports | Technical angle | Business angle |
 |---|---|---|
-| "I submitted a proposal but the system rejected it with error code UW-403" | Error code → system issue | UW-403 might mean underwriting rule rejection → business logic |
+| "System rejected my proposal with error code UW-403" | Error code → system issue | UW-403 may mean underwriting rule rejection → business logic |
 | "The premium calculation looks wrong" | Could be a calculation bug | Could be correct but user misunderstands product rules |
 | "I can't find the rider option in the quote screen" | Screen/UI issue | Rider may not be available for this product/channel → business config |
 | "Document upload succeeded but case still shows 'pending documents'" | Integration/workflow bug | Operations may not have released the document requirement list |
 | "Customer portal shows different benefits than what I quoted" | Data sync issue | Could be different product version or interpretation |
 | "System won't let me backdate this policy" | System validation/block | Backdating may require business exception approval |
 
-These are not edge cases. They are **everyday cases** in a life insurance sales system.
+These are everyday cases in a life insurance sales system, not edge cases.
 
 ---
 
-## Proposed approach: No-Bounce Protocol
+## No-Bounce Protocol
 
-The principle is simple: **the team that receives the ticket owns it until it is accepted by the other team.** No user should ever be told "that's not us" without a warm handoff.
+**Principle:** the team that receives the ticket owns it until the other team explicitly accepts it. No frontline user should ever be told "that's not us" without a warm handoff.
 
 ### Rule 1 — First receiver owns the ticket
 
-Whichever team (IT or Operations) receives the ticket first is responsible for:
+Whichever team receives the ticket first is responsible for:
 - recording the issue
 - performing their own initial assessment
-- if they believe it belongs to the other team, they **transfer the ticket with context**, not redirect the user
+- if they believe it belongs to the other team, **transferring the ticket with context** — not redirecting the user
 
 The user never has to re-explain the issue.
 
 ### Rule 2 — Transfer, not redirect
 
-| Bad (redirect) | Good (transfer) |
+| Redirect (wrong) | Transfer (correct) |
 |---|---|
 | "Please call Operations at ext 500" | IT logs the ticket, adds initial findings, assigns to Operations queue, notifies the user: "I've transferred your case to the Operations team with the details. Your ticket number is X." |
 | "That's a business question, not IT" | "I've checked and the system is working correctly for this scenario. I'm transferring this to Operations because it may involve a product rule. They'll contact you." |
 
 ### Rule 3 — 15-minute grey-zone triage
 
-For tickets that are ambiguous:
+For tickets where ownership is ambiguous:
 
 1. The receiving team has **15 minutes** to perform initial assessment
 2. If they can resolve it, they resolve it — regardless of which team "owns" the domain
-3. If they cannot determine ownership within 15 minutes, they **escalate to the Grey Zone queue** (a shared queue visible to both IT and Operations leads)
-4. The IT lead and Operations lead jointly triage the Grey Zone queue **twice daily** (morning and afternoon)
-5. Tickets in the Grey Zone queue must be claimed within **2 hours**
+3. If they cannot determine ownership within 15 minutes, they **escalate to the shared triage queue** visible to both IT and Operations leads
+4. The IT lead and Operations lead jointly triage the shared queue **twice daily** (morning and afternoon)
+5. Tickets in the shared queue must be claimed within **2 hours**
 
-### Rule 4 — If both teams reject, it escalates up
+### Rule 4 — Double-rejection escalation
 
-If a ticket bounces between IT and Operations more than once:
+If a ticket is rejected by both teams:
 - It auto-escalates to the **IT Operation Manager** and **Operations Manager**
 - They jointly decide ownership within **4 hours**
 - The decision is logged and becomes a precedent for future similar tickets
 
 ### Rule 5 — Build the boundary map from real tickets
 
-After 30 days, review all Grey Zone tickets and:
+After the first 30 days, review all shared-queue tickets and:
 - Classify them into patterns
-- Update the responsibility declaration with explicit ownership for each pattern
+- Assign explicit ownership for each pattern
 - Add these to both teams' knowledge bases
 
-This is how the grey zone **shrinks over time** instead of staying ambiguous.
+This is how the grey zone **shrinks over time** instead of staying ambiguous. The review repeats monthly.
 
 ---
 
-## Suggested text to add to the capability declaration
+## Prerequisites
 
-Add as a new section **2.4A** (between current 2.4 and 2.5), or as a standalone section after Section 3:
+- A shared triage queue or tag in the ticketing system
+- Agreement from both IT and Operations managers to co-triage
+- A twice-daily 10-minute sync (can be async in the ticketing system)
+- A monthly review to update the boundary map
 
-> ### Grey-zone issue handling
->
+---
+
+## Summary
+
 > Some frontline issues fall between technical support and business support. For these cases:
 >
 > 1. The team that receives the ticket first owns it until it is accepted by the other team.
@@ -85,13 +90,4 @@ Add as a new section **2.4A** (between current 2.4 and 2.5), or as a standalone 
 > 4. If a ticket is rejected by both teams, it escalates to the IT Operation Manager and Operations Manager for a joint decision within 4 hours.
 > 5. Grey-zone patterns are reviewed monthly and converted into explicit ownership rules to reduce ambiguity over time.
 >
-> The goal is: **no frontline user is ever bounced between teams without a resolution path.**
-
----
-
-## What this requires
-
-- A shared "Grey Zone" queue or tag in the ticketing system
-- Agreement from both IT and Operations managers to co-triage
-- A twice-daily 10-minute sync (can be async in the ticketing system)
-- A monthly review to update the boundary map
+> **No frontline user is ever bounced between teams without a resolution path.**
