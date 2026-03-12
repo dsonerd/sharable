@@ -35,6 +35,8 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
 
 ### Slide Layout (5 Stages × 6 Roles)
 
+> **P** = Priority level (P1–P4) as defined in the Priority Matrix above.
+
 ```
  STAGE ▸       ① DETECT         ② TRIAGE            ②b COLLABORATE       ③ RESPOND & FIX      ④ VERIFY          ⑤ CLOSE
                (< 5 min)        (< 15 min)          (App, no KB match)   (Priority-dependent)  (< 30 min)        (P1/P2: < 48 hrs)
@@ -48,7 +50,7 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
              │                │                   │                    │                      │                 │
  L1/L2 ITO   │ Receive &      │ Confirm real?     │ Loop in Tech Team  │                      │                 │
  (On-call /  │ acknowledge    │ Check infra       │ + BA within 30 min │                      │                 │
-  Help Desk) │                │ health            │ Share prelim P     │                      │                 │
+  Help Desk) │                │ health            │ Share preliminary P│                      │                 │
              │                │ Classify: Infra   │ Confirm / adjust P │                      │                 │
              │                │ or Application?   │                    │                      │                 │
              │                │                   │                    │                      │                 │
@@ -57,8 +59,8 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
              │                │ scenarios         │                    │                      │                 │
              │                │                   │                    │                      │                 │
              │                │ KB MATCH:         │                    │                      │                 │
-             │                │ → Assign P from   │                    │                      │                 │
-             │                │   KB immediately  │                    │                      │                 │
+             │                │ → Assign priority │                    │                      │                 │
+             │                │   (P) from KB     │                    │                      │                 │
              │                │ → Execute first   │                    │                      │                 │
              │                │   response        │                    │                      │                 │
              │                │ → App: notify     │                    │                      │                 │
@@ -85,8 +87,8 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
  TECH TEAM   │                │                   │ App Incident:      │ INFRA INCIDENT:      │ Monitor 15 min  │ Contribute to
  (Dev /      │                │                   │ Assess blast       │  → Rollback/restart/ │ for regression  │ RCA findings
   Infra /    │                │                   │ radius with L1     │    failover          │                 │
-  BA / DBA)  │                │                   │ Confirm or         │  → Apply infra fix   │                 │
-             │                │                   │ adjust P           │                      │                 │
+  BA / DBA)  │                │                   │ Confirm or adjust  │  → Apply infra fix   │                 │
+             │                │                   │ priority           │                      │                 │
              │                │                   │                    │ APP INCIDENT:        │                 │
              │                │                   │                    │  → Root cause        │                 │
              │                │                   │                    │  → Develop & test fix│                 │
@@ -136,7 +138,7 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
 |---|---|---|
 | **Infra health** | Broken | Healthy |
 | **Problem layer** | Server, network, DB, cloud | App code, logic, design, config, data |
-| **Priority assignment** | KB match → assign P from KB. No match → assign by scope. | KB match → assign P from KB, act immediately, notify tech team. No match → preliminary P → Tech Team confirms within 30 min. |
+| **Priority assignment** | KB match → assign priority (P) from KB. No match → assign P by scope. | KB match → assign P from KB, act immediately, notify tech team. No match → preliminary priority → Tech Team confirms within 30 min. |
 | **Response** | Restore immediately (rollback, restart, failover) | Assess blast radius → fix correctly → remediate data |
 | **Owner** | Infra / DevOps | Dev / BA team |
 | **Detection** | Loud — monitoring catches it | Often quiet — detected by people, not alerts |
@@ -183,7 +185,7 @@ flowchart TD
 
     subgraph S3A["③ RESPOND — Infrastructure Incident"]
         direction TB
-        C0["<b>L1</b> assigns P from KB<br/>Execute documented response"]
+        C0["<b>L1</b> assigns Priority (P) from KB<br/>Execute documented response"]
         C0N["<b>L1</b> assigns P by scope"]
         C1["<b>IC</b> · P1/P2 only<br/>Coordinate · Status updates<br/>(P1: 30 min · P2: 1 hr)"]
         C2["<b>Infra / DevOps</b><br/>Rollback / Restart / Failover"]
@@ -205,7 +207,7 @@ flowchart TD
         direction TB
         D0K["<b>L1</b> assigns P from KB<br/>Execute documented response<br/>Notify tech team (don't wait)"]
         D0["<b>L1</b> assigns preliminary P"]
-        D0B["<b>L1 + Tech Team + BA</b><br/>Collaborate within 30 min<br/>Assess blast radius · Confirm / adjust P"]
+        D0B["<b>L1 + Tech Team + BA</b><br/>Collaborate within 30 min<br/>Assess blast radius · Confirm / adjust priority"]
         D1["<b>IC</b> · P1/P2 only<br/>Coordinate · Status updates"]
         D2["<b>Dev Team</b><br/>Root cause & develop fix"]
         D3["<b>QA</b><br/>Validate fix in staging"]
@@ -289,7 +291,7 @@ flowchart LR
     Q1 -->|"YES — infra healthy,<br/>problem is in the app"| AI["<b>Application<br/>Incident</b>"]
 
     II --> II_KB{"KB match?"}
-    II_KB -->|"YES"| II_P1["Assign P from KB<br/>Execute response"]
+    II_KB -->|"YES"| II_P1["Assign Priority (P) from KB<br/>Execute response"]
     II_KB -->|"NO"| II_P2["Assign P by scope"]
     II --> II_OWNER["<b>Owner:</b><br/>Infra / DevOps"]
     II --> II_ACTION["<b>Actions:</b><br/>Failover · Restart<br/>Rollback · Fix infra"]
