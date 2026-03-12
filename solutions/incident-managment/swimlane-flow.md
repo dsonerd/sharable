@@ -33,11 +33,11 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
 
 ## Swimlane Flow — Who Does What
 
-### Slide Layout (6 Stages × 6 Roles)
+### Slide Layout (5 Stages × 6 Roles)
 
 ```
  STAGE ▸       ① DETECT         ② TRIAGE            ②b COLLABORATE       ③ RESPOND & FIX      ④ VERIFY          ⑤ CLOSE
-               (< 5 min)        (< 15 min)          (< 30 min, App only) (Priority-dependent)  (< 30 min)        (< 48 hrs)
+               (< 5 min)        (< 15 min)          (App, no KB match)   (Priority-dependent)  (< 30 min)        (P1/P2: < 48 hrs)
 ─────────────┬────────────────┬───────────────────┬────────────────────┬──────────────────────┬─────────────────┬──────────────────
              │                │                   │                    │                      │                 │
  ANYONE      │ Report issue   │                   │                    │                      │                 │
@@ -46,37 +46,39 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
              │                │                   │                    │                      │                 │
 ─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
              │                │                   │                    │                      │                 │
- L1/L2 ITO   │ Receive &      │ Confirm real?     │ KB NO MATCH:         │                      │                 │
- (On-call /  │ acknowledge    │ Check infra       │  App Incident:     │                      │                 │
-  Help Desk) │                │ health            │  Loop in Tech Team │                      │                 │
-             │                │ Classify: Infra   │  + BA within 30 min│                      │                 │
-             │                │ or Application?   │  Share prelim P    │                      │                 │
+ L1/L2 ITO   │ Receive &      │ Confirm real?     │ Loop in Tech Team  │                      │                 │
+ (On-call /  │ acknowledge    │ Check infra       │ + BA within 30 min │                      │                 │
+  Help Desk) │                │ health            │ Share prelim P     │                      │                 │
+             │                │ Classify: Infra   │ Confirm / adjust P │                      │                 │
+             │                │ or Application?   │                    │                      │                 │
              │                │                   │                    │                      │                 │
-             │                │ Check Knowledge   │  Infra Incident:   │                      │                 │
-             │                │ Base for known    │  (skip — escalate  │                      │                 │
-             │                │ scenarios         │   immediately)     │                      │                 │
+             │                │ Check Knowledge   │                    │                      │                 │
+             │                │ Base for known    │                    │                      │                 │
+             │                │ scenarios         │                    │                      │                 │
              │                │                   │                    │                      │                 │
-             │                │ KB MATCH:         │ KB MATCH:          │                      │                 │
-             │                │ → Assign P from   │ (already acted —   │                      │                 │
-             │                │   KB immediately  │  tech team can     │                      │                 │
-             │                │ → Execute first   │  re-evaluate P)    │                      │                 │
+             │                │ KB MATCH:         │                    │                      │                 │
+             │                │ → Assign P from   │                    │                      │                 │
+             │                │   KB immediately  │                    │                      │                 │
+             │                │ → Execute first   │                    │                      │                 │
              │                │   response        │                    │                      │                 │
-             │                │ → Notify tech     │                    │                      │                 │
-             │                │   team (don't     │                    │                      │                 │
-             │                │   wait)           │                    │                      │                 │
+             │                │ → App: notify     │                    │                      │                 │
+             │                │   tech team       │                    │                      │                 │
+             │                │   (don't wait)    │                    │                      │                 │
              │                │                   │                    │                      │                 │
              │                │ KB NO MATCH:      │                    │                      │                 │
-             │                │ → Assign P (infra)│                    │                      │                 │
-             │                │ → Assign prelim   │                    │                      │                 │
-             │                │   P (app)         │                    │                      │                 │
+             │                │ → Infra: assign P │                    │                      │                 │
+             │                │   by scope        │                    │                      │                 │
+             │                │ → App: assign     │                    │                      │                 │
+             │                │   preliminary P   │                    │                      │                 │
              │                │                   │                    │                      │                 │
 ─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
              │                │                   │                    │                      │                 │
- INCIDENT    │                │ Assigned as IC    │                    │ Coordinate team      │ Confirm service │ Lead RCA meeting
- COMMANDER   │                │ (P1/P2 only)      │                    │ Manage comms         │ restored or fix │ Publish report
- (IC)        │                │                   │                    │ Decide: rollback?    │ deployed        │ Track actions
+ INCIDENT    │                │ Assigned as IC    │                    │ Coordinate team      │ Confirm service │ Lead RCA
+ COMMANDER   │                │ (P1/P2 only)      │                    │ Manage comms         │ restored        │ Publish report
+ (IC)        │                │                   │                    │ Decide: rollback?    │                 │ Track actions
              │                │                   │                    │   escalate? war room?│                 │ Update Knowledge
-             │                │                   │                    │                      │                 │ Base
+             │                │                   │                    │ Status updates       │                 │ Base
+             │                │                   │                    │ (P1: 30m · P2: 1hr)  │                 │
              │                │                   │                    │                      │                 │
 ─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
              │                │                   │                    │                      │                 │
@@ -93,19 +95,21 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
              │                │                   │                    │                      │                 │
 ─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
              │                │                   │                    │                      │                 │
- QA          │                │                   │                    │                      │ Validate fix in │ Verify no
-             │                │                   │                    │                      │ staging (App    │ regression
-             │                │                   │                    │                      │ Incident only)  │
+ QA          │                │                   │                    │ Validate fix in      │                 │
+             │                │                   │                    │ staging before deploy│                 │
+             │                │                   │                    │ (App Incident only)  │                 │
              │                │                   │                    │                      │                 │
 ─────────────┼────────────────┼───────────────────┼────────────────────┼──────────────────────┼─────────────────┼──────────────────
              │                │                   │                    │                      │                 │
- MANAGEMENT  │                │ Notified          │                    │ Receive status       │ Approve service │ Review RCA
+ MANAGEMENT  │                │ Notified          │                    │ Receive status       │ Notified of     │ Review RCA
  (IT Mgr /   │                │ (P1/P2)           │                    │ updates              │ restoration     │ Sign off
   CTO)       │                │ Approve           │                    │ (P1: every 30 min,   │                 │ action items
              │                │ escalation        │                    │  P2: every 1 hr)     │                 │
              │                │                   │                    │                      │                 │
 ─────────────┴────────────────┴───────────────────┴────────────────────┴──────────────────────┴─────────────────┴──────────────────
 ```
+
+> **P3/P4 note:** No Incident Commander assigned. Team lead coordinates directly. Simplified post-incident review instead of full RCA — escalate to full RCA only if financial or data impact.
 
 ---
 
@@ -115,12 +119,14 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
 |-------|-----------|-------------------|-----------|-----|------------|
 | ① Detect | **R** | I | I | — | — |
 | ② Triage | **R/A** | **A** (P1/P2) | **C** | — | **I** (P1/P2) |
-| ②b Collaborate (App Incident) | **R** | I | **R/A** | — | — |
-| ③ Respond & Fix | I | **A** | **R** | **R** (App Incident) | **I** |
-| ④ Verify | I | **A** | **R** | **R** | **I** |
-| ⑤ Close (RCA) | — | **R** | **C** | **C** | **A** |
+| ②b Collaborate (App, no KB match) | **R** | I | **R/A** | — | — |
+| ③ Respond & Fix | I | **A** (P1/P2) | **R** | **R** (App Incident) | **I** |
+| ④ Verify | I | **A** | **R** | — | **I** |
+| ⑤ Close (RCA) | — | **R** | **C** | — | **A** |
 
 > **R** = Responsible · **A** = Accountable · **C** = Consulted · **I** = Informed
+>
+> For P3/P4: team lead assumes IC accountability. No formal IC role assigned.
 
 ---
 
@@ -161,33 +167,30 @@ flowchart TD
         direction TB
         B1["<b>L1/L2 ITO</b><br/>Confirm incident is real"]
         B2["<b>L1/L2 ITO</b><br/>Classify: Is infra healthy?"]
-        B3["<b>L1/L2 ITO</b><br/>Check Knowledge Base"]
-        B1 --> B2 --> B3
+        B1 --> B2
     end
 
     A1 --> B1
     A2 --> B1
     A3 --> B1
 
-    B3 --> FORK{"Infra healthy?"}
+    B2 --> FORK{"Infra healthy?"}
 
     %% ═══════════════════════════════════════
     %% INFRA INCIDENT PATH
     %% ═══════════════════════════════════════
-    FORK -->|"NO — infra broken"| KB_I{"KB match?"}
+    FORK -->|"NO — infra broken"| KB_I{"Check KB<br/>Match found?"}
 
     subgraph S3A["③ RESPOND — Infrastructure Incident"]
         direction TB
         C0["<b>L1</b> assigns P from KB<br/>Execute documented response"]
         C0N["<b>L1</b> assigns P by scope"]
-        C1["<b>Incident Commander</b><br/>Activate war room<br/>Coordinate response"]
+        C1["<b>IC</b> · P1/P2 only<br/>Coordinate · Status updates<br/>(P1: 30 min · P2: 1 hr)"]
         C2["<b>Infra / DevOps</b><br/>Rollback / Restart / Failover"]
         C3["<b>Infra / DevOps</b><br/>Apply infrastructure fix"]
-        C4["<b>IC</b><br/>Status updates<br/>P1: 30 min · P2: 1 hr"]
         C0 --> C1
         C0N --> C1
         C1 --> C2 --> C3
-        C1 --> C4
     end
 
     KB_I -->|"YES"| C0
@@ -196,15 +199,15 @@ flowchart TD
     %% ═══════════════════════════════════════
     %% APPLICATION INCIDENT PATH
     %% ═══════════════════════════════════════
-    FORK -->|"YES — infra healthy"| KB_A{"KB match?"}
+    FORK -->|"YES — infra healthy"| KB_A{"Check KB<br/>Match found?"}
 
     subgraph S3B["②b + ③ — Application Incident"]
         direction TB
         D0K["<b>L1</b> assigns P from KB<br/>Execute documented response<br/>Notify tech team (don't wait)"]
         D0["<b>L1</b> assigns preliminary P"]
-        D0B["<b>L1 + Tech Team + BA</b><br/>Collaborate within 30 min<br/>Assess blast radius<br/>Confirm / adjust P"]
-        D1["<b>Incident Commander</b><br/>Coordinate response"]
-        D2["<b>Dev Team</b><br/>Root cause & develop fix<br/>(re-evaluate P if needed)"]
+        D0B["<b>L1 + Tech Team + BA</b><br/>Collaborate within 30 min<br/>Assess blast radius · Confirm / adjust P"]
+        D1["<b>IC</b> · P1/P2 only<br/>Coordinate · Status updates"]
+        D2["<b>Dev Team</b><br/>Root cause & develop fix"]
         D3["<b>QA</b><br/>Validate fix in staging"]
         D4["<b>Dev / DBA</b><br/>Deploy & remediate data"]
         D0K --> D1
@@ -221,39 +224,35 @@ flowchart TD
     subgraph S4["④ VERIFY  •  < 30 min"]
         direction TB
         E1["<b>Tech Team</b><br/>Monitor 15 min for regression"]
-        E2["<b>QA</b><br/>Confirm fix correctness"]
-        E3["<b>IC</b><br/>Confirm service restored"]
+        E3["<b>IC / Team Lead</b><br/>Confirm service restored"]
         E1 --> E3
-        E2 --> E3
     end
 
     C3 --> E1
     D4 --> E1
-    D4 --> E2
 
     %% ═══════════════════════════════════════
     %% STAGE 5: CLOSE
     %% ═══════════════════════════════════════
     subgraph S5["⑤ CLOSE  •  Within 48 hrs"]
         direction TB
-        F1["<b>IC</b><br/>Lead blameless RCA"]
+        F1["<b>IC / Team Lead</b><br/>Lead blameless RCA"]
         F2["<b>Tech Team</b><br/>Identify root cause"]
-        F3["<b>IC</b><br/>Define action items"]
-        F4["<b>IC</b><br/>Update Knowledge Base"]
+        F3["<b>IC / Team Lead</b><br/>Define action items<br/>Update Knowledge Base"]
         F5["<b>Management</b><br/>Review & sign off"]
         F6["<b>INCIDENT CLOSED</b><br/>RCA published · Actions in backlog<br/>Knowledge Base updated"]
-        F1 --> F2 --> F3 --> F4 --> F5 --> F6
+        F1 --> F2 --> F3 --> F5 --> F6
     end
 
     E3 --> F1
 
     %% ═══════════════════════════════════════
-    %% MANAGEMENT — parallel
+    %% MANAGEMENT — parallel track
     %% ═══════════════════════════════════════
     MGT["<b>Management</b><br/>Notified P1/P2<br/>Status updates"]
 
-    B3 -. "P1/P2<br/>notification" .-> MGT
-    C4 -. "status<br/>updates" .-> MGT
+    C1 -. "P1/P2<br/>notify + updates" .-> MGT
+    D1 -. "P1/P2<br/>notify + updates" .-> MGT
     E3 -. "all-clear" .-> MGT
 
     %% ═══════════════════════════════════════
