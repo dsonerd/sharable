@@ -163,62 +163,71 @@ flowchart TD
     end
 
     %% ═══════════════════════════════════════
-    %% STAGE 2: TRIAGE
+    %% STAGE 2: TRIAGE (includes KB check & priority assignment)
     %% ═══════════════════════════════════════
     subgraph S2["② TRIAGE  •  < 15 min"]
         direction TB
         B1["<b>L1/L2 ITO</b><br/>Confirm incident is real"]
         B2["<b>L1/L2 ITO</b><br/>Classify: Is infra healthy?"]
-        B1 --> B2
+        FORK{"Infra healthy?"}
+        KB_I{"Check KB<br/>Match found?"}
+        KB_A{"Check KB<br/>Match found?"}
+        T_I_KB["<b>L1</b> assigns P from KB<br/>Execute documented response"]
+        T_I_NK["<b>L1</b> assigns P by scope"]
+        T_A_KB["<b>L1</b> assigns P from KB<br/>Execute first response<br/>Notify tech team (don't wait)"]
+        T_A_NK["<b>L1</b> assigns preliminary P"]
+
+        B1 --> B2 --> FORK
+        FORK -->|"NO — infra broken"| KB_I
+        FORK -->|"YES — infra healthy"| KB_A
+        KB_I -->|"YES"| T_I_KB
+        KB_I -->|"NO"| T_I_NK
+        KB_A -->|"YES"| T_A_KB
+        KB_A -->|"NO"| T_A_NK
     end
 
     A1 --> B1
     A2 --> B1
     A3 --> B1
 
-    B2 --> FORK{"Infra healthy?"}
-
     %% ═══════════════════════════════════════
-    %% INFRA INCIDENT PATH
+    %% INFRA INCIDENT — RESPOND
     %% ═══════════════════════════════════════
-    FORK -->|"NO — infra broken"| KB_I{"Check KB<br/>Match found?"}
-
     subgraph S3A["③ RESPOND — Infrastructure Incident"]
         direction TB
-        C0["<b>L1</b> assigns Priority (P) from KB<br/>Execute documented response"]
-        C0N["<b>L1</b> assigns P by scope"]
-        C1["<b>IC</b> · P1/P2 only<br/>Coordinate · Status updates<br/>(P1: 30 min · P2: 1 hr)"]
+        C1["<b>IC</b> · P1/P2 only<br/>Coordinate · Decide: rollback?<br/>escalate? war room?<br/>Status updates (P1: 30m · P2: 1hr)"]
         C2["<b>Infra / DevOps</b><br/>Rollback / Restart / Failover"]
         C3["<b>Infra / DevOps</b><br/>Apply infrastructure fix"]
-        C0 --> C1
-        C0N --> C1
         C1 --> C2 --> C3
     end
 
-    KB_I -->|"YES"| C0
-    KB_I -->|"NO"| C0N
+    T_I_KB --> C1
+    T_I_NK --> C1
 
     %% ═══════════════════════════════════════
-    %% APPLICATION INCIDENT PATH
+    %% APP INCIDENT — COLLABORATE (no KB match only)
     %% ═══════════════════════════════════════
-    FORK -->|"YES — infra healthy"| KB_A{"Check KB<br/>Match found?"}
-
-    subgraph S3B["②b + ③ — Application Incident"]
+    subgraph S2B["②b COLLABORATE — App, no KB match  •  < 30 min"]
         direction TB
-        D0K["<b>L1</b> assigns P from KB<br/>Execute documented response<br/>Notify tech team (don't wait)"]
-        D0["<b>L1</b> assigns preliminary P"]
-        D0B["<b>L1 + Tech Team + BA</b><br/>Collaborate within 30 min<br/>Assess blast radius · Confirm / adjust priority"]
-        D1["<b>IC</b> · P1/P2 only<br/>Coordinate · Status updates"]
+        D0B["<b>L1 + Tech Team + BA</b><br/>Assess blast radius<br/>Confirm / adjust priority"]
+    end
+
+    T_A_NK --> D0B
+
+    %% ═══════════════════════════════════════
+    %% APP INCIDENT — RESPOND
+    %% ═══════════════════════════════════════
+    subgraph S3B["③ RESPOND — Application Incident"]
+        direction TB
+        D1["<b>IC</b> · P1/P2 only<br/>Coordinate · Decide: rollback?<br/>escalate? war room?<br/>Status updates (P1: 30m · P2: 1hr)"]
         D2["<b>Dev Team</b><br/>Root cause & develop fix"]
         D3["<b>QA</b><br/>Validate fix in staging"]
         D4["<b>Dev / DBA</b><br/>Deploy & remediate data"]
-        D0K --> D1
-        D0 --> D0B --> D1
         D1 --> D2 --> D3 --> D4
     end
 
-    KB_A -->|"YES"| D0K
-    KB_A -->|"NO"| D0
+    T_A_KB --> D1
+    D0B --> D1
 
     %% ═══════════════════════════════════════
     %% STAGE 4: VERIFY
@@ -236,12 +245,12 @@ flowchart TD
     %% ═══════════════════════════════════════
     %% STAGE 5: CLOSE
     %% ═══════════════════════════════════════
-    subgraph S5["⑤ CLOSE  •  Within 48 hrs"]
+    subgraph S5["⑤ CLOSE  •  P1/P2: within 48 hrs"]
         direction TB
-        F1["<b>IC / Team Lead</b><br/>Lead blameless RCA"]
+        F1["<b>IC / Team Lead</b><br/>Lead blameless RCA<br/><i>(P3/P4: simplified review only)</i>"]
         F2["<b>Tech Team</b><br/>Identify root cause"]
         F3["<b>IC / Team Lead</b><br/>Define action items<br/>Update Knowledge Base"]
-        F5["<b>Management</b><br/>Review & sign off"]
+        F5["<b>Management</b><br/>Review & sign off<br/><i>(P1/P2 only)</i>"]
         F6["<b>INCIDENT CLOSED</b><br/>RCA published · Actions in backlog<br/>Knowledge Base updated"]
         F1 --> F2 --> F3 --> F5 --> F6
     end
@@ -251,10 +260,11 @@ flowchart TD
     %% ═══════════════════════════════════════
     %% MANAGEMENT — parallel track
     %% ═══════════════════════════════════════
-    MGT["<b>Management</b><br/>Notified P1/P2<br/>Status updates"]
+    MGT["<b>Management</b><br/>Notified at triage (P1/P2)<br/>Approve escalation<br/>Receive status updates"]
 
-    C1 -. "P1/P2<br/>notify + updates" .-> MGT
-    D1 -. "P1/P2<br/>notify + updates" .-> MGT
+    FORK -. "P1/P2 identified →<br/>notify Management" .-> MGT
+    C1 -. "P1/P2<br/>status updates" .-> MGT
+    D1 -. "P1/P2<br/>status updates" .-> MGT
     E3 -. "all-clear" .-> MGT
 
     %% ═══════════════════════════════════════
@@ -264,6 +274,7 @@ flowchart TD
     classDef stageTriage fill:#1E293B,stroke:#8B5CF6,stroke-width:2px,color:#E2E8F0
     classDef stageInfra fill:#1C1917,stroke:#EF4444,stroke-width:2px,color:#FCA5A5
     classDef stageApp fill:#1C1917,stroke:#F59E0B,stroke-width:2px,color:#FDE68A
+    classDef stageCollab fill:#1C1917,stroke:#F59E0B,stroke-width:1.5px,color:#FDE68A
     classDef stageVerify fill:#1E293B,stroke:#10B981,stroke-width:2px,color:#A7F3D0
     classDef stageClose fill:#1E293B,stroke:#0EA5E9,stroke-width:2px,color:#BAE6FD
     classDef forkNode fill:#1E1B3A,stroke:#A78BFA,stroke-width:2.5px,color:#DDD6FE
@@ -273,6 +284,7 @@ flowchart TD
     class S1 stageDetect
     class S2 stageTriage
     class S3A stageInfra
+    class S2B stageCollab
     class S3B stageApp
     class S4 stageVerify
     class S5 stageClose
