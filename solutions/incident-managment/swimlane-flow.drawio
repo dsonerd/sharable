@@ -212,8 +212,8 @@
         <!-- ============================================ -->
 
         <!-- IC: Coordinate (both paths lead here) -->
-        <mxCell id="160" value="&lt;b&gt;IC&lt;/b&gt; (P1/P2 only)&lt;br&gt;Coordinate team · Manage comms&lt;br&gt;Decide: rollback? escalate? war room?&lt;br&gt;Status updates (P1:30m · P2:1hr)&lt;br&gt;✉ Include reporter in updates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="1140" y="693" width="225" height="85" as="geometry"/>
+        <mxCell id="160" value="&lt;b&gt;IC&lt;/b&gt; (P1/P2 only)&lt;br&gt;Workaround first if available&lt;br&gt;Coordinate team · Manage comms&lt;br&gt;Decide: rollback? escalate? war room?&lt;br&gt;Status updates (P1:30m · P2:1hr)&lt;br&gt;✉ Include reporter in updates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="693" width="225" height="97" as="geometry"/>
         </mxCell>
 
         <!-- Infra path: Rollback/Restart -->
@@ -251,8 +251,8 @@
         </mxCell>
 
         <!-- IC: Confirm service restored -->
-        <mxCell id="191" value="&lt;b&gt;IC / Team Lead&lt;/b&gt;&lt;br&gt;Confirm service restored&lt;br&gt;✉ Last: &lt;i&gt;'Resolved, you can resume'&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="1478" y="705" width="175" height="60" as="geometry"/>
+        <mxCell id="191" value="&lt;b&gt;IC / Team Lead&lt;/b&gt;&lt;br&gt;Confirm service restored&lt;br&gt;Reporter confirms resolution&lt;br&gt;✉ Last: &lt;i&gt;'Resolved, you can resume'&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1478" y="705" width="175" height="72" as="geometry"/>
         </mxCell>
 
         <!-- ============================================ -->
@@ -559,6 +559,20 @@
         <!-- Verify Confirm → Mgmt All-clear -->
         <mxCell id="342" value="all-clear" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="191" target="222" parent="1">
           <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- FEEDBACK ARROW — Verify failed               -->
+        <!-- ============================================ -->
+        <mxCell id="350" value="&lt;font color=&quot;#EF4444&quot;&gt;&lt;b&gt;Not resolved&lt;/b&gt;&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;dashed=1;dashPattern=5 3;fontSize=9;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="191" target="160" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================ -->
+        <!-- OPERATIONAL ANNOTATION — After-hours note    -->
+        <!-- ============================================ -->
+        <mxCell id="410" value="After hours: L1 + on-call dev assess;&lt;br&gt;BA joins next business day" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FB923C;strokeWidth=1;fontSize=8;fontColor=#9A3412;dashed=1;dashPattern=3 3;" vertex="1" parent="1">
+          <mxGeometry x="875" y="598" width="185" height="28" as="geometry"/>
         </mxCell>
 
       </root>
