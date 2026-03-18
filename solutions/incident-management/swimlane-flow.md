@@ -23,9 +23,8 @@ Every box in the swimlane diagram has a **step number** for easy reference durin
 | **ANYONE** | User / Alert | Any person or automated monitoring system that detects an issue |
 | **L1/L2 ITO** | On-call / Help Desk | First- and second-line IT Operations staff who receive, acknowledge, triage, and classify incidents |
 | **INCIDENT COMMANDER (IC)** | IC | Senior responder who coordinates P1/P2 response, manages communications, and drives resolution |
-| **TECH TEAM** | Dev / Infra / BA / DBA | Technical specialists who investigate root causes, develop fixes, and deploy changes |
+| **TECH TEAM** | Dev / Infra / BA / DBA / QA | Technical specialists who investigate root causes, develop fixes, validate in staging, and deploy changes |
 | **L3 / VENDOR** | Specialist | Third-level support or external vendors engaged for specialist investigation and fixes |
-| **QA** | Quality Assurance | Validates fixes in staging before production deployment (application incidents) |
 | **MANAGEMENT** | IT Mgr / CTO | Receives notifications for P1/P2, approves escalations, approves fix deployments, and signs off on RCA |
 
 ---
@@ -165,7 +164,7 @@ Lane: TECH TEAM (Dev Team)
   - → **Step 13b** (Management: Approve deploy — P1/P2 App only)
 
 **Step 13a — QA: Validate Fix in Staging**
-Lane: QA
+Lane: TECH TEAM (QA)
 
 - Validate fix in staging environment
 - *(Rework until pass — implicit loop, not a separate routing decision)*
@@ -344,7 +343,7 @@ Throughout the process, Management (IT Mgr / CTO) receives parallel notification
 | ① Detect | **R** | I | I | -- | -- | -- |
 | ② Triage | **R/A** | **A** (P1/P2) | **C** | -- | -- | **I** (P1/P2) |
 | ②b Collaborate | **R** | I | **R/A** | -- | -- | -- |
-| ③ Respond & Fix | I | **A** (P1/P2) | **R** | **R** (App) | **R** (if escalated) | **I** |
+| ③ Respond & Fix | I | **A** (P1/P2) | **R** (incl. QA) | -- | **R** (if escalated) | **I** |
 | ④ Verify | I | **A** | **R** | -- | -- | **I** |
 | ⑤ Close (RCA) | -- | **R** | **C** | -- | -- | **A** (P1/P2) |
 
@@ -386,6 +385,7 @@ Throughout the process, Management (IT Mgr / CTO) receives parallel notification
 3. **Removed QA Fail/Rework loop** — Rework is implicit and noted on the QA box
 4. **Added step numbers** on every box in the diagram for quick reference
 5. **Added scenario paths (A-H)** for training, audit trails, and operational communication
+6. **Merged QA into TECH TEAM** row — QA validation is a tech team activity, eliminating one swim lane
 
 ---
 

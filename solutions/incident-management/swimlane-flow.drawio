@@ -27,7 +27,7 @@
         </mxCell>
 
         <!-- SWIMLANE ROW HEADERS (left column) -->
-        <!-- Rows: ANYONE y=50..150 | L1/L2 y=150..700 | IC y=700..1020 | TECH y=1020..1200 | L3 y=1200..1330 | QA y=1330..1420 | MGMT y=1420..1560 -->
+        <!-- Rows: ANYONE y=50..150 | L1/L2 y=150..700 | IC y=700..1020 | TECH y=1020..1220 | L3 y=1220..1330 | MGMT y=1330..1480 -->
         <mxCell id="30" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;ANYONE&lt;/b&gt;&lt;br&gt;(User / Alert)" vertex="1">
           <mxGeometry x="0" y="50" width="150" height="100" as="geometry" />
         </mxCell>
@@ -37,17 +37,15 @@
         <mxCell id="32" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;INCIDENT&lt;br&gt;COMMANDER&lt;/b&gt;&lt;br&gt;(IC)" vertex="1">
           <mxGeometry x="0" y="700" width="150" height="320" as="geometry" />
         </mxCell>
-        <mxCell id="33" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;TECH TEAM&lt;/b&gt;&lt;br&gt;(Dev / Infra /&lt;br&gt;BA / DBA)" vertex="1">
-          <mxGeometry x="0" y="1020" width="150" height="180" as="geometry" />
+        <mxCell id="33" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;TECH TEAM&lt;/b&gt;&lt;br&gt;(Dev / Infra /&lt;br&gt;BA / DBA / QA)" vertex="1">
+          <mxGeometry x="0" y="1020" width="150" height="200" as="geometry" />
         </mxCell>
         <mxCell id="34" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;L3 / VENDOR&lt;/b&gt;&lt;br&gt;(Specialist)" vertex="1">
-          <mxGeometry x="0" y="1200" width="150" height="130" as="geometry" />
+          <mxGeometry x="0" y="1220" width="150" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="35" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;QA&lt;/b&gt;" vertex="1">
-          <mxGeometry x="0" y="1330" width="150" height="90" as="geometry" />
-        </mxCell>
+        <!-- QA row removed — merged into TECH TEAM -->
         <mxCell id="36" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;MANAGEMENT&lt;/b&gt;&lt;br&gt;(IT Mgr / CTO)" vertex="1">
-          <mxGeometry x="0" y="1420" width="150" height="140" as="geometry" />
+          <mxGeometry x="0" y="1330" width="150" height="150" as="geometry" />
         </mxCell>
 
         <!-- HORIZONTAL GRIDLINES -->
@@ -77,8 +75,8 @@
         </mxCell>
         <mxCell id="44" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="0" y="1200" as="sourcePoint" />
-            <mxPoint x="2150" y="1200" as="targetPoint" />
+            <mxPoint x="0" y="1220" as="sourcePoint" />
+            <mxPoint x="2150" y="1220" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="45" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
@@ -87,12 +85,7 @@
             <mxPoint x="2150" y="1330" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="46" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="0" y="1420" as="sourcePoint" />
-            <mxPoint x="2150" y="1420" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
+        <!-- (Removed: y=1420 gridline — QA row merged into TECH TEAM, MGMT now starts at y=1330) -->
 
         <!-- VERTICAL GRIDLINES -->
         <mxCell id="50" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
@@ -244,24 +237,22 @@
           <mxGeometry x="1330" y="1040" width="155" height="40" as="geometry" />
         </mxCell>
         <mxCell id="165" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Dev / DBA&lt;/b&gt;&lt;br&gt;Deploy via CI/CD&lt;br&gt;Remediate bad data" vertex="1">
-          <mxGeometry x="1330" y="1105" width="155" height="50" as="geometry" />
+          <mxGeometry x="1330" y="1145" width="155" height="50" as="geometry" />
         </mxCell>
 
         <!-- ====================== -->
         <!-- RESPOND COLUMN, L3/VENDOR ROW -->
         <!-- ====================== -->
         <mxCell id="520" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;fontSize=10;" value="&lt;b&gt;L3 / Vendor&lt;/b&gt;&lt;br&gt;Specialist investigation&lt;br&gt;&lt;i&gt;Patch / Replace / Vendor fix&lt;/i&gt;" vertex="1">
-          <mxGeometry x="1150" y="1220" width="195" height="50" as="geometry" />
+          <mxGeometry x="1150" y="1240" width="195" height="50" as="geometry" />
         </mxCell>
         <mxCell id="521" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;L3 / Vendor&lt;/b&gt;&lt;br&gt;Implement specialist fix" vertex="1">
-          <mxGeometry x="1150" y="1285" width="195" height="35" as="geometry" />
+          <mxGeometry x="1150" y="1300" width="195" height="35" as="geometry" />
         </mxCell>
 
-        <!-- ====================== -->
-        <!-- RESPOND COLUMN, QA ROW -->
-        <!-- ====================== -->
+        <!-- QA box — merged into TECH TEAM row -->
         <mxCell id="164" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;QA&lt;/b&gt;&lt;br&gt;Validate fix in staging&lt;br&gt;&lt;i&gt;(Rework until pass)&lt;/i&gt;" vertex="1">
-          <mxGeometry x="1330" y="1350" width="155" height="50" as="geometry" />
+          <mxGeometry x="1330" y="1090" width="155" height="40" as="geometry" />
         </mxCell>
 
         <!-- ====================== -->
@@ -299,32 +290,32 @@
 
         <!-- CLOSE COLUMN, MANAGEMENT ROW -->
         <mxCell id="203" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Management&lt;/b&gt;&lt;br&gt;Review RCA &amp;amp; sign off&lt;br&gt;&lt;i&gt;(P1/P2 only)&lt;/i&gt;" vertex="1">
-          <mxGeometry x="1850" y="1440" width="165" height="50" as="geometry" />
+          <mxGeometry x="1850" y="1350" width="165" height="50" as="geometry" />
         </mxCell>
         <mxCell id="204" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#052E16;strokeColor=#22C55E;strokeWidth=2.5;fontColor=#BBF7D0;fontSize=11;" value="&lt;b&gt;INCIDENT CLOSED&lt;/b&gt;&lt;br&gt;RCA published · Actions in backlog · Knowledge Base updated" vertex="1">
-          <mxGeometry x="1830" y="1510" width="260" height="40" as="geometry" />
+          <mxGeometry x="1830" y="1420" width="260" height="40" as="geometry" />
         </mxCell>
 
         <!-- ====================== -->
         <!-- MANAGEMENT ROW notification blocks -->
         <!-- ====================== -->
         <mxCell id="220" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Management&lt;/b&gt;&lt;br&gt;Notified (P1/P2)&lt;br&gt;Approve escalation" vertex="1">
-          <mxGeometry x="550" y="1440" width="165" height="50" as="geometry" />
+          <mxGeometry x="550" y="1350" width="165" height="50" as="geometry" />
         </mxCell>
         <mxCell id="405" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Escalation Policy" vertex="1">
-          <mxGeometry x="555" y="1498" width="135" height="20" as="geometry" />
+          <mxGeometry x="555" y="1408" width="135" height="20" as="geometry" />
         </mxCell>
         <mxCell id="530" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Notify Stakeholders&lt;/b&gt;&lt;br&gt;(P1 only)" vertex="1">
-          <mxGeometry x="870" y="1440" width="155" height="45" as="geometry" />
+          <mxGeometry x="870" y="1350" width="155" height="45" as="geometry" />
         </mxCell>
         <mxCell id="221" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="Receive status updates&lt;br&gt;(P1:30m · P2:1hr)" vertex="1">
-          <mxGeometry x="1140" y="1445" width="160" height="40" as="geometry" />
+          <mxGeometry x="1140" y="1355" width="160" height="40" as="geometry" />
         </mxCell>
         <mxCell id="560" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Approve Fix Deploy&lt;/b&gt;&lt;br&gt;(P1/P2 App Incident)" vertex="1">
-          <mxGeometry x="1350" y="1440" width="175" height="45" as="geometry" />
+          <mxGeometry x="1350" y="1350" width="175" height="45" as="geometry" />
         </mxCell>
         <mxCell id="222" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="Notified of&lt;br&gt;restoration" vertex="1">
-          <mxGeometry x="1600" y="1445" width="130" height="35" as="geometry" />
+          <mxGeometry x="1600" y="1355" width="130" height="35" as="geometry" />
         </mxCell>
 
         <!-- ============================================================ -->
@@ -473,32 +464,20 @@
         <mxCell id="548" edge="1" parent="1" source="521" target="190" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1570" y="1303" />
+              <mxPoint x="1570" y="1318" />
               <mxPoint x="1570" y="1105" />
             </Array>
           </mxGeometry>
         </mxCell>
 
-        <!-- Dev Team flows DOWN-RIGHT then DOWN to QA -->
+        <!-- Dev Team flows DOWN to QA (now in same TECH TEAM row) -->
         <mxCell id="549" edge="1" parent="1" source="163" target="164" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1408" y="1090" />
-              <mxPoint x="1500" y="1090" />
-              <mxPoint x="1500" y="1340" />
-              <mxPoint x="1408" y="1340" />
-            </Array>
-          </mxGeometry>
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- QA Pass flows LEFT-UP to Deploy -->
-        <mxCell id="322" edge="1" parent="1" source="164" target="165" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;QA Pass&lt;/b&gt;&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1310" y="1370" />
-              <mxPoint x="1310" y="1155" />
-            </Array>
-          </mxGeometry>
+        <!-- QA flows DOWN to Deploy (both now in TECH TEAM row) -->
+        <mxCell id="322" edge="1" parent="1" source="164" target="165" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
         <!-- (Removed: QA Fail loop — rework is implicit, not a routing decision) -->
@@ -512,7 +491,7 @@
         <mxCell id="324" edge="1" parent="1" source="165" target="190" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1560" y="1130" />
+              <mxPoint x="1560" y="1170" />
               <mxPoint x="1560" y="1083" />
             </Array>
           </mxGeometry>
@@ -568,7 +547,7 @@
             <Array as="points">
               <mxPoint x="658" y="280" />
               <mxPoint x="550" y="280" />
-              <mxPoint x="550" y="1440" />
+              <mxPoint x="550" y="1350" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -600,12 +579,12 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- Dev Team request approval flows DOWN to Approve Fix Deploy (Management) -->
-        <mxCell id="570" edge="1" parent="1" source="163" target="560" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#F59E0B;dashed=1;dashPattern=5 3;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#D97706&quot;&gt;&lt;b&gt;① P1/P2: request&lt;br&gt;approval to deploy&lt;/b&gt;&lt;/font&gt;">
+        <!-- Dev Team request approval flows RIGHT-DOWN to Approve Fix Deploy (Management) -->
+        <mxCell id="570" edge="1" parent="1" source="163" target="560" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#F59E0B;dashed=1;dashPattern=5 3;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#D97706&quot;&gt;&lt;b&gt;① P1/P2: request&lt;br&gt;approval to deploy&lt;/b&gt;&lt;/font&gt;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1408" y="1090" />
-              <mxPoint x="1438" y="1090" />
+              <mxPoint x="1510" y="1060" />
+              <mxPoint x="1510" y="1350" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -614,8 +593,8 @@
         <mxCell id="571" edge="1" parent="1" source="560" target="165" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#10B981;dashed=1;dashPattern=5 3;fontSize=10;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;② Approved&lt;/b&gt;&lt;/font&gt;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1300" y="1463" />
-              <mxPoint x="1300" y="1155" />
+              <mxPoint x="1300" y="1373" />
+              <mxPoint x="1300" y="1195" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -624,55 +603,55 @@
         <!-- LEGEND -->
         <!-- ============================================================ -->
         <mxCell id="700" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#1E293B;" value="&lt;b&gt;LEGEND&lt;/b&gt;" vertex="1">
-          <mxGeometry x="150" y="1580" width="60" height="20" as="geometry" />
+          <mxGeometry x="150" y="1490" width="60" height="20" as="geometry" />
         </mxCell>
         <mxCell id="701" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6366F1;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry x="220" y="1580" width="14" height="14" as="geometry" />
+          <mxGeometry x="220" y="1490" width="14" height="14" as="geometry" />
         </mxCell>
         <mxCell id="702" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Detect" vertex="1">
-          <mxGeometry x="238" y="1578" width="45" height="18" as="geometry" />
+          <mxGeometry x="238" y="1488" width="45" height="18" as="geometry" />
         </mxCell>
         <mxCell id="703" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8B5CF6;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry x="290" y="1580" width="14" height="14" as="geometry" />
+          <mxGeometry x="290" y="1490" width="14" height="14" as="geometry" />
         </mxCell>
         <mxCell id="704" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Triage" vertex="1">
-          <mxGeometry x="308" y="1578" width="40" height="18" as="geometry" />
+          <mxGeometry x="308" y="1488" width="40" height="18" as="geometry" />
         </mxCell>
         <mxCell id="705" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F59E0B;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry x="355" y="1580" width="14" height="14" as="geometry" />
+          <mxGeometry x="355" y="1490" width="14" height="14" as="geometry" />
         </mxCell>
         <mxCell id="706" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Collaborate / App path" vertex="1">
-          <mxGeometry x="373" y="1578" width="120" height="18" as="geometry" />
+          <mxGeometry x="373" y="1488" width="120" height="18" as="geometry" />
         </mxCell>
         <mxCell id="707" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF4444;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry x="500" y="1580" width="14" height="14" as="geometry" />
+          <mxGeometry x="500" y="1490" width="14" height="14" as="geometry" />
         </mxCell>
         <mxCell id="708" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Infra path / Respond" vertex="1">
-          <mxGeometry x="518" y="1578" width="145" height="18" as="geometry" />
+          <mxGeometry x="518" y="1488" width="145" height="18" as="geometry" />
         </mxCell>
         <mxCell id="709" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10B981;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry x="670" y="1580" width="14" height="14" as="geometry" />
+          <mxGeometry x="670" y="1490" width="14" height="14" as="geometry" />
         </mxCell>
         <mxCell id="710" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Verify" vertex="1">
-          <mxGeometry x="688" y="1578" width="40" height="18" as="geometry" />
+          <mxGeometry x="688" y="1488" width="40" height="18" as="geometry" />
         </mxCell>
         <mxCell id="711" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0EA5E9;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry x="735" y="1580" width="14" height="14" as="geometry" />
+          <mxGeometry x="735" y="1490" width="14" height="14" as="geometry" />
         </mxCell>
         <mxCell id="712" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Close" vertex="1">
-          <mxGeometry x="753" y="1578" width="35" height="18" as="geometry" />
+          <mxGeometry x="753" y="1488" width="35" height="18" as="geometry" />
         </mxCell>
         <mxCell id="713" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9333EA;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry x="800" y="1580" width="14" height="14" as="geometry" />
+          <mxGeometry x="800" y="1490" width="14" height="14" as="geometry" />
         </mxCell>
         <mxCell id="714" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="L3 / Vendor" vertex="1">
-          <mxGeometry x="818" y="1578" width="65" height="18" as="geometry" />
+          <mxGeometry x="818" y="1488" width="65" height="18" as="geometry" />
         </mxCell>
         <mxCell id="715" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="—— Solid = primary flow" vertex="1">
-          <mxGeometry x="900" y="1578" width="140" height="18" as="geometry" />
+          <mxGeometry x="900" y="1488" width="140" height="18" as="geometry" />
         </mxCell>
         <mxCell id="716" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="- - - Dashed = notification / approval" vertex="1">
-          <mxGeometry x="1050" y="1578" width="200" height="18" as="geometry" />
+          <mxGeometry x="1050" y="1488" width="200" height="18" as="geometry" />
         </mxCell>
 
         <!-- ============================================================ -->
@@ -712,16 +691,16 @@
           <mxGeometry x="1318" y="1028" width="22" height="16" as="geometry" />
         </mxCell>
         <mxCell id="812" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="12b" vertex="1">
-          <mxGeometry x="1315" y="1093" width="26" height="16" as="geometry" />
+          <mxGeometry x="1315" y="1133" width="26" height="16" as="geometry" />
         </mxCell>
         <mxCell id="813" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="13a" vertex="1">
-          <mxGeometry x="1315" y="1338" width="26" height="16" as="geometry" />
+          <mxGeometry x="1315" y="1078" width="26" height="16" as="geometry" />
         </mxCell>
         <mxCell id="814" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="13b" vertex="1">
-          <mxGeometry x="1335" y="1428" width="26" height="16" as="geometry" />
+          <mxGeometry x="1335" y="1338" width="26" height="16" as="geometry" />
         </mxCell>
         <mxCell id="815" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="14" vertex="1">
-          <mxGeometry x="1138" y="1208" width="22" height="16" as="geometry" />
+          <mxGeometry x="1138" y="1228" width="22" height="16" as="geometry" />
         </mxCell>
         <mxCell id="816" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="15" vertex="1">
           <mxGeometry x="1578" y="1048" width="22" height="16" as="geometry" />
@@ -742,10 +721,10 @@
           <mxGeometry x="1828" y="808" width="22" height="16" as="geometry" />
         </mxCell>
         <mxCell id="822" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="21" vertex="1">
-          <mxGeometry x="1838" y="1428" width="22" height="16" as="geometry" />
+          <mxGeometry x="1838" y="1338" width="22" height="16" as="geometry" />
         </mxCell>
         <mxCell id="823" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="22" vertex="1">
-          <mxGeometry x="1818" y="1498" width="22" height="16" as="geometry" />
+          <mxGeometry x="1818" y="1408" width="22" height="16" as="geometry" />
         </mxCell>
 
       </root>
