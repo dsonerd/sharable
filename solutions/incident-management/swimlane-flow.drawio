@@ -389,31 +389,31 @@
         </mxCell>
 
         <!-- INFRA execute KB flows DOWN-RIGHT to IC Coordination (simplified: Major Incident diamond removed) -->
-        <mxCell id="314" edge="1" parent="1" source="126" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;">
+        <mxCell id="314" edge="1" parent="1" source="126" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.1;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="478" y="620" />
-              <mxPoint x="478" y="853" />
+              <mxPoint x="478" y="830" />
             </Array>
           </mxGeometry>
         </mxCell>
 
-        <!-- INFRA assign P flows DOWN-RIGHT to IC Coordination (simplified: Major Incident diamond removed) -->
-        <mxCell id="315" edge="1" parent="1" source="127" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+        <!-- INFRA assign P flows DOWN-RIGHT to IC Coordination -->
+        <mxCell id="315" edge="1" parent="1" source="127" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="473" y="650" />
-              <mxPoint x="473" y="868" />
+              <mxPoint x="473" y="849" />
             </Array>
           </mxGeometry>
         </mxCell>
 
         <!-- APP KB YES (execute first response) flows RIGHT-DOWN to IC Coordination -->
-        <mxCell id="316" edge="1" parent="1" source="128" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;">
+        <mxCell id="316" edge="1" parent="1" source="128" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1100" y="523" />
-              <mxPoint x="1100" y="853" />
+              <mxPoint x="1100" y="868" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -423,7 +423,7 @@
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1120" y="575" />
-              <mxPoint x="1120" y="883" />
+              <mxPoint x="1120" y="887" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -446,11 +446,11 @@
         </mxCell>
 
         <!-- IC Coordination flows DOWN to L3 Escalation -->
-        <mxCell id="546" edge="1" parent="1" source="160" target="520" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#9333EA;fontSize=9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#9333EA&quot;&gt;Escalate L3&lt;/font&gt;">
+        <mxCell id="546" edge="1" parent="1" source="160" target="520" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#9333EA;fontSize=9;exitX=0;exitY=0.9;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#9333EA&quot;&gt;Escalate L3&lt;/font&gt;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1253" y="1000" />
-              <mxPoint x="1248" y="1000" />
+              <mxPoint x="1110" y="906" />
+              <mxPoint x="1110" y="1265" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -553,13 +553,23 @@
         </mxCell>
 
         <!-- IC Coordination notification flows DOWN to status updates -->
-        <mxCell id="341" edge="1" parent="1" source="160" target="221" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="P1/P2&lt;br&gt;status updates">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="341" edge="1" parent="1" source="160" target="221" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="P1/P2&lt;br&gt;status updates">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1095" y="915" />
+              <mxPoint x="1095" y="1355" />
+            </Array>
+          </mxGeometry>
         </mxCell>
 
         <!-- Confirm restored notification flows DOWN to Management -->
-        <mxCell id="342" edge="1" parent="1" source="191" target="222" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="all-clear">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="342" edge="1" parent="1" source="191" target="222" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" value="all-clear">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1775" y="770" />
+              <mxPoint x="1775" y="1373" />
+            </Array>
+          </mxGeometry>
         </mxCell>
 
         <!-- Management row: left-to-right notification flow -->
@@ -590,11 +600,11 @@
         </mxCell>
 
         <!-- Approve Fix Deploy flows back UP-LEFT to Deploy -->
-        <mxCell id="571" edge="1" parent="1" source="560" target="165" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#10B981;dashed=1;dashPattern=5 3;fontSize=10;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;② Approved&lt;/b&gt;&lt;/font&gt;">
+        <mxCell id="571" edge="1" parent="1" source="560" target="165" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#10B981;dashed=1;dashPattern=5 3;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;② Approved&lt;/b&gt;&lt;/font&gt;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1300" y="1373" />
-              <mxPoint x="1300" y="1195" />
+              <mxPoint x="1540" y="1373" />
+              <mxPoint x="1540" y="1195" />
             </Array>
           </mxGeometry>
         </mxCell>
