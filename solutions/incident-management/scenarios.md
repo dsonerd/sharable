@@ -3,7 +3,7 @@
 > Worked examples showing how real-world reports flow through the triage process.
 > Each scenario walks through L1's decision path step by step.
 >
-> Related: [`incident-triage-guideline.md`](incident-triage-guideline.md) · [`incident-knowledge-base.md`](incident-knowledge-base.md)
+> Related: [`classification.md`](classification.md) · [`incident-knowledge-base.md`](incident-knowledge-base.md)
 
 ---
 

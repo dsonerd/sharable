@@ -7,7 +7,7 @@
 > 2. **Execute the documented first response** immediately
 > 3. **Notify the tech team** (inform, don't wait) — they can re-evaluate P in their session if investigation reveals something different
 >
-> If no match is found, follow the standard triage path (see [incident-triage-guideline.md](incident-triage-guideline.md)).
+> If no match is found, follow the standard triage path (see [classification.md](classification.md)).
 >
 > **How to grow**: After every RCA, add one entry. This is not a separate task — it's part of closing the incident.
 

@@ -3,7 +3,7 @@
 > Single source of truth for classifying and prioritizing incidents.
 > Used by L1/L2 ITO, Incident Commander, Tech Team, and Management.
 >
-> Related: [`swimlane-flow-v2.drawio`](swimlane-flow-v2.drawio) · [`incident-knowledge-base.md`](incident-knowledge-base.md)
+> Related: [`swimlane-flow.drawio`](swimlane-flow.drawio) · [`incident-knowledge-base.md`](incident-knowledge-base.md)
 
 ---
 

@@ -3,33 +3,9 @@
 > Lean incident management process. Shows who does what at each stage.
 > Designed for 1–2 slide presentation.
 >
-> Related: [`incident-triage-guideline.md`](incident-triage-guideline.md) · [`lightweight.md`](lightweight.md) · [`severity-triage.md`](severity-triage.md) · [`incident-knowledge-base.md`](incident-knowledge-base.md)
-
----
-
-## Incident Classification
-
-| Type | Definition | Owner | Examples |
-|------|-----------|-------|---------|
-| **Infrastructure Incident** | Platform layer is broken — servers, network, DB, cloud services. Application cannot run. | Infra / DevOps | Server crash, network outage, DB down, cloud service disruption, certificate expired |
-| **Application Incident** | Infrastructure is healthy. Problem is at the application layer — crash, wrong output, logic error, design flaw. | Dev / BA team | App OOM, wrong calculation, missing info display, design flaw affecting all customers, data corruption |
-
-**Key question**: Is infrastructure healthy? NO → Infra Incident. YES → Application Incident.
-
-Both can be **any priority**. A silent design flaw miscalculating premiums for all customers = P1 Application Incident.
-
----
-
-## Priority Matrix
-
-| Priority | Name | Definition | Response Time | Containment | Full Resolution | Who's Involved |
-|----------|------|-----------|---------------|-------------|-----------------|----------------|
-| **P1** | Critical | Full outage, data breach, or financial data affected | < 15 min | < 2 hours | < 24 hours | All hands: IC + Tech + Mgmt + Comms |
-| **P2** | Major | Significant degradation, key function unavailable | < 30 min | < 4 hours | < 5 business days | IC + On-call team + Mgmt notified |
-| **P3** | Minor | Partial impact, workaround available | < 2 hours | < 1 business day | < 10 business days | Assigned engineer |
-| **P4** | Low | Cosmetic, minimal impact | Next business day | — | < 15 business days | Assigned developer |
-
-> **Containment** = service usable (even if degraded or feature disabled). **Full Resolution** = root cause fixed + data remediated.
+> Related: [`classification.md`](classification.md) · [`incident-knowledge-base.md`](incident-knowledge-base.md)
+>
+> For classification, priority matrix, SLA targets, and triage checklist, see [`classification.md`](classification.md).
 
 ---
 
@@ -137,39 +113,6 @@ Both can be **any priority**. A silent design flaw miscalculating premiums for a
 
 > **P3/P4 note:** No Incident Commander assigned. Details below.
 
-### P3/P4 Handling — The Bulk of Daily Work
-
-Most incidents are P3/P4. The full IC / war-room machinery doesn't apply, but they still need structure — otherwise tickets rot or the team over-invests treating every cosmetic bug like a crisis.
-
-| Aspect | P3 — Minor | P4 — Low |
-|--------|------------|----------|
-| **Coordinator** | Senior L1 or team lead | Assigned engineer (self-managed) |
-| **Triage** | Same flow: classify → KB check → assign P | Same flow, lower urgency |
-| **Response window** | Business hours, assigned engineer starts within 2 hours | Next business day |
-| **Reporter updates** | At triage + resolution. On request in between. | At triage + resolution only. |
-| **Post-incident review** | Simplified note in ticket (due within 5 business days): what broke, what fixed it, any follow-up needed. | Not required unless recurs 3+ times. |
-| **Escalate to full RCA** | If financial/data impact found, or same incident recurs 3+ times. | Same trigger. |
-| **KB update** | Add to Knowledge Base if likely to recur. | Only if a pattern emerges across multiple tickets. |
-
-> **P3/P4 do NOT get:**
-> - An Incident Commander
-> - A war room or bridge call
-> - Periodic status updates (only on-demand)
-> - Management notification (unless escalated)
-> - A formal RCA (unless triggered by financial/data impact or recurrence)
-
-### When Does the Incident Start? (⏱)
-
-The **SLA clock starts at Triage**, when L1 confirms "this is a real incident" and logs `INC-xxxx` — not when the report is received.
-
-| Moment | What happens | SLA clock |
-|--------|-------------|-----------|
-| User reports / alert fires | L1 receives, acknowledges reporter (✉ 1st) | Not started |
-| L1 confirms: **not an incident** | Route to service request / user error / backlog. Notify reporter. Close. | N/A |
-| L1 confirms: **is an incident** | Log `INC-xxxx`. Classify. Assign priority. ✉ 2nd notification. | **Starts here** |
-
-> **Confirmation must happen within the Detect window (< 5 min for alerts, < 15 min for user reports).** This prevents gaming — L1 cannot delay confirmation to buy time on the SLA.
-
 ### Reporter Notification Sequence (✉)
 
 | # | Stage | Who Sends | Message | Channel |
@@ -197,20 +140,6 @@ The **SLA clock starts at Triage**, when L1 confirms "this is a real incident" a
 > **R** = Responsible · **A** = Accountable · **C** = Consulted · **I** = Informed
 >
 > For P3/P4: senior L1 or team lead assumes IC accountability. No formal IC role assigned. See "P3/P4 Handling" section for details.
-
----
-
-## Quick Reference — Infrastructure vs Application Incident
-
-| | Infrastructure Incident | Application Incident |
-|---|---|---|
-| **Infra health** | Broken | Healthy |
-| **Problem layer** | Server, network, DB, cloud | App code, logic, design, config, data |
-| **Priority assignment** | KB match → assign priority (P) from KB. No match → assign P by scope. | KB match → assign P from KB, act immediately, notify tech team. No match → preliminary priority → Tech Team confirms within 30 min. |
-| **Response** | Restore immediately (rollback, restart, failover) | Assess blast radius → fix correctly → remediate data |
-| **Owner** | Infra / DevOps | Dev / BA team |
-| **Detection** | Loud — monitoring catches it | Often quiet — detected by people, not alerts |
-| **RCA trigger** | Always for P1/P2 | Always for P1/P2 + if financial/data impact |
 
 ---
 
