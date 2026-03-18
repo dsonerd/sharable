@@ -234,8 +234,8 @@ Throughout the process, Management (IT Mgr / CTO) receives parallel notification
 |---------|-------------------|
 | P1/P2 identified during triage | Notified; approve escalation |
 | Major Incident activated | Stakeholders notified |
-| P1/P2 App fix ready to deploy | Approve fix deployment |
 | During response (P1/P2) | Receive status updates (P1: every 30 min, P2: every 1 hr) |
+| P1/P2 App fix ready to deploy | Approve fix deployment |
 | Service restored | Notified of all-clear |
 | RCA complete (P1/P2) | Review RCA & sign off |
 
