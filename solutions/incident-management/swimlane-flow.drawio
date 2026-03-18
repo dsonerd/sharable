@@ -652,6 +652,34 @@
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
+        <!-- ============================================ -->
+        <!-- APPROVAL GATE — P1/P2 App Incidents          -->
+        <!-- ============================================ -->
+
+        <!-- Management: Approve Fix Deploy -->
+        <mxCell id="560" value="&lt;b&gt;Approve Fix Deploy&lt;/b&gt;&lt;br&gt;(P1/P2 App Incident)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="840" y="1285" width="175" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- Dev Fix → Mgmt Approve (request approval to deploy) -->
+        <mxCell id="570" value="&lt;font color=&quot;#D97706&quot;&gt;P1/P2: approval&lt;br&gt;to deploy&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;dashed=1;dashPattern=5 3;fontSize=9;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="163" target="560" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="928" y="935"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Mgmt Approve → Deploy (approved, proceed) -->
+        <mxCell id="571" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;Approved&lt;/b&gt;&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#10B981;dashed=1;dashPattern=5 3;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="560" target="165" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1460" y="1308"/>
+              <mxPoint x="1460" y="1005"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
       </root>
     </mxGraphModel>
   </diagram>

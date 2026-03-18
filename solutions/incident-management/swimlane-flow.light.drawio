@@ -446,6 +446,37 @@
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
+        <!-- ============================================ -->
+        <!-- APPROVAL GATE — P1/P2 App Incidents          -->
+        <!-- ============================================ -->
+
+        <!-- Management: Approve Fix Deploy -->
+        <mxCell id="170" value="&lt;b&gt;Approve Fix Deploy&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;fontSize:9&quot;&gt;P1/P2 App Incident&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="882" y="773" width="125" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- App Response → Mgmt Approve (request approval to deploy) -->
+        <mxCell id="340" value="&lt;font style=&quot;fontSize:8&quot; color=&quot;#D97706&quot;&gt;P1/P2: approval&lt;br&gt;to deploy&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;dashed=1;dashPattern=5 3;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="131" target="170" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="720"/>
+              <mxPoint x="870" y="720"/>
+              <mxPoint x="870" y="791"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Mgmt Approve → App Response (approved, proceed to deploy) -->
+        <mxCell id="341" value="&lt;font style=&quot;fontSize:8&quot; color=&quot;#059669&quot;&gt;&lt;b&gt;Approved&lt;/b&gt;&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#10B981;dashed=1;dashPattern=5 3;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" edge="1" source="170" target="131" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1007" y="760"/>
+              <mxPoint x="860" y="760"/>
+              <mxPoint x="860" y="690"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
       </root>
     </mxGraphModel>
   </diagram>
