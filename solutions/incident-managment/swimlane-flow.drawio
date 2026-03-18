@@ -304,6 +304,40 @@
         </mxCell>
 
         <!-- ============================================ -->
+        <!-- DOCUMENT REFERENCE ANNOTATIONS               -->
+        <!-- ============================================ -->
+
+        <!-- Near "Real incident?" — classification rules -->
+        <mxCell id="400" value="📄 Incident Triage Guide" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" vertex="1" parent="1">
+          <mxGeometry x="170" y="228" width="155" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Between the two KB-match diamonds -->
+        <mxCell id="401" value="📄 Incident Knowledge Base" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" vertex="1" parent="1">
+          <mxGeometry x="530" y="412" width="148" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Below priority-assignment rows -->
+        <mxCell id="402" value="📄 Priority &amp;amp; Severity Matrix" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" vertex="1" parent="1">
+          <mxGeometry x="460" y="600" width="168" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Below IC coordination box -->
+        <mxCell id="403" value="📄 Incident Response Playbook" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" vertex="1" parent="1">
+          <mxGeometry x="1155" y="783" width="175" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Between RCA and action-items boxes in Close stage -->
+        <mxCell id="404" value="📄 Post-Incident Review Template" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" vertex="1" parent="1">
+          <mxGeometry x="1680" y="828" width="175" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Right of Management "Notified" box -->
+        <mxCell id="405" value="📄 Escalation Policy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" vertex="1" parent="1">
+          <mxGeometry x="690" y="1138" width="135" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================ -->
         <!-- EDGES — Main flow connectors                 -->
         <!-- ============================================ -->
 
