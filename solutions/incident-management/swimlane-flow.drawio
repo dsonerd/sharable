@@ -337,6 +337,10 @@
         <mxCell id="405" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Escalation Policy" vertex="1">
           <mxGeometry x="555" y="1498" width="135" height="20" as="geometry" />
         </mxCell>
+        <!-- Escalation Policy annotation connected to Notified box -->
+        <mxCell id="405a" edge="1" parent="1" source="405" target="220" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=0.5;strokeColor=#86EFAC;dashed=1;dashPattern=2 2;endArrow=none;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="530" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Notify Stakeholders&lt;/b&gt;&lt;br&gt;(Major Incident only)" vertex="1">
           <mxGeometry x="870" y="1440" width="155" height="45" as="geometry" />
         </mxCell>
@@ -475,12 +479,12 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- Collaborate flows RIGHT-DOWN to IC Coordination -->
-        <mxCell id="317" edge="1" parent="1" source="150" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;">
+        <!-- Collaborate flows RIGHT-DOWN to IC Coordination (enters from left side) -->
+        <mxCell id="317" edge="1" parent="1" source="150" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1120" y="575" />
-              <mxPoint x="1120" y="883" />
+              <mxPoint x="1120" y="868" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -555,24 +559,22 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- Dev Team flows DOWN-RIGHT then DOWN to QA -->
-        <mxCell id="549" edge="1" parent="1" source="163" target="164" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+        <!-- Dev Team flows DOWN to QA (clean vertical path) -->
+        <mxCell id="549" edge="1" parent="1" source="163" target="164" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;fontSize=9;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#D97706&quot;&gt;QA&lt;/font&gt;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1408" y="1090" />
-              <mxPoint x="1500" y="1090" />
-              <mxPoint x="1500" y="1340" />
-              <mxPoint x="1408" y="1340" />
+              <mxPoint x="1377" y="1090" />
+              <mxPoint x="1377" y="1340" />
             </Array>
           </mxGeometry>
         </mxCell>
 
-        <!-- QA Pass flows LEFT-UP to Deploy -->
+        <!-- QA Pass flows LEFT-UP to Deploy (clean vertical return) -->
         <mxCell id="322" edge="1" parent="1" source="164" target="165" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;QA Pass&lt;/b&gt;&lt;/font&gt;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1310" y="1370" />
-              <mxPoint x="1310" y="1155" />
+              <mxPoint x="1320" y="1370" />
+              <mxPoint x="1320" y="1155" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -646,12 +648,11 @@
         <!-- MANAGEMENT NOTIFICATION EDGES (dashed, secondary flow) -->
         <!-- ============================================================ -->
 
-        <!-- Log INC P1/P2 notification flows DOWN to Management -->
-        <mxCell id="340" edge="1" parent="1" source="122" target="220" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="P1/P2 identified →&lt;br&gt;notify Management">
+        <!-- Log INC P1/P2 notification flows DOWN to Management (exits left side of Log INC box, avoids Infra diamond) -->
+        <mxCell id="340" edge="1" parent="1" source="122" target="220" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="P1/P2 identified →&lt;br&gt;notify Management">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="658" y="280" />
-              <mxPoint x="550" y="280" />
+              <mxPoint x="550" y="203" />
               <mxPoint x="550" y="1440" />
             </Array>
           </mxGeometry>
@@ -684,22 +685,23 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- Dev Team request approval flows DOWN to Approve Fix Deploy (Management) -->
-        <mxCell id="570" edge="1" parent="1" source="163" target="560" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#F59E0B;dashed=1;dashPattern=5 3;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#D97706&quot;&gt;&lt;b&gt;① P1/P2: request&lt;br&gt;approval to deploy&lt;/b&gt;&lt;/font&gt;">
+        <!-- Dev Team request approval flows DOWN to Approve Fix Deploy (Management) - clean downward path -->
+        <mxCell id="570" edge="1" parent="1" source="163" target="560" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#F59E0B;dashed=1;dashPattern=5 3;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.4;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#D97706&quot;&gt;&lt;b&gt;① Request&lt;br&gt;approval&lt;/b&gt;&lt;/font&gt;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1408" y="1090" />
-              <mxPoint x="1438" y="1090" />
+              <mxPoint x="1420" y="1090" />
+              <mxPoint x="1420" y="1440" />
             </Array>
           </mxGeometry>
         </mxCell>
 
-        <!-- Approve Fix Deploy flows back UP-LEFT to Deploy -->
-        <mxCell id="571" edge="1" parent="1" source="560" target="165" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#10B981;dashed=1;dashPattern=5 3;fontSize=10;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;② Approved&lt;/b&gt;&lt;/font&gt;">
+        <!-- Approve Fix Deploy flows back UP to Deploy - parallel return path -->
+        <mxCell id="571" edge="1" parent="1" source="560" target="165" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#10B981;dashed=1;dashPattern=5 3;fontSize=10;exitX=0.6;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;② Approved&lt;/b&gt;&lt;/font&gt;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1300" y="1463" />
-              <mxPoint x="1300" y="1155" />
+              <mxPoint x="1455" y="1420" />
+              <mxPoint x="1455" y="1155" />
             </Array>
           </mxGeometry>
         </mxCell>
