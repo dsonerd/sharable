@@ -204,13 +204,6 @@
           <mxGeometry x="690" y="570" width="150" height="35" as="geometry" />
         </mxCell>
 
-        <!-- Major Incident decision -->
-        <mxCell id="133" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=10;fontStyle=1;" value="Major&lt;br&gt;Incident?&lt;br&gt;(P1)" vertex="1">
-          <mxGeometry x="420" y="630" width="100" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="402" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Priority &amp;amp; Severity Matrix" vertex="1">
-          <mxGeometry x="530" y="640" width="168" height="20" as="geometry" />
-        </mxCell>
 
         <!-- ====================== -->
         <!-- COLLABORATE COLUMN, L1/L2 ROW -->
@@ -222,37 +215,21 @@
           <mxGeometry x="895" y="615" width="185" height="28" as="geometry" />
         </mxCell>
 
-        <!-- ====================== -->
-        <!-- RESPOND COLUMN, IC ROW: Major Incident Activation -->
-        <!-- ====================== -->
-        <mxCell id="500" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=2;fontSize=10;fontStyle=0;" value="&lt;b&gt;Activate Major Incident&lt;/b&gt;&lt;br&gt;War Room / Bridge Call&lt;br&gt;Assign IC" vertex="1">
-          <mxGeometry x="1140" y="720" width="180" height="55" as="geometry" />
-        </mxCell>
 
         <!-- IC Coordination (central hub) -->
-        <mxCell id="160" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=2;fontSize=10;" value="&lt;b&gt;IC Coordination&lt;/b&gt; (P1/P2 only)&lt;br&gt;Workaround first if available&lt;br&gt;Coordinate team&lt;br&gt;Decide: rollback? escalate? war room?" vertex="1">
-          <mxGeometry x="1140" y="830" width="225" height="75" as="geometry" />
+        <mxCell id="160" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=2;fontSize=10;" value="&lt;b&gt;IC Coordination&lt;/b&gt; (P1/P2 only)&lt;br&gt;⚡ P1: Activate War Room immediately&lt;br&gt;Workaround first if available&lt;br&gt;Create RFC (all P1/P2 = emergency change)&lt;br&gt;Dispatch → Infra (11) · App (12) · L3 (14)" vertex="1">
+          <mxGeometry x="1140" y="820" width="250" height="95" as="geometry" />
         </mxCell>
         <mxCell id="160b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FB923C;strokeWidth=1;fontSize=9;fontColor=#9A3412;dashed=1;dashPattern=3 3;" value="✉ Status: P1 every 30m, P2 every 1hr&lt;br&gt;Include reporter in updates" vertex="1">
-          <mxGeometry x="1140" y="910" width="225" height="30" as="geometry" />
+          <mxGeometry x="1140" y="920" width="250" height="30" as="geometry" />
         </mxCell>
         <mxCell id="403" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Incident Response Playbook" vertex="1">
-          <mxGeometry x="1140" y="945" width="175" height="20" as="geometry" />
+          <mxGeometry x="1140" y="955" width="175" height="20" as="geometry" />
         </mxCell>
         <mxCell id="411" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FB923C;strokeWidth=1;fontSize=8;fontColor=#9A3412;dashed=1;dashPattern=3 3;" value="After hours: IC engages on-call tech;&lt;br&gt;Mgmt next business day unless P1" vertex="1">
-          <mxGeometry x="1140" y="970" width="225" height="28" as="geometry" />
+          <mxGeometry x="1140" y="980" width="250" height="28" as="geometry" />
         </mxCell>
 
-        <!-- Emergency Change decision -->
-        <mxCell id="502" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=2;fontSize=10;fontStyle=1;" value="Emergency&lt;br&gt;Change?" vertex="1">
-          <mxGeometry x="1420" y="835" width="100" height="65" as="geometry" />
-        </mxCell>
-        <mxCell id="503" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=9;" value="&lt;b&gt;RFC&lt;/b&gt;&lt;br&gt;Request for Change" vertex="1">
-          <mxGeometry x="1415" y="935" width="110" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="406" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Change Management Policy" vertex="1">
-          <mxGeometry x="1395" y="975" width="165" height="20" as="geometry" />
-        </mxCell>
 
         <!-- ====================== -->
         <!-- RESPOND COLUMN, TECH TEAM ROW -->
@@ -283,8 +260,8 @@
         <!-- ====================== -->
         <!-- RESPOND COLUMN, QA ROW -->
         <!-- ====================== -->
-        <mxCell id="164" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;QA&lt;/b&gt;&lt;br&gt;Validate fix in staging" vertex="1">
-          <mxGeometry x="1330" y="1350" width="155" height="40" as="geometry" />
+        <mxCell id="164" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;QA&lt;/b&gt;&lt;br&gt;Validate fix in staging&lt;br&gt;&lt;i&gt;(Rework until pass)&lt;/i&gt;" vertex="1">
+          <mxGeometry x="1330" y="1350" width="155" height="50" as="geometry" />
         </mxCell>
 
         <!-- ====================== -->
@@ -337,7 +314,7 @@
         <mxCell id="405" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Escalation Policy" vertex="1">
           <mxGeometry x="555" y="1498" width="135" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="530" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Notify Stakeholders&lt;/b&gt;&lt;br&gt;(Major Incident only)" vertex="1">
+        <mxCell id="530" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Notify Stakeholders&lt;/b&gt;&lt;br&gt;(P1 only)" vertex="1">
           <mxGeometry x="870" y="1440" width="155" height="45" as="geometry" />
         </mxCell>
         <mxCell id="221" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="Receive status updates&lt;br&gt;(P1:30m · P2:1hr)" vertex="1">
@@ -420,47 +397,22 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- INFRA execute KB flows DOWN to Major Incident? -->
-        <mxCell id="314" edge="1" parent="1" source="126" target="133" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- INFRA assign P flows DOWN to Major Incident? -->
-        <mxCell id="315" edge="1" parent="1" source="127" target="133" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- Major Incident? YES flows RIGHT to Activate Major Incident -->
-        <mxCell id="540" edge="1" parent="1" source="133" target="500" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#DC2626;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#DC2626&quot;&gt;&lt;b&gt;YES&lt;/b&gt;&lt;/font&gt;">
+        <!-- INFRA execute KB flows DOWN-RIGHT to IC Coordination (simplified: Major Incident diamond removed) -->
+        <mxCell id="314" edge="1" parent="1" source="126" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1110" y="665" />
-              <mxPoint x="1110" y="748" />
+              <mxPoint x="478" y="620" />
+              <mxPoint x="478" y="853" />
             </Array>
           </mxGeometry>
         </mxCell>
 
-        <!-- Major Incident? NO flows DOWN then RIGHT to IC Coordination -->
-        <mxCell id="541" edge="1" parent="1" source="133" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;fontSize=9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#DC2626&quot;&gt;&lt;b&gt;NO&lt;/b&gt;&lt;/font&gt;">
+        <!-- INFRA assign P flows DOWN-RIGHT to IC Coordination (simplified: Major Incident diamond removed) -->
+        <mxCell id="315" edge="1" parent="1" source="127" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="470" y="868" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Activate Major Incident flows DOWN to IC Coordination -->
-        <mxCell id="542" edge="1" parent="1" source="500" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- Activate Major Incident flows RIGHT-DOWN to Notify Stakeholders (Management) -->
-        <mxCell id="543" edge="1" parent="1" source="500" target="530" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#DC2626;dashed=1;dashPattern=5 3;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1540" y="748" />
-              <mxPoint x="1540" y="1400" />
-              <mxPoint x="948" y="1400" />
+              <mxPoint x="473" y="650" />
+              <mxPoint x="473" y="868" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -490,35 +442,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- IC Coordination flows RIGHT to Emergency Change? -->
-        <mxCell id="544" edge="1" parent="1" source="160" target="502" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- Emergency Change? YES flows DOWN to RFC -->
-        <mxCell id="545" edge="1" parent="1" source="502" target="503" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;fontSize=9;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="YES">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- RFC loops back LEFT to IC Coordination (execute under RFC) -->
-        <mxCell id="545c" edge="1" parent="1" source="503" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;fontSize=9;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#DC2626&quot;&gt;Execute&lt;br&gt;under RFC&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1390" y="950" />
-              <mxPoint x="1390" y="905" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Emergency Change? NO loops back LEFT to IC Coordination -->
-        <mxCell id="545b" edge="1" parent="1" source="502" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;fontSize=9;fontStyle=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;" value="NO — Standard">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1400" y="920" />
-              <mxPoint x="1400" y="883" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
+        <!-- (Removed: Emergency Change diamond + RFC box and all routing edges — folded into IC Coordination) -->
 
         <!-- Infra Rollback flows DOWN to Apply fix -->
         <mxCell id="319" edge="1" parent="1" source="161" target="162" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
@@ -577,15 +501,7 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- QA Fail loops back RIGHT-UP to Dev Team -->
-        <mxCell id="580" edge="1" parent="1" source="164" target="163" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;dashed=1;dashPattern=5 3;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#EF4444&quot;&gt;&lt;b&gt;QA Fail&lt;/b&gt;&lt;br&gt;Rework&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1520" y="1370" />
-              <mxPoint x="1520" y="1080" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
+        <!-- (Removed: QA Fail loop — rework is implicit, not a routing decision) -->
 
         <!-- Infra Apply fix flows RIGHT to Monitor -->
         <mxCell id="323" edge="1" parent="1" source="162" target="190" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
@@ -731,7 +647,7 @@
         <mxCell id="707" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF4444;strokeColor=none;fontSize=8;" value="" vertex="1">
           <mxGeometry x="500" y="1580" width="14" height="14" as="geometry" />
         </mxCell>
-        <mxCell id="708" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Infra path / Major Incident" vertex="1">
+        <mxCell id="708" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Infra path / Respond" vertex="1">
           <mxGeometry x="518" y="1578" width="145" height="18" as="geometry" />
         </mxCell>
         <mxCell id="709" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10B981;strokeColor=none;fontSize=8;" value="" vertex="1">
@@ -757,6 +673,79 @@
         </mxCell>
         <mxCell id="716" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="- - - Dashed = notification / approval" vertex="1">
           <mxGeometry x="1050" y="1578" width="200" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- STEP NUMBER BADGES (per ITO simplification assessment) -->
+        <!-- ============================================================ -->
+        <mxCell id="800" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="1" vertex="1">
+          <mxGeometry x="170" y="48" width="18" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="801" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="2" vertex="1">
+          <mxGeometry x="168" y="168" width="18" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="802" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="3" vertex="1">
+          <mxGeometry x="398" y="163" width="18" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="803" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="4" vertex="1">
+          <mxGeometry x="558" y="163" width="18" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="804" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="5" vertex="1">
+          <mxGeometry x="588" y="288" width="18" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="805" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="6" vertex="1">
+          <mxGeometry x="413" y="398" width="18" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="807" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="8" vertex="1">
+          <mxGeometry x="708" y="398" width="18" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="808" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="9" vertex="1">
+          <mxGeometry x="883" y="533" width="18" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="809" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="10" vertex="1">
+          <mxGeometry x="1125" y="808" width="22" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="810" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="11" vertex="1">
+          <mxGeometry x="1118" y="1028" width="22" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="811" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="12" vertex="1">
+          <mxGeometry x="1318" y="1028" width="22" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="812" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="12b" vertex="1">
+          <mxGeometry x="1315" y="1093" width="26" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="813" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="13a" vertex="1">
+          <mxGeometry x="1315" y="1338" width="26" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="814" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="13b" vertex="1">
+          <mxGeometry x="1335" y="1428" width="26" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="815" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="14" vertex="1">
+          <mxGeometry x="1138" y="1208" width="22" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="816" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="15" vertex="1">
+          <mxGeometry x="1578" y="1048" width="22" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="817" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="16" vertex="1">
+          <mxGeometry x="1618" y="818" width="22" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="818" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="17" vertex="1">
+          <mxGeometry x="1578" y="728" width="22" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="819" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="18" vertex="1">
+          <mxGeometry x="1828" y="718" width="22" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="820" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="19" vertex="1">
+          <mxGeometry x="1828" y="1048" width="22" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="821" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="20" vertex="1">
+          <mxGeometry x="1828" y="808" width="22" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="822" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="21" vertex="1">
+          <mxGeometry x="1838" y="1428" width="22" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="823" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#FFFFFF;fontSize=8;fontStyle=1;strokeColor=none;arcSize=50;" value="22" vertex="1">
+          <mxGeometry x="1818" y="1498" width="22" height="16" as="geometry" />
         </mxCell>
 
       </root>
