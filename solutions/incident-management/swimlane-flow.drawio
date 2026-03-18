@@ -1,595 +1,764 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0" version="29.6.3">
   <diagram id="inc-mgmt-v2" name="Incident Management — Official">
-    <mxGraphModel dx="4402" dy="2813" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1650" math="0" shadow="0">
+    <mxGraphModel dx="4500" dy="2900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2600" pageHeight="1750" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+
+        <!-- STAGE HEADERS (top row) -->
+        <!-- Columns: DETECT x=150..380 | TRIAGE x=380..870 | COLLABORATE x=870..1110 | RESPOND x=1110..1560 | VERIFY x=1560..1810 | CLOSE x=1810..2150 -->
         <mxCell id="20" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#6366F1;fontColor=#FFFFFF;fontStyle=0;fontSize=12;verticalAlign=middle;strokeColor=#4F46E5;strokeWidth=2;" value="&lt;b&gt;① DETECT&lt;/b&gt;&lt;br&gt;&amp;lt; 5 min" vertex="1">
-          <mxGeometry height="50" width="200" x="150" as="geometry" />
+          <mxGeometry x="150" y="0" width="230" height="50" as="geometry" />
         </mxCell>
         <mxCell id="21" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8B5CF6;fontColor=#FFFFFF;fontStyle=0;fontSize=12;verticalAlign=middle;strokeColor=#7C3AED;strokeWidth=2;" value="&lt;b&gt;② TRIAGE&lt;/b&gt;&lt;br&gt;&amp;lt; 15 min" vertex="1">
-          <mxGeometry height="50" width="500" x="350" as="geometry" />
+          <mxGeometry x="380" y="0" width="490" height="50" as="geometry" />
         </mxCell>
         <mxCell id="22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F59E0B;fontColor=#FFFFFF;fontStyle=0;fontSize=11;verticalAlign=middle;strokeColor=#D97706;strokeWidth=2;" value="&lt;b&gt;②b COLLABORATE&lt;/b&gt;&lt;br&gt;App, no KB &amp;lt; 30 min" vertex="1">
-          <mxGeometry height="50" width="230" x="850" as="geometry" />
+          <mxGeometry x="870" y="0" width="240" height="50" as="geometry" />
         </mxCell>
         <mxCell id="23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DC2626;fontColor=#FFFFFF;fontStyle=0;fontSize=12;verticalAlign=middle;strokeColor=#B91C1C;strokeWidth=2;" value="&lt;b&gt;③ RESPOND &amp;amp; FIX&lt;/b&gt;&lt;br&gt;Priority-dependent" vertex="1">
-          <mxGeometry height="50" width="420" x="1080" as="geometry" />
+          <mxGeometry x="1110" y="0" width="450" height="50" as="geometry" />
         </mxCell>
         <mxCell id="24" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#10B981;fontColor=#FFFFFF;fontStyle=0;fontSize=12;verticalAlign=middle;strokeColor=#059669;strokeWidth=2;" value="&lt;b&gt;④ VERIFY&lt;/b&gt;&lt;br&gt;&amp;lt; 30 min" vertex="1">
-          <mxGeometry height="50" width="250" x="1500" as="geometry" />
+          <mxGeometry x="1560" y="0" width="250" height="50" as="geometry" />
         </mxCell>
         <mxCell id="25" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0EA5E9;fontColor=#FFFFFF;fontStyle=0;fontSize=12;verticalAlign=middle;strokeColor=#0284C7;strokeWidth=2;" value="&lt;b&gt;⑤ CLOSE&lt;/b&gt;&lt;br&gt;P1/P2: &amp;lt; 48 hrs" vertex="1">
-          <mxGeometry height="50" width="290" x="1750" as="geometry" />
+          <mxGeometry x="1810" y="0" width="340" height="50" as="geometry" />
         </mxCell>
+
+        <!-- SWIMLANE ROW HEADERS (left column) -->
+        <!-- Rows: ANYONE y=50..150 | L1/L2 y=150..700 | IC y=700..1020 | TECH y=1020..1200 | L3 y=1200..1330 | QA y=1330..1420 | MGMT y=1420..1560 -->
         <mxCell id="30" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;ANYONE&lt;/b&gt;&lt;br&gt;(User / Alert)" vertex="1">
-          <mxGeometry height="90" width="150" y="50" as="geometry" />
+          <mxGeometry x="0" y="50" width="150" height="100" as="geometry" />
         </mxCell>
         <mxCell id="31" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;L1/L2 ITO&lt;/b&gt;&lt;br&gt;(On-call /&lt;br&gt;Help Desk)" vertex="1">
-          <mxGeometry height="540" width="150" y="140" as="geometry" />
+          <mxGeometry x="0" y="150" width="150" height="550" as="geometry" />
         </mxCell>
         <mxCell id="32" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;INCIDENT&lt;br&gt;COMMANDER&lt;/b&gt;&lt;br&gt;(IC)" vertex="1">
-          <mxGeometry height="320" width="150" y="680" as="geometry" />
+          <mxGeometry x="0" y="700" width="150" height="320" as="geometry" />
         </mxCell>
         <mxCell id="33" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;TECH TEAM&lt;/b&gt;&lt;br&gt;(Dev / Infra /&lt;br&gt;BA / DBA)" vertex="1">
-          <mxGeometry height="170" width="150" y="1000" as="geometry" />
+          <mxGeometry x="0" y="1020" width="150" height="180" as="geometry" />
         </mxCell>
         <mxCell id="34" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;L3 / VENDOR&lt;/b&gt;&lt;br&gt;(Specialist)" vertex="1">
-          <mxGeometry height="120" width="150" y="1170" as="geometry" />
+          <mxGeometry x="0" y="1200" width="150" height="130" as="geometry" />
         </mxCell>
         <mxCell id="35" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;QA&lt;/b&gt;" vertex="1">
-          <mxGeometry height="90" width="150" y="1290" as="geometry" />
+          <mxGeometry x="0" y="1330" width="150" height="90" as="geometry" />
         </mxCell>
         <mxCell id="36" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E293B;fontColor=#E2E8F0;fontSize=11;verticalAlign=middle;strokeColor=#334155;strokeWidth=2;" value="&lt;b&gt;MANAGEMENT&lt;/b&gt;&lt;br&gt;(IT Mgr / CTO)" vertex="1">
-          <mxGeometry height="130" width="150" y="1380" as="geometry" />
+          <mxGeometry x="0" y="1420" width="150" height="140" as="geometry" />
         </mxCell>
+
+        <!-- HORIZONTAL GRIDLINES -->
         <mxCell id="40" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint y="50" as="sourcePoint" />
-            <mxPoint x="2350" y="50" as="targetPoint" />
+            <mxPoint x="0" y="50" as="sourcePoint" />
+            <mxPoint x="2150" y="50" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="41" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint y="140" as="sourcePoint" />
-            <mxPoint x="2350" y="140" as="targetPoint" />
+            <mxPoint x="0" y="150" as="sourcePoint" />
+            <mxPoint x="2150" y="150" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="42" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint y="680" as="sourcePoint" />
-            <mxPoint x="2350" y="680" as="targetPoint" />
+            <mxPoint x="0" y="700" as="sourcePoint" />
+            <mxPoint x="2150" y="700" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="43" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint y="1000" as="sourcePoint" />
-            <mxPoint x="2350" y="1000" as="targetPoint" />
+            <mxPoint x="0" y="1020" as="sourcePoint" />
+            <mxPoint x="2150" y="1020" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="44" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint y="1170" as="sourcePoint" />
-            <mxPoint x="2350" y="1170" as="targetPoint" />
+            <mxPoint x="0" y="1200" as="sourcePoint" />
+            <mxPoint x="2150" y="1200" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="45" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint y="1290" as="sourcePoint" />
-            <mxPoint x="2350" y="1290" as="targetPoint" />
+            <mxPoint x="0" y="1330" as="sourcePoint" />
+            <mxPoint x="2150" y="1330" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="46" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint y="1380" as="sourcePoint" />
-            <mxPoint x="2350" y="1380" as="targetPoint" />
+            <mxPoint x="0" y="1420" as="sourcePoint" />
+            <mxPoint x="2150" y="1420" as="targetPoint" />
           </mxGeometry>
         </mxCell>
+
+        <!-- VERTICAL GRIDLINES -->
         <mxCell id="50" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="350" as="sourcePoint" />
-            <mxPoint x="350" y="1520" as="targetPoint" />
+            <mxPoint x="380" y="0" as="sourcePoint" />
+            <mxPoint x="380" y="1560" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="51" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="850" as="sourcePoint" />
-            <mxPoint x="850" y="1520" as="targetPoint" />
+            <mxPoint x="870" y="0" as="sourcePoint" />
+            <mxPoint x="870" y="1560" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="52" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1080" as="sourcePoint" />
-            <mxPoint x="1080" y="1520" as="targetPoint" />
+            <mxPoint x="1110" y="0" as="sourcePoint" />
+            <mxPoint x="1110" y="1560" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="53" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1500" as="sourcePoint" />
-            <mxPoint x="1500" y="1520" as="targetPoint" />
+            <mxPoint x="1560" y="0" as="sourcePoint" />
+            <mxPoint x="1560" y="1560" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="54" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1750" as="sourcePoint" />
-            <mxPoint x="1750" y="1520" as="targetPoint" />
+            <mxPoint x="1810" y="0" as="sourcePoint" />
+            <mxPoint x="1810" y="1560" as="targetPoint" />
           </mxGeometry>
         </mxCell>
+
+        <!-- ====================== -->
+        <!-- DETECT COLUMN, ANYONE ROW: Trigger sources -->
+        <!-- ====================== -->
         <mxCell id="100" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#6366F1;strokeWidth=2;fontSize=10;fontStyle=1;" value="Monitoring alert fires" vertex="1">
-          <mxGeometry height="25" width="150" x="175" y="55" as="geometry" />
+          <mxGeometry x="190" y="58" width="150" height="25" as="geometry" />
         </mxCell>
         <mxCell id="101" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#6366F1;strokeWidth=2;fontSize=10;fontStyle=1;" value="User / stakeholder reports" vertex="1">
-          <mxGeometry height="25" width="150" x="175" y="82" as="geometry" />
+          <mxGeometry x="190" y="87" width="150" height="25" as="geometry" />
         </mxCell>
         <mxCell id="102" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#6366F1;strokeWidth=2;fontSize=10;fontStyle=1;" value="Health check fails" vertex="1">
-          <mxGeometry height="25" width="150" x="175" y="109" as="geometry" />
+          <mxGeometry x="190" y="116" width="150" height="25" as="geometry" />
         </mxCell>
-        <mxCell id="103" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6366F1;strokeWidth=2;fontSize=10;" value="&lt;b&gt;L1/L2&lt;/b&gt;: Receive &amp;amp; acknowledge&lt;br&gt;Auto-create ticket on ITSM&lt;br&gt;✉ 1st: &lt;i&gt;&#39;Received, looking into it&#39;&lt;/i&gt;" vertex="1">
-          <mxGeometry height="65" width="165" x="170" y="165" as="geometry" />
-        </mxCell>
-        <mxCell id="120" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#8B5CF6;strokeWidth=2;fontSize=11;fontStyle=1;" value="Real&lt;br&gt;incident?" vertex="1">
-          <mxGeometry height="70" width="110" x="385" y="160" as="geometry" />
-        </mxCell>
-        <mxCell id="121" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F4F6;strokeColor=#6B7280;strokeWidth=2.5;fontSize=10;fontColor=#374151;" value="&lt;b&gt;NOT AN INCIDENT&lt;/b&gt;&lt;br&gt;Route to: Service Request&lt;br&gt;/ User error / Backlog&lt;br&gt;Notify reporter &amp;amp; close&lt;br&gt;&lt;b&gt;— END —&lt;/b&gt;" vertex="1">
-          <mxGeometry height="75" width="170" x="365" y="265" as="geometry" />
-        </mxCell>
-        <mxCell id="122" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8B5CF6;strokeWidth=2;fontSize=10;" value="&lt;b&gt;L1/L2&lt;/b&gt;: Log INC-xxxx&lt;br&gt;⏱ SLA clock starts&lt;br&gt;Classify: Infra or App?" vertex="1">
-          <mxGeometry height="55" width="175" x="545" y="162" as="geometry" />
-        </mxCell>
-        <mxCell id="132" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#A78BFA;strokeWidth=1;fontSize=9;fontColor=#6D28D9;dashed=1;dashPattern=3 3;" value="✉ 2nd: Notify reporter&lt;br&gt;of P &amp;amp; expected timeline" vertex="1">
-          <mxGeometry height="30" width="155" x="548" y="228" as="geometry" />
-        </mxCell>
-        <mxCell id="123" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#8B5CF6;strokeWidth=2;fontSize=11;fontStyle=1;" value="Infra&lt;br&gt;issue?" vertex="1">
-          <mxGeometry height="70" width="110" x="577" y="290" as="geometry" />
-        </mxCell>
-        <mxCell id="130" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="&lt;font color=&quot;#EF4444&quot;&gt;&lt;b&gt;INFRA INCIDENT&lt;/b&gt;&lt;/font&gt;" vertex="1">
-          <mxGeometry height="20" width="130" x="385" y="370" as="geometry" />
-        </mxCell>
-        <mxCell id="131" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="&lt;font color=&quot;#D97706&quot;&gt;&lt;b&gt;APP INCIDENT&lt;/b&gt;&lt;/font&gt;" vertex="1">
-          <mxGeometry height="20" width="120" x="690" y="370" as="geometry" />
-        </mxCell>
-        <mxCell id="124" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=2;fontSize=10;fontStyle=1;" value="KB&lt;br&gt;match?" vertex="1">
-          <mxGeometry height="60" width="90" x="415" y="395" as="geometry" />
-        </mxCell>
-        <mxCell id="125" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;fontStyle=1;" value="KB&lt;br&gt;match?" vertex="1">
-          <mxGeometry height="60" width="90" x="700" y="395" as="geometry" />
-        </mxCell>
-        <mxCell id="126" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;L1&lt;/b&gt; assigns P from KB&lt;br&gt;Execute documented response" vertex="1">
-          <mxGeometry height="45" width="175" x="370" y="485" as="geometry" />
-        </mxCell>
-        <mxCell id="127" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;L1&lt;/b&gt; assigns P by scope" vertex="1">
-          <mxGeometry height="35" width="165" x="375" y="555" as="geometry" />
-        </mxCell>
-        <mxCell id="128" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;L1&lt;/b&gt; assigns P from KB&lt;br&gt;Execute first response&lt;br&gt;Notify tech team (don&#39;t wait)" vertex="1">
-          <mxGeometry height="55" width="180" x="655" y="480" as="geometry" />
-        </mxCell>
-        <mxCell id="129" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;L1&lt;/b&gt; assigns preliminary P" vertex="1">
-          <mxGeometry height="35" width="150" x="670" y="555" as="geometry" />
-        </mxCell>
-        <mxCell id="133" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=10;fontStyle=1;" value="Major&lt;br&gt;Incident?&lt;br&gt;(P1)" vertex="1">
-          <mxGeometry height="70" width="100" x="395" y="615" as="geometry" />
-        </mxCell>
-        <mxCell id="150" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" value="&lt;b&gt;L1 + Tech Team + BA&lt;/b&gt;&lt;br&gt;Assess blast radius&lt;br&gt;Confirm / adjust priority" vertex="1">
-          <mxGeometry height="60" width="185" x="875" y="535" as="geometry" />
-        </mxCell>
-        <mxCell id="160" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=2;fontSize=10;" value="&lt;b&gt;IC Coordination&lt;/b&gt; (P1/P2 only)&lt;br&gt;Workaround first if available&lt;br&gt;Coordinate team&lt;br&gt;Decide: rollback? escalate? war room?" vertex="1">
-          <mxGeometry height="75" width="225" x="1100" y="700" as="geometry" />
-        </mxCell>
-        <mxCell id="160b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FB923C;strokeWidth=1;fontSize=9;fontColor=#9A3412;dashed=1;dashPattern=3 3;" value="✉ Status: P1 every 30m, P2 every 1hr&lt;br&gt;Include reporter in updates" vertex="1">
-          <mxGeometry height="30" width="225" x="1100" y="780" as="geometry" />
-        </mxCell>
-        <mxCell id="500" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=2;fontSize=10;fontStyle=0;" value="&lt;b&gt;Activate Major Incident&lt;/b&gt;&lt;br&gt;War Room / Bridge Call&lt;br&gt;Assign IC" vertex="1">
-          <mxGeometry height="55" width="180" x="1400" y="700" as="geometry" />
-        </mxCell>
-        <mxCell id="502" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=2;fontSize=10;fontStyle=1;" value="Emergency&lt;br&gt;Change?" vertex="1">
-          <mxGeometry height="65" width="100" x="1400" y="840" as="geometry" />
-        </mxCell>
-        <mxCell id="503" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=9;" value="&lt;b&gt;RFC&lt;/b&gt;&lt;br&gt;Request for Change" vertex="1">
-          <mxGeometry height="30" width="110" x="1400" y="930" as="geometry" />
-        </mxCell>
-        <mxCell id="161" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Infra / DevOps&lt;/b&gt;&lt;br&gt;Rollback / Restart / Failover" vertex="1">
-          <mxGeometry height="45" width="165" x="1100" y="1025" as="geometry" />
-        </mxCell>
-        <mxCell id="162" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Infra / DevOps&lt;/b&gt;&lt;br&gt;Apply infrastructure fix" vertex="1">
-          <mxGeometry height="40" width="165" x="1100" y="1090" as="geometry" />
-        </mxCell>
-        <mxCell id="163" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Dev Team&lt;/b&gt;&lt;br&gt;Root cause &amp;amp; develop fix" vertex="1">
-          <mxGeometry height="40" width="155" x="1290" y="1025" as="geometry" />
-        </mxCell>
-        <mxCell id="165" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Dev / DBA&lt;/b&gt;&lt;br&gt;Deploy via CI/CD&lt;br&gt;Remediate bad data" vertex="1">
-          <mxGeometry height="50" width="155" x="1290" y="1090" as="geometry" />
-        </mxCell>
-        <mxCell id="520" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;fontSize=10;" value="&lt;b&gt;L3 / Vendor&lt;/b&gt;&lt;br&gt;Specialist investigation&lt;br&gt;&lt;i&gt;Patch / Replace / Vendor fix&lt;/i&gt;" vertex="1">
-          <mxGeometry height="50" width="195" x="1120" y="1185" as="geometry" />
-        </mxCell>
-        <mxCell id="521" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;L3 / Vendor&lt;/b&gt;&lt;br&gt;Implement specialist fix" vertex="1">
-          <mxGeometry height="35" width="195" x="1120" y="1250" as="geometry" />
-        </mxCell>
-        <mxCell id="164" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;QA&lt;/b&gt;&lt;br&gt;Validate fix in staging" vertex="1">
-          <mxGeometry height="40" width="155" x="1290" y="1305" as="geometry" />
-        </mxCell>
-        <mxCell id="190" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Tech Team&lt;/b&gt;&lt;br&gt;Monitor 15 min for regression" vertex="1">
-          <mxGeometry height="45" width="165" x="1520" y="1035" as="geometry" />
-        </mxCell>
-        <mxCell id="504" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;fontStyle=1;" value="Reporter&lt;br&gt;confirms?" vertex="1">
-          <mxGeometry height="70" width="100" x="1610" y="710" as="geometry" />
-        </mxCell>
-        <mxCell id="191" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;" value="&lt;b&gt;IC / Team Lead&lt;/b&gt;&lt;br&gt;Confirm service restored&lt;br&gt;✉ Last: &lt;i&gt;&#39;Resolved, you can resume&#39;&lt;/i&gt;" vertex="1">
-          <mxGeometry height="60" width="175" x="1560" y="840" as="geometry" />
-        </mxCell>
-        <mxCell id="200" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0EA5E9;strokeWidth=2;fontSize=10;" value="&lt;b&gt;IC / Team Lead&lt;/b&gt;&lt;br&gt;Lead Post-Incident Review&lt;br&gt;(Blameless RCA)&lt;br&gt;&lt;i&gt;(P3/P4: simplified review only)&lt;/i&gt;" vertex="1">
-          <mxGeometry height="65" width="185" x="1770" y="690" as="geometry" />
-        </mxCell>
-        <mxCell id="202" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0EA5E9;strokeWidth=2;fontSize=10;" value="&lt;b&gt;IC / Team Lead&lt;/b&gt;&lt;br&gt;Define action items&lt;br&gt;Update Knowledge Base" vertex="1">
-          <mxGeometry height="50" width="175" x="1770" y="770" as="geometry" />
-        </mxCell>
-        <mxCell id="201" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Tech Team&lt;/b&gt;&lt;br&gt;Identify root cause" vertex="1">
-          <mxGeometry height="40" width="155" x="1775" y="1035" as="geometry" />
-        </mxCell>
-        <mxCell id="203" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Management&lt;/b&gt;&lt;br&gt;Review RCA &amp;amp; sign off&lt;br&gt;&lt;i&gt;(P1/P2 only)&lt;/i&gt;" vertex="1">
-          <mxGeometry height="50" width="165" x="1775" y="1395" as="geometry" />
-        </mxCell>
-        <mxCell id="204" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#052E16;strokeColor=#22C55E;strokeWidth=2.5;fontColor=#BBF7D0;fontSize=11;" value="&lt;b&gt;INCIDENT CLOSED&lt;/b&gt;&lt;br&gt;RCA published · Actions in backlog · Knowledge Base updated" vertex="1">
-          <mxGeometry height="40" width="260" x="1770" y="1460" as="geometry" />
-        </mxCell>
-        <mxCell id="220" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Management&lt;/b&gt;&lt;br&gt;Notified (P1/P2)&lt;br&gt;Approve escalation" vertex="1">
-          <mxGeometry height="50" width="165" x="520" y="1395" as="geometry" />
-        </mxCell>
-        <mxCell id="221" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="Receive status updates&lt;br&gt;(P1:30m · P2:1hr)" vertex="1">
-          <mxGeometry height="40" width="160" x="1050" y="1400" as="geometry" />
-        </mxCell>
-        <mxCell id="530" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Notify Stakeholders&lt;/b&gt;&lt;br&gt;(Major Incident only)" vertex="1">
-          <mxGeometry height="45" width="155" x="840" y="1395" as="geometry" />
-        </mxCell>
-        <mxCell id="222" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="Notified of&lt;br&gt;restoration" vertex="1">
-          <mxGeometry height="35" width="130" x="1545" y="1400" as="geometry" />
-        </mxCell>
-        <mxCell id="600" edge="1" parent="1" source="220" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="530">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="601" edge="1" parent="1" source="530" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="221">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="602" edge="1" parent="1" source="221" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="560">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="603" edge="1" parent="1" source="560" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="222">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="604" edge="1" parent="1" source="222" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="203">
-          <mxGeometry relative="1" as="geometry" />
+
+        <!-- DETECT COLUMN, L1/L2 ROW: Receive and acknowledge -->
+        <mxCell id="103" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6366F1;strokeWidth=2;fontSize=10;" value="&lt;b&gt;L1/L2&lt;/b&gt;: Receive &amp;amp; acknowledge&lt;br&gt;Auto-create ticket on ITSM&lt;br&gt;✉ 1st: &lt;i&gt;'Received, looking into it'&lt;/i&gt;" vertex="1">
+          <mxGeometry x="180" y="180" width="170" height="65" as="geometry" />
         </mxCell>
         <mxCell id="400" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Incident Triage Guide" vertex="1">
-          <mxGeometry height="20" width="155" x="170" y="238" as="geometry" />
+          <mxGeometry x="185" y="252" width="155" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ====================== -->
+        <!-- TRIAGE COLUMN, L1/L2 ROW -->
+        <!-- ====================== -->
+        <mxCell id="120" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#8B5CF6;strokeWidth=2;fontSize=11;fontStyle=1;" value="Real&lt;br&gt;incident?" vertex="1">
+          <mxGeometry x="410" y="175" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="121" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F4F6;strokeColor=#6B7280;strokeWidth=2.5;fontSize=10;fontColor=#374151;" value="&lt;b&gt;NOT AN INCIDENT&lt;/b&gt;&lt;br&gt;Route to: Service Request&lt;br&gt;/ User error / Backlog&lt;br&gt;Notify reporter &amp;amp; close&lt;br&gt;&lt;b&gt;— END —&lt;/b&gt;" vertex="1">
+          <mxGeometry x="395" y="290" width="170" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="122" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8B5CF6;strokeWidth=2;fontSize=10;" value="&lt;b&gt;L1/L2&lt;/b&gt;: Log INC-xxxx&lt;br&gt;⏱ SLA clock starts&lt;br&gt;Classify: Infra or App?" vertex="1">
+          <mxGeometry x="570" y="175" width="175" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="132" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#A78BFA;strokeWidth=1;fontSize=9;fontColor=#6D28D9;dashed=1;dashPattern=3 3;" value="✉ 2nd: Notify reporter&lt;br&gt;of P &amp;amp; expected timeline" vertex="1">
+          <mxGeometry x="580" y="238" width="155" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="123" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#8B5CF6;strokeWidth=2;fontSize=11;fontStyle=1;" value="Infra&lt;br&gt;issue?" vertex="1">
+          <mxGeometry x="600" y="300" width="110" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Path labels -->
+        <mxCell id="130" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="&lt;font color=&quot;#EF4444&quot;&gt;&lt;b&gt;INFRA INCIDENT&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry x="400" y="385" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="131" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="&lt;font color=&quot;#D97706&quot;&gt;&lt;b&gt;APP INCIDENT&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry x="705" y="385" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- INFRA KB decision -->
+        <mxCell id="124" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=2;fontSize=10;fontStyle=1;" value="KB&lt;br&gt;match?" vertex="1">
+          <mxGeometry x="425" y="410" width="90" height="60" as="geometry" />
+        </mxCell>
+        <!-- APP KB decision -->
+        <mxCell id="125" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;fontStyle=1;" value="KB&lt;br&gt;match?" vertex="1">
+          <mxGeometry x="720" y="410" width="90" height="60" as="geometry" />
         </mxCell>
         <mxCell id="401" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Incident Knowledge Base" vertex="1">
-          <mxGeometry height="20" width="148" x="530" y="412" as="geometry" />
+          <mxGeometry x="555" y="425" width="148" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- INFRA: KB YES -> execute documented response -->
+        <mxCell id="126" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;L1&lt;/b&gt; assigns P from KB&lt;br&gt;Execute documented response" vertex="1">
+          <mxGeometry x="390" y="500" width="175" height="45" as="geometry" />
+        </mxCell>
+        <!-- INFRA: KB NO -> assign P by scope -->
+        <mxCell id="127" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;L1&lt;/b&gt; assigns P by scope" vertex="1">
+          <mxGeometry x="390" y="565" width="165" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- APP: KB YES -> execute first response -->
+        <mxCell id="128" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;L1&lt;/b&gt; assigns P from KB&lt;br&gt;Execute first response&lt;br&gt;Notify tech team (don't wait)" vertex="1">
+          <mxGeometry x="675" y="495" width="180" height="55" as="geometry" />
+        </mxCell>
+        <!-- APP: KB NO -> assign preliminary P -->
+        <mxCell id="129" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;L1&lt;/b&gt; assigns preliminary P" vertex="1">
+          <mxGeometry x="690" y="570" width="150" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Major Incident decision -->
+        <mxCell id="133" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=10;fontStyle=1;" value="Major&lt;br&gt;Incident?&lt;br&gt;(P1)" vertex="1">
+          <mxGeometry x="420" y="630" width="100" height="70" as="geometry" />
         </mxCell>
         <mxCell id="402" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Priority &amp;amp; Severity Matrix" vertex="1">
-          <mxGeometry height="20" width="168" x="460" y="600" as="geometry" />
+          <mxGeometry x="530" y="640" width="168" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="403" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Incident Response Playbook" vertex="1">
-          <mxGeometry height="20" width="175" x="1110" y="810" as="geometry" />
-        </mxCell>
-        <mxCell id="404" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Post-Incident Review Template" vertex="1">
-          <mxGeometry height="20" width="175" x="1770" y="835" as="geometry" />
-        </mxCell>
-        <mxCell id="405" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Escalation Policy" vertex="1">
-          <mxGeometry height="20" width="135" x="520" y="1450" as="geometry" />
-        </mxCell>
-        <mxCell id="406" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Change Management Policy" vertex="1">
-          <mxGeometry height="20" width="165" x="1400" y="970" as="geometry" />
+
+        <!-- ====================== -->
+        <!-- COLLABORATE COLUMN, L1/L2 ROW -->
+        <!-- ====================== -->
+        <mxCell id="150" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" value="&lt;b&gt;L1 + Tech Team + BA&lt;/b&gt;&lt;br&gt;Assess blast radius&lt;br&gt;Confirm / adjust priority" vertex="1">
+          <mxGeometry x="895" y="545" width="185" height="60" as="geometry" />
         </mxCell>
         <mxCell id="410" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FB923C;strokeWidth=1;fontSize=8;fontColor=#9A3412;dashed=1;dashPattern=3 3;" value="After hours: L1 + on-call dev assess;&lt;br&gt;BA joins next business day" vertex="1">
-          <mxGeometry height="28" width="185" x="875" y="600" as="geometry" />
-        </mxCell>
-        <mxCell id="560" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Approve Fix Deploy&lt;/b&gt;&lt;br&gt;(P1/P2 App Incident)" vertex="1">
-          <mxGeometry height="45" width="175" x="1270" y="1395" as="geometry" />
-        </mxCell>
-        <mxCell id="300" edge="1" parent="1" source="100" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="103">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="301" edge="1" parent="1" source="101" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="103">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="302" edge="1" parent="1" source="102" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="103">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="303" edge="1" parent="1" source="103" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="120">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="304" edge="1" parent="1" source="120" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#6B7280;fontSize=10;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="121" value="NO">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="305" edge="1" parent="1" source="120" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;fontSize=10;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="122" value="YES">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="306" edge="1" parent="1" source="122" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="123">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="307" edge="1" parent="1" source="123" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;fontSize=9;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="124" value="&lt;font color=&quot;#EF4444&quot;&gt;&lt;b&gt;YES&lt;/b&gt;&lt;br&gt;Infra incident&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="308" edge="1" parent="1" source="123" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#F59E0B;fontSize=9;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="125" value="&lt;font color=&quot;#D97706&quot;&gt;&lt;b&gt;NO&lt;/b&gt;&lt;br&gt;App incident&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="309" edge="1" parent="1" source="124" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;fontSize=9;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="126" value="YES">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="310" edge="1" parent="1" source="124" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;fontSize=9;fontStyle=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;" target="127" value="NO">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="311" edge="1" parent="1" source="125" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;fontSize=9;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="128" value="YES">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="312" edge="1" parent="1" source="125" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;fontSize=9;fontStyle=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" target="129" value="NO">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="313" edge="1" parent="1" source="129" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="150">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="314" edge="1" parent="1" source="126" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="133">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="315" edge="1" parent="1" source="127" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="133">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="540" edge="1" parent="1" source="133" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#DC2626;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="500" value="&lt;font color=&quot;#DC2626&quot;&gt;&lt;b&gt;YES&lt;/b&gt;&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1080" y="650" />
-              <mxPoint x="1080" y="690" />
-              <mxPoint x="1400" y="690" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="541" edge="1" parent="1" source="133" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;fontSize=9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" target="160" value="&lt;font color=&quot;#DC2626&quot;&gt;&lt;b&gt;NO&lt;/b&gt;&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="445" y="695" />
-              <mxPoint x="1070" y="695" />
-              <mxPoint x="1070" y="729" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="542" edge="1" parent="1" source="500" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" target="160">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="543" edge="1" parent="1" source="500" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#DC2626;dashed=1;dashPattern=5 3;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="530">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="316" edge="1" parent="1" source="128" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" target="160">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1080" y="508" />
-              <mxPoint x="1080" y="768" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="317" edge="1" parent="1" source="150" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="160">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1080" y="565" />
-              <mxPoint x="1080" y="738" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="318" edge="1" parent="1" source="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;fontSize=9;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="161" value="&lt;font color=&quot;#EF4444&quot;&gt;Infra&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="544" edge="1" parent="1" source="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="502">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="545" edge="1" parent="1" source="502" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;fontSize=9;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="503" value="YES">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="545c" edge="1" parent="1" source="503" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;fontSize=9;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="160" value="&lt;font color=&quot;#DC2626&quot;&gt;Execute&lt;br&gt;under RFC&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1350" y="945" />
-              <mxPoint x="1350" y="800" />
-              <mxPoint x="1213" y="800" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="545b" edge="1" parent="1" source="502" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;fontSize=9;fontStyle=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="160" value="NO — Standard">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1380" y="873" />
-              <mxPoint x="1380" y="738" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="319" edge="1" parent="1" source="161" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="162">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="320" edge="1" parent="1" source="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;fontSize=9;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="163" value="&lt;font color=&quot;#D97706&quot;&gt;App&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <!-- Edge 321 removed: was direct Dev→Deploy bypass that skipped QA/Approval controls -->
-        <mxCell id="546" edge="1" parent="1" source="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#9333EA;fontSize=9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="520" value="&lt;font color=&quot;#9333EA&quot;&gt;Escalate L3&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1213" y="815" />
-              <mxPoint x="1075" y="815" />
-              <mxPoint x="1075" y="1185" />
-              <mxPoint x="1218" y="1185" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="547" edge="1" parent="1" source="520" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#9333EA;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="521">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="548" edge="1" parent="1" source="521" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" target="190">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1500" y="1268" />
-              <mxPoint x="1500" y="1080" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="322" edge="1" parent="1" source="164" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" target="165" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;QA Pass&lt;/b&gt;&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1460" y="1325" />
-              <mxPoint x="1460" y="1140" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="549" edge="1" parent="1" source="163" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="164">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1368" y="1075" />
-              <mxPoint x="1420" y="1075" />
-              <mxPoint x="1420" y="1305" />
-              <mxPoint x="1368" y="1305" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="323" edge="1" parent="1" source="162" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="190">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="324" edge="1" parent="1" source="165" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="190">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1510" y="1090" />
-              <mxPoint x="1510" y="1058" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="325" edge="1" parent="1" source="190" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#10B981;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="504">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="550" edge="1" parent="1" source="504" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#10B981;fontSize=9;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="191" value="YES">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="551" edge="1" parent="1" source="504" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;dashed=1;dashPattern=5 3;fontSize=9;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="160" value="&lt;font color=&quot;#EF4444&quot;&gt;&lt;b&gt;Not resolved&lt;/b&gt;&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="326" edge="1" parent="1" source="191" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="200">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="327" edge="1" parent="1" source="200" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#0EA5E9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="202">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="328" edge="1" parent="1" source="202" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#0EA5E9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="201">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1970" y="795" />
-              <mxPoint x="1970" y="1055" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="329" edge="1" parent="1" source="201" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#0EA5E9;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="203">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1760" y="1055" />
-              <mxPoint x="1760" y="1380" />
-              <mxPoint x="1858" y="1380" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="330" edge="1" parent="1" source="203" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#22C55E;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="204">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="340" edge="1" parent="1" source="122" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="220" value="P1/P2 identified →&lt;br&gt;notify Management">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="633" y="240" />
-              <mxPoint x="560" y="240" />
-              <mxPoint x="560" y="1395" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="341" edge="1" parent="1" source="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="221" value="P1/P2&lt;br&gt;status updates">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="342" edge="1" parent="1" source="191" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="222" value="all-clear">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="570" edge="1" parent="1" source="163" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#F59E0B;dashed=1;dashPattern=5 3;fontSize=10;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="560" value="&lt;font color=&quot;#D97706&quot;&gt;&lt;b&gt;① P1/P2: request&lt;br&gt;approval to deploy&lt;/b&gt;&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1290" y="1080" />
-              <mxPoint x="1250" y="1080" />
-              <mxPoint x="1250" y="1380" />
-              <mxPoint x="1358" y="1380" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="571" edge="1" parent="1" source="560" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#10B981;dashed=1;dashPattern=5 3;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" target="165" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;② Approved&lt;/b&gt;&lt;/font&gt;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1358" y="1370" />
-              <mxPoint x="1258" y="1370" />
-              <mxPoint x="1258" y="1140" />
-              <mxPoint x="1290" y="1140" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="700" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#1E293B;" value="&lt;b&gt;LEGEND&lt;/b&gt;" vertex="1">
-          <mxGeometry height="20" width="60" x="150" y="1530" as="geometry" />
-        </mxCell>
-        <mxCell id="701" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6366F1;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry height="14" width="14" x="220" y="1530" as="geometry" />
-        </mxCell>
-        <mxCell id="702" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Detect" vertex="1">
-          <mxGeometry height="18" width="45" x="238" y="1528" as="geometry" />
-        </mxCell>
-        <mxCell id="703" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8B5CF6;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry height="14" width="14" x="290" y="1530" as="geometry" />
-        </mxCell>
-        <mxCell id="704" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Triage" vertex="1">
-          <mxGeometry height="18" width="40" x="308" y="1528" as="geometry" />
-        </mxCell>
-        <mxCell id="705" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F59E0B;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry height="14" width="14" x="355" y="1530" as="geometry" />
-        </mxCell>
-        <mxCell id="706" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Collaborate / App path" vertex="1">
-          <mxGeometry height="18" width="120" x="373" y="1528" as="geometry" />
-        </mxCell>
-        <mxCell id="707" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF4444;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry height="14" width="14" x="500" y="1530" as="geometry" />
-        </mxCell>
-        <mxCell id="708" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Infra path / Major Incident" vertex="1">
-          <mxGeometry height="18" width="145" x="518" y="1528" as="geometry" />
-        </mxCell>
-        <mxCell id="709" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10B981;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry height="14" width="14" x="670" y="1530" as="geometry" />
-        </mxCell>
-        <mxCell id="710" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Verify" vertex="1">
-          <mxGeometry height="18" width="40" x="688" y="1528" as="geometry" />
-        </mxCell>
-        <mxCell id="711" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0EA5E9;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry height="14" width="14" x="735" y="1530" as="geometry" />
-        </mxCell>
-        <mxCell id="712" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Close" vertex="1">
-          <mxGeometry height="18" width="35" x="753" y="1528" as="geometry" />
-        </mxCell>
-        <mxCell id="713" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9333EA;strokeColor=none;fontSize=8;" value="" vertex="1">
-          <mxGeometry height="14" width="14" x="800" y="1530" as="geometry" />
-        </mxCell>
-        <mxCell id="714" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="L3 / Vendor" vertex="1">
-          <mxGeometry height="18" width="65" x="818" y="1528" as="geometry" />
-        </mxCell>
-        <mxCell id="715" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="—— Solid = primary flow" vertex="1">
-          <mxGeometry height="18" width="140" x="900" y="1528" as="geometry" />
-        </mxCell>
-        <mxCell id="716" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="- - - Dashed = notification / approval" vertex="1">
-          <mxGeometry height="18" width="200" x="1050" y="1528" as="geometry" />
+          <mxGeometry x="895" y="615" width="185" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- ====================== -->
+        <!-- RESPOND COLUMN, IC ROW: Major Incident Activation -->
+        <!-- ====================== -->
+        <mxCell id="500" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=2;fontSize=10;fontStyle=0;" value="&lt;b&gt;Activate Major Incident&lt;/b&gt;&lt;br&gt;War Room / Bridge Call&lt;br&gt;Assign IC" vertex="1">
+          <mxGeometry x="1140" y="720" width="180" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- IC Coordination (central hub) -->
+        <mxCell id="160" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=2;fontSize=10;" value="&lt;b&gt;IC Coordination&lt;/b&gt; (P1/P2 only)&lt;br&gt;Workaround first if available&lt;br&gt;Coordinate team&lt;br&gt;Decide: rollback? escalate? war room?" vertex="1">
+          <mxGeometry x="1140" y="830" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="160b" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FB923C;strokeWidth=1;fontSize=9;fontColor=#9A3412;dashed=1;dashPattern=3 3;" value="✉ Status: P1 every 30m, P2 every 1hr&lt;br&gt;Include reporter in updates" vertex="1">
+          <mxGeometry x="1140" y="910" width="225" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="403" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Incident Response Playbook" vertex="1">
+          <mxGeometry x="1140" y="945" width="175" height="20" as="geometry" />
         </mxCell>
         <mxCell id="411" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FB923C;strokeWidth=1;fontSize=8;fontColor=#9A3412;dashed=1;dashPattern=3 3;" value="After hours: IC engages on-call tech;&lt;br&gt;Mgmt next business day unless P1" vertex="1">
-          <mxGeometry height="28" width="225" x="1100" y="820" as="geometry" />
+          <mxGeometry x="1140" y="970" width="225" height="28" as="geometry" />
         </mxCell>
-        <!-- QA Fail loop: QA Validate → Dev Team (rework) -->
-        <mxCell id="580" edge="1" parent="1" source="164" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;dashed=1;dashPattern=5 3;fontSize=9;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" target="163" value="&lt;font color=&quot;#EF4444&quot;&gt;&lt;b&gt;QA Fail&lt;/b&gt;&lt;br&gt;Rework&lt;/font&gt;">
+
+        <!-- Emergency Change decision -->
+        <mxCell id="502" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=2;fontSize=10;fontStyle=1;" value="Emergency&lt;br&gt;Change?" vertex="1">
+          <mxGeometry x="1420" y="835" width="100" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="503" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=9;" value="&lt;b&gt;RFC&lt;/b&gt;&lt;br&gt;Request for Change" vertex="1">
+          <mxGeometry x="1415" y="935" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="406" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Change Management Policy" vertex="1">
+          <mxGeometry x="1395" y="975" width="165" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ====================== -->
+        <!-- RESPOND COLUMN, TECH TEAM ROW -->
+        <!-- ====================== -->
+        <mxCell id="161" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Infra / DevOps&lt;/b&gt;&lt;br&gt;Rollback / Restart / Failover" vertex="1">
+          <mxGeometry x="1130" y="1040" width="165" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="162" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Infra / DevOps&lt;/b&gt;&lt;br&gt;Apply infrastructure fix" vertex="1">
+          <mxGeometry x="1130" y="1100" width="165" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="163" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Dev Team&lt;/b&gt;&lt;br&gt;Root cause &amp;amp; develop fix" vertex="1">
+          <mxGeometry x="1330" y="1040" width="155" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="165" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Dev / DBA&lt;/b&gt;&lt;br&gt;Deploy via CI/CD&lt;br&gt;Remediate bad data" vertex="1">
+          <mxGeometry x="1330" y="1105" width="155" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ====================== -->
+        <!-- RESPOND COLUMN, L3/VENDOR ROW -->
+        <!-- ====================== -->
+        <mxCell id="520" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=2;fontSize=10;" value="&lt;b&gt;L3 / Vendor&lt;/b&gt;&lt;br&gt;Specialist investigation&lt;br&gt;&lt;i&gt;Patch / Replace / Vendor fix&lt;/i&gt;" vertex="1">
+          <mxGeometry x="1150" y="1220" width="195" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="521" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FF;strokeColor=#9333EA;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;L3 / Vendor&lt;/b&gt;&lt;br&gt;Implement specialist fix" vertex="1">
+          <mxGeometry x="1150" y="1285" width="195" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ====================== -->
+        <!-- RESPOND COLUMN, QA ROW -->
+        <!-- ====================== -->
+        <mxCell id="164" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;QA&lt;/b&gt;&lt;br&gt;Validate fix in staging" vertex="1">
+          <mxGeometry x="1330" y="1350" width="155" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ====================== -->
+        <!-- VERIFY COLUMN, TECH TEAM ROW -->
+        <!-- ====================== -->
+        <mxCell id="190" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Tech Team&lt;/b&gt;&lt;br&gt;Monitor 15 min for regression" vertex="1">
+          <mxGeometry x="1590" y="1060" width="165" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- VERIFY COLUMN, IC ROW -->
+        <mxCell id="504" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;fontStyle=1;" value="Reporter&lt;br&gt;confirms?" vertex="1">
+          <mxGeometry x="1630" y="830" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="191" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;" value="&lt;b&gt;IC / Team Lead&lt;/b&gt;&lt;br&gt;Confirm service restored&lt;br&gt;✉ Last: &lt;i&gt;'Resolved, you can resume'&lt;/i&gt;" vertex="1">
+          <mxGeometry x="1590" y="740" width="175" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ====================== -->
+        <!-- CLOSE COLUMN, IC ROW -->
+        <!-- ====================== -->
+        <mxCell id="200" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0EA5E9;strokeWidth=2;fontSize=10;" value="&lt;b&gt;IC / Team Lead&lt;/b&gt;&lt;br&gt;Lead Post-Incident Review&lt;br&gt;(Blameless RCA)&lt;br&gt;&lt;i&gt;(P3/P4: simplified review only)&lt;/i&gt;" vertex="1">
+          <mxGeometry x="1840" y="730" width="185" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="202" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0EA5E9;strokeWidth=2;fontSize=10;" value="&lt;b&gt;IC / Team Lead&lt;/b&gt;&lt;br&gt;Define action items&lt;br&gt;Update Knowledge Base" vertex="1">
+          <mxGeometry x="1840" y="820" width="175" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="404" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Post-Incident Review Template" vertex="1">
+          <mxGeometry x="1840" y="880" width="175" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- CLOSE COLUMN, TECH TEAM ROW -->
+        <mxCell id="201" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Tech Team&lt;/b&gt;&lt;br&gt;Identify root cause" vertex="1">
+          <mxGeometry x="1840" y="1060" width="155" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- CLOSE COLUMN, MANAGEMENT ROW -->
+        <mxCell id="203" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Management&lt;/b&gt;&lt;br&gt;Review RCA &amp;amp; sign off&lt;br&gt;&lt;i&gt;(P1/P2 only)&lt;/i&gt;" vertex="1">
+          <mxGeometry x="1850" y="1440" width="165" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="204" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#052E16;strokeColor=#22C55E;strokeWidth=2.5;fontColor=#BBF7D0;fontSize=11;" value="&lt;b&gt;INCIDENT CLOSED&lt;/b&gt;&lt;br&gt;RCA published · Actions in backlog · Knowledge Base updated" vertex="1">
+          <mxGeometry x="1830" y="1510" width="260" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ====================== -->
+        <!-- MANAGEMENT ROW notification blocks -->
+        <!-- ====================== -->
+        <mxCell id="220" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Management&lt;/b&gt;&lt;br&gt;Notified (P1/P2)&lt;br&gt;Approve escalation" vertex="1">
+          <mxGeometry x="550" y="1440" width="165" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="405" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Escalation Policy" vertex="1">
+          <mxGeometry x="555" y="1498" width="135" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="530" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Notify Stakeholders&lt;/b&gt;&lt;br&gt;(Major Incident only)" vertex="1">
+          <mxGeometry x="870" y="1440" width="155" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="221" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="Receive status updates&lt;br&gt;(P1:30m · P2:1hr)" vertex="1">
+          <mxGeometry x="1140" y="1445" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="560" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Approve Fix Deploy&lt;/b&gt;&lt;br&gt;(P1/P2 App Incident)" vertex="1">
+          <mxGeometry x="1350" y="1440" width="175" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="222" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="Notified of&lt;br&gt;restoration" vertex="1">
+          <mxGeometry x="1600" y="1445" width="130" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- EDGES: All arrows reorganized for clean left-to-right, top-to-bottom flow -->
+        <!-- ============================================================ -->
+
+        <!-- DETECT: 3 triggers flow DOWN to Receive -->
+        <mxCell id="300" edge="1" parent="1" source="100" target="103" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="301" edge="1" parent="1" source="101" target="103" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="302" edge="1" parent="1" source="102" target="103" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Receive flows RIGHT to Real incident? -->
+        <mxCell id="303" edge="1" parent="1" source="103" target="120" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Real incident? NO flows DOWN to END -->
+        <mxCell id="304" edge="1" parent="1" source="120" target="121" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#6B7280;fontSize=10;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Real incident? YES flows RIGHT to Log INC -->
+        <mxCell id="305" edge="1" parent="1" source="120" target="122" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;fontSize=10;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Log INC flows DOWN to Infra issue? -->
+        <mxCell id="306" edge="1" parent="1" source="122" target="123" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Infra issue? YES (left-down) to INFRA KB match -->
+        <mxCell id="307" edge="1" parent="1" source="123" target="124" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;fontSize=9;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#EF4444&quot;&gt;&lt;b&gt;YES&lt;/b&gt;&lt;br&gt;Infra incident&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Infra issue? NO (right-down) to APP KB match -->
+        <mxCell id="308" edge="1" parent="1" source="123" target="125" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#F59E0B;fontSize=9;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#D97706&quot;&gt;&lt;b&gt;NO&lt;/b&gt;&lt;br&gt;App incident&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- INFRA KB YES flows DOWN to execute -->
+        <mxCell id="309" edge="1" parent="1" source="124" target="126" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;fontSize=9;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- INFRA KB NO flows DOWN-LEFT to assign P -->
+        <mxCell id="310" edge="1" parent="1" source="124" target="127" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;fontSize=9;fontStyle=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- APP KB YES flows DOWN to execute first response -->
+        <mxCell id="311" edge="1" parent="1" source="125" target="128" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;fontSize=9;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- APP KB NO flows DOWN-RIGHT to assign prelim P -->
+        <mxCell id="312" edge="1" parent="1" source="125" target="129" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;fontSize=9;fontStyle=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- APP prelim P flows RIGHT to Collaborate -->
+        <mxCell id="313" edge="1" parent="1" source="129" target="150" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- INFRA execute KB flows DOWN to Major Incident? -->
+        <mxCell id="314" edge="1" parent="1" source="126" target="133" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- INFRA assign P flows DOWN to Major Incident? -->
+        <mxCell id="315" edge="1" parent="1" source="127" target="133" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Major Incident? YES flows RIGHT to Activate Major Incident -->
+        <mxCell id="540" edge="1" parent="1" source="133" target="500" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#DC2626;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#DC2626&quot;&gt;&lt;b&gt;YES&lt;/b&gt;&lt;/font&gt;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1270" y="1325" />
-              <mxPoint x="1270" y="1065" />
+              <mxPoint x="1110" y="665" />
+              <mxPoint x="1110" y="748" />
             </Array>
           </mxGeometry>
         </mxCell>
+
+        <!-- Major Incident? NO flows DOWN then RIGHT to IC Coordination -->
+        <mxCell id="541" edge="1" parent="1" source="133" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#EF4444;fontSize=9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#DC2626&quot;&gt;&lt;b&gt;NO&lt;/b&gt;&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="470" y="868" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Activate Major Incident flows DOWN to IC Coordination -->
+        <mxCell id="542" edge="1" parent="1" source="500" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Activate Major Incident flows RIGHT-DOWN to Notify Stakeholders (Management) -->
+        <mxCell id="543" edge="1" parent="1" source="500" target="530" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#DC2626;dashed=1;dashPattern=5 3;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1540" y="748" />
+              <mxPoint x="1540" y="1400" />
+              <mxPoint x="948" y="1400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- APP KB YES (execute first response) flows RIGHT-DOWN to IC Coordination -->
+        <mxCell id="316" edge="1" parent="1" source="128" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="523" />
+              <mxPoint x="1100" y="853" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Collaborate flows RIGHT-DOWN to IC Coordination -->
+        <mxCell id="317" edge="1" parent="1" source="150" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1120" y="575" />
+              <mxPoint x="1120" y="883" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- IC Coordination flows DOWN-LEFT to Infra fix -->
+        <mxCell id="318" edge="1" parent="1" source="160" target="161" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;fontSize=9;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#EF4444&quot;&gt;Infra&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- IC Coordination flows RIGHT to Emergency Change? -->
+        <mxCell id="544" edge="1" parent="1" source="160" target="502" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Emergency Change? YES flows DOWN to RFC -->
+        <mxCell id="545" edge="1" parent="1" source="502" target="503" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;fontSize=9;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- RFC loops back LEFT to IC Coordination (execute under RFC) -->
+        <mxCell id="545c" edge="1" parent="1" source="503" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;fontSize=9;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#DC2626&quot;&gt;Execute&lt;br&gt;under RFC&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1390" y="950" />
+              <mxPoint x="1390" y="905" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Emergency Change? NO loops back LEFT to IC Coordination -->
+        <mxCell id="545b" edge="1" parent="1" source="502" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#DC2626;fontSize=9;fontStyle=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;" value="NO — Standard">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1400" y="920" />
+              <mxPoint x="1400" y="883" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Infra Rollback flows DOWN to Apply fix -->
+        <mxCell id="319" edge="1" parent="1" source="161" target="162" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- IC Coordination flows DOWN-RIGHT to Dev Team (App path) -->
+        <mxCell id="320" edge="1" parent="1" source="160" target="163" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;fontSize=9;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#D97706&quot;&gt;App&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- IC Coordination flows DOWN to L3 Escalation -->
+        <mxCell id="546" edge="1" parent="1" source="160" target="520" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#9333EA;fontSize=9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#9333EA&quot;&gt;Escalate L3&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1253" y="1000" />
+              <mxPoint x="1248" y="1000" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- L3 investigate flows DOWN to implement fix -->
+        <mxCell id="547" edge="1" parent="1" source="520" target="521" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#9333EA;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- L3 implement fix flows RIGHT to Monitor -->
+        <mxCell id="548" edge="1" parent="1" source="521" target="190" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1570" y="1303" />
+              <mxPoint x="1570" y="1105" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Dev Team flows DOWN-RIGHT then DOWN to QA -->
+        <mxCell id="549" edge="1" parent="1" source="163" target="164" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1408" y="1090" />
+              <mxPoint x="1500" y="1090" />
+              <mxPoint x="1500" y="1340" />
+              <mxPoint x="1408" y="1340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- QA Pass flows LEFT-UP to Deploy -->
+        <mxCell id="322" edge="1" parent="1" source="164" target="165" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#F59E0B;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;QA Pass&lt;/b&gt;&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1310" y="1370" />
+              <mxPoint x="1310" y="1155" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- QA Fail loops back RIGHT-UP to Dev Team -->
+        <mxCell id="580" edge="1" parent="1" source="164" target="163" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;dashed=1;dashPattern=5 3;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#EF4444&quot;&gt;&lt;b&gt;QA Fail&lt;/b&gt;&lt;br&gt;Rework&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1520" y="1370" />
+              <mxPoint x="1520" y="1080" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Infra Apply fix flows RIGHT to Monitor -->
+        <mxCell id="323" edge="1" parent="1" source="162" target="190" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Deploy flows RIGHT to Monitor -->
+        <mxCell id="324" edge="1" parent="1" source="165" target="190" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1560" y="1130" />
+              <mxPoint x="1560" y="1083" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Monitor flows UP to Reporter confirms? -->
+        <mxCell id="325" edge="1" parent="1" source="190" target="504" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#10B981;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Reporter confirms YES flows UP to Confirm restored -->
+        <mxCell id="550" edge="1" parent="1" source="504" target="191" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#10B981;fontSize=9;fontStyle=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Reporter confirms NO loops back LEFT to IC Coordination -->
+        <mxCell id="551" edge="1" parent="1" source="504" target="160" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#EF4444;dashed=1;dashPattern=5 3;fontSize=9;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#EF4444&quot;&gt;&lt;b&gt;Not resolved&lt;/b&gt;&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Confirm restored flows RIGHT to Post-Incident Review -->
+        <mxCell id="326" edge="1" parent="1" source="191" target="200" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#475569;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Post-Incident Review flows DOWN to Define actions -->
+        <mxCell id="327" edge="1" parent="1" source="200" target="202" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#0EA5E9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Define actions flows DOWN to Tech identify root cause -->
+        <mxCell id="328" edge="1" parent="1" source="202" target="201" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#0EA5E9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tech identify root cause flows DOWN to Management review -->
+        <mxCell id="329" edge="1" parent="1" source="201" target="203" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#0EA5E9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Management review flows DOWN to INCIDENT CLOSED -->
+        <mxCell id="330" edge="1" parent="1" source="203" target="204" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1.5;strokeColor=#22C55E;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- MANAGEMENT NOTIFICATION EDGES (dashed, secondary flow) -->
+        <!-- ============================================================ -->
+
+        <!-- Log INC P1/P2 notification flows DOWN to Management -->
+        <mxCell id="340" edge="1" parent="1" source="122" target="220" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="P1/P2 identified →&lt;br&gt;notify Management">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="658" y="280" />
+              <mxPoint x="550" y="280" />
+              <mxPoint x="550" y="1440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- IC Coordination notification flows DOWN to status updates -->
+        <mxCell id="341" edge="1" parent="1" source="160" target="221" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="P1/P2&lt;br&gt;status updates">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Confirm restored notification flows DOWN to Management -->
+        <mxCell id="342" edge="1" parent="1" source="191" target="222" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#94A3B8;dashed=1;dashPattern=5 3;fontSize=9;fontColor=#94A3B8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="all-clear">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Management row: left-to-right notification flow -->
+        <mxCell id="600" edge="1" parent="1" source="220" target="530" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="601" edge="1" parent="1" source="530" target="221" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="602" edge="1" parent="1" source="221" target="560" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="603" edge="1" parent="1" source="560" target="222" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="604" edge="1" parent="1" source="222" target="203" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Dev Team request approval flows DOWN to Approve Fix Deploy (Management) -->
+        <mxCell id="570" edge="1" parent="1" source="163" target="560" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#F59E0B;dashed=1;dashPattern=5 3;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#D97706&quot;&gt;&lt;b&gt;① P1/P2: request&lt;br&gt;approval to deploy&lt;/b&gt;&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1408" y="1090" />
+              <mxPoint x="1438" y="1090" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Approve Fix Deploy flows back UP-LEFT to Deploy -->
+        <mxCell id="571" edge="1" parent="1" source="560" target="165" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=2;strokeColor=#10B981;dashed=1;dashPattern=5 3;fontSize=10;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" value="&lt;font color=&quot;#059669&quot;&gt;&lt;b&gt;② Approved&lt;/b&gt;&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1300" y="1463" />
+              <mxPoint x="1300" y="1155" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LEGEND -->
+        <!-- ============================================================ -->
+        <mxCell id="700" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#1E293B;" value="&lt;b&gt;LEGEND&lt;/b&gt;" vertex="1">
+          <mxGeometry x="150" y="1580" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="701" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6366F1;strokeColor=none;fontSize=8;" value="" vertex="1">
+          <mxGeometry x="220" y="1580" width="14" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="702" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Detect" vertex="1">
+          <mxGeometry x="238" y="1578" width="45" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="703" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8B5CF6;strokeColor=none;fontSize=8;" value="" vertex="1">
+          <mxGeometry x="290" y="1580" width="14" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="704" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Triage" vertex="1">
+          <mxGeometry x="308" y="1578" width="40" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="705" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F59E0B;strokeColor=none;fontSize=8;" value="" vertex="1">
+          <mxGeometry x="355" y="1580" width="14" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="706" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Collaborate / App path" vertex="1">
+          <mxGeometry x="373" y="1578" width="120" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="707" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF4444;strokeColor=none;fontSize=8;" value="" vertex="1">
+          <mxGeometry x="500" y="1580" width="14" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="708" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Infra path / Major Incident" vertex="1">
+          <mxGeometry x="518" y="1578" width="145" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="709" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10B981;strokeColor=none;fontSize=8;" value="" vertex="1">
+          <mxGeometry x="670" y="1580" width="14" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="710" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Verify" vertex="1">
+          <mxGeometry x="688" y="1578" width="40" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="711" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0EA5E9;strokeColor=none;fontSize=8;" value="" vertex="1">
+          <mxGeometry x="735" y="1580" width="14" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="712" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="Close" vertex="1">
+          <mxGeometry x="753" y="1578" width="35" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="713" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9333EA;strokeColor=none;fontSize=8;" value="" vertex="1">
+          <mxGeometry x="800" y="1580" width="14" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="714" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="L3 / Vendor" vertex="1">
+          <mxGeometry x="818" y="1578" width="65" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="715" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="—— Solid = primary flow" vertex="1">
+          <mxGeometry x="900" y="1578" width="140" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="716" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#475569;" value="- - - Dashed = notification / approval" vertex="1">
+          <mxGeometry x="1050" y="1578" width="200" height="18" as="geometry" />
+        </mxCell>
+
       </root>
     </mxGraphModel>
   </diagram>
