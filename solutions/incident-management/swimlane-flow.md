@@ -23,9 +23,9 @@ Every box in the swimlane diagram has a **step number** for easy reference durin
 | **ANYONE** | User / Alert | Any person or automated monitoring system that detects an issue |
 | **L1/L2 ITO** | On-call / Help Desk | First- and second-line IT Operations staff who receive, acknowledge, triage, and classify incidents |
 | **INCIDENT COMMANDER (IC)** | IC | Senior responder who coordinates P1/P2 response, manages communications, and drives resolution |
-| **TECH TEAM** | Dev / Infra / BA / DBA / QA | Technical specialists who investigate root causes, develop fixes, validate in staging, and deploy changes |
+| **TECH TEAM** | Dev / Infra / BA / DBA / QA | Technical specialists who investigate root causes, develop fixes, validate in UAT, and deploy changes |
 | **L3 / VENDOR** | Specialist | Third-level support or external vendors engaged for specialist investigation and fixes |
-| **MANAGEMENT** | IT Mgr / CTO | Receives notifications for P1/P2, approves escalations, approves fix deployments, and signs off on RCA |
+| **MANAGEMENT** | IT Mgr / CTO | Receives notifications for P1/P2, approves fix deployments, and signs off on RCA |
 
 ---
 
@@ -160,13 +160,13 @@ Lane: TECH TEAM (Dev Team)
 
 - Investigate root cause and develop the fix
 - Once fix is ready, dispatch in parallel:
-  - → **Step 13a** (QA: Validate in staging)
+  - → **Step 13a** (QA: Validate in UAT)
   - → **Step 13b** (Management: Approve deploy — P1/P2 App only)
 
-**Step 13a — QA: Validate Fix in Staging**
+**Step 13a — QA: Validate Fix in UAT**
 Lane: TECH TEAM (QA)
 
-- Validate fix in staging environment
+- Validate fix in UAT environment
 - *(Rework until pass — implicit loop, not a separate routing decision)*
 
 **Step 13b — Management: Approve Fix Deploy**
@@ -175,7 +175,7 @@ Lane: MANAGEMENT
 - For P1/P2 application incidents, management approves the fix deployment
 - For P3/P4: this step is skipped
 
-> **Important**: Both Step 13a (QA pass) AND Step 13b (Management approval) must complete before proceeding to Step 12b. For P3/P4, only QA validation is required.
+> **Important**: Both Step 13a (QA pass in UAT) AND Step 13b (Management approval) must complete before proceeding to Step 12b. For P3/P4, only QA validation is required.
 
 **Step 12b — Dev/DBA: Deploy via CI/CD, Remediate Data**
 Lane: TECH TEAM (Dev / DBA)
@@ -199,17 +199,17 @@ Lane: L3 / VENDOR
 
 ### Stage ④ VERIFY (< 30 min)
 
-**Step 15 — Monitor 15 min for Regression**
-Lane: TECH TEAM
+**Step 15 — PAT (Production Acceptance Test)**
+Lane: TECH TEAM | Biz Team
 
-- Monitor production for 15 minutes to check for regression
+- Tech Team and Biz Team perform Production Acceptance Test
 - → Go to Step 16
 
-**Step 16 — Reporter Confirms?** ◇
+**Step 16 — Confirm Fixed?** ◇
 Lane: INCIDENT COMMANDER
 
 - **YES** → Go to Step 17
-- **Not resolved** → Loop back to Step 10 (IC Coordination) for another round (Path F)
+- **Not fixed** → Loop back to Step 10 (IC Coordination) for another round (Path F)
 
 **Step 17 — Confirm Service Restored**
 Lane: INCIDENT COMMANDER
@@ -264,7 +264,7 @@ Use these numbered paths for training, runbook references, and audit trails. Whe
 ```
 1 → 2 → 3(YES) → 4 → 5(INFRA) → 6(YES) → 10 → 11 → 15 → 16(YES) → 17 → 18 → 19 → 20 → 21 → 22
 ```
-**Narrative**: Alert fires. L1 acknowledges, confirms real incident, logs it. Classified as infra. KB has a match — L1 assigns P1, executes documented response. IC takes over: activates war room, coordinates. Infra team rolls back. Monitor 15 min, reporter confirms. Service restored. RCA, management sign-off, closed.
+**Narrative**: Alert fires. L1 acknowledges, confirms real incident, logs it. Classified as infra. KB has a match — L1 assigns P1, executes documented response. IC takes over: activates war room, coordinates. Infra team rolls back. PAT confirms fix. Service restored. RCA, management sign-off, closed.
 
 ### Path B: Infra Incident, No KB Match, P2
 ```
@@ -276,7 +276,7 @@ Use these numbered paths for training, runbook references, and audit trails. Whe
 ```
 1 → 2 → 3(YES) → 4 → 5(APP) → 8(YES) → 10 → 12 → 13a + 13b → 12b → 15 → 16(YES) → 17 → 18 → 19 → 20 → 21 → 22
 ```
-**Narrative**: User reports issue. L1 acknowledges, confirms real incident, logs it. Classified as app. KB match — L1 assigns P1, executes first response, notifies dev. IC coordinates. Dev develops fix. QA validates in staging while management approves deploy (parallel). Both pass. Deploy via CI/CD. Monitor, confirm. RCA with management sign-off, closed.
+**Narrative**: User reports issue. L1 acknowledges, confirms real incident, logs it. Classified as app. KB match — L1 assigns P1, executes first response, notifies dev. IC coordinates. Dev develops fix. QA validates in UAT while management approves deploy (parallel). Both pass. Deploy via CI/CD. PAT confirms fix. RCA with management sign-off, closed.
 
 ### Path D: App Incident, No KB Match, P2 (with Collaboration)
 ```
@@ -294,7 +294,7 @@ Use these numbered paths for training, runbook references, and audit trails. Whe
 ```
 ... → 15 → 16(NOT RESOLVED) → 10 → (dispatch again) → 15 → 16(YES) → 17 → ...
 ```
-**Narrative**: After fix and monitoring, reporter says not resolved. Flow loops back to IC Coordination for another round.
+**Narrative**: After fix and PAT, issue not confirmed fixed. Flow loops back to IC Coordination for another round.
 
 ### Path G: Not an Incident
 ```
@@ -316,8 +316,7 @@ Throughout the process, Management (IT Mgr / CTO) receives parallel notification
 
 | Trigger | Management Action |
 |---------|-------------------|
-| P1/P2 identified during triage | Notified; approve escalation |
-| P1 activated (via IC Coordination) | Stakeholders notified |
+| P1/P2 identified during triage | Notified |
 | During response (P1/P2) | Receive status updates (P1: every 30 min, P2: every 1 hr) |
 | P1/P2 App fix ready to deploy | Approve fix deployment (Step 13b) |
 | Service restored | Notified of all-clear |
@@ -330,7 +329,7 @@ Throughout the process, Management (IT Mgr / CTO) receives parallel notification
 1. **L1 to L2** — Standard escalation within ITO for incidents outside L1 capability
 2. **L2 to Incident Commander** — All confirmed P1/P2 incidents are coordinated by an IC
 3. **IC to L3 / Vendor** — Specialist escalation when internal teams cannot resolve (Step 10 → Step 14)
-4. **IC to Management** — Automatic notification for P1/P2; approval required for P1/P2 app deployments (Step 13b)
+4. **IC to Management** — Notification for P1/P2; approval required for P1/P2 app deployments (Step 13b)
 
 > **After-hours operations**: L1 on-call responds to all alerts. For P1/P2, the IC and tech team are engaged per the on-call rotation. BA, QA, and Management join at the next business day unless the IC explicitly escalates.
 
@@ -351,7 +350,7 @@ Throughout the process, Management (IT Mgr / CTO) receives parallel notification
 >
 > For P3/P4: senior L1 or team lead assumes IC accountability. No formal IC role assigned.
 >
-> Stage ④ verification is always performed by the Tech Team, regardless of who implemented the fix (including L3/Vendor fixes). QA's validation scope is limited to staging environment testing during Stage ③.
+> Stage ④ PAT is performed by Tech Team and Biz Team, regardless of who implemented the fix (including L3/Vendor fixes). QA's validation scope is limited to UAT testing during Stage ③.
 
 ---
 

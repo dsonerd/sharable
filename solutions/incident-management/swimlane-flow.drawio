@@ -251,19 +251,19 @@
         </mxCell>
 
         <!-- QA box — merged into TECH TEAM row -->
-        <mxCell id="164" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;QA&lt;/b&gt;&lt;br&gt;Validate fix in staging&lt;br&gt;&lt;i&gt;(Rework until pass)&lt;/i&gt;" vertex="1">
+        <mxCell id="164" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;QA&lt;/b&gt;&lt;br&gt;Validate fix in UAT&lt;br&gt;&lt;i&gt;(Rework until pass)&lt;/i&gt;" vertex="1">
           <mxGeometry x="1330" y="1090" width="155" height="40" as="geometry" />
         </mxCell>
 
         <!-- ====================== -->
         <!-- VERIFY COLUMN, TECH TEAM ROW -->
         <!-- ====================== -->
-        <mxCell id="190" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Tech Team&lt;/b&gt;&lt;br&gt;Monitor 15 min for regression" vertex="1">
-          <mxGeometry x="1590" y="1060" width="165" height="45" as="geometry" />
+        <mxCell id="190" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;" value="&lt;b&gt;Tech Team | Biz Team&lt;/b&gt;&lt;br&gt;PAT (Production Acceptance Test)" vertex="1">
+          <mxGeometry x="1590" y="1060" width="175" height="45" as="geometry" />
         </mxCell>
 
         <!-- VERIFY COLUMN, IC ROW -->
-        <mxCell id="504" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;fontStyle=1;" value="Reporter&lt;br&gt;confirms?" vertex="1">
+        <mxCell id="504" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;fontStyle=1;" value="Confirm&lt;br&gt;fixed?" vertex="1">
           <mxGeometry x="1630" y="830" width="100" height="70" as="geometry" />
         </mxCell>
         <mxCell id="191" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;fontSize=10;" value="&lt;b&gt;IC / Team Lead&lt;/b&gt;&lt;br&gt;Confirm service restored&lt;br&gt;✉ Last: &lt;i&gt;'Resolved, you can resume'&lt;/i&gt;" vertex="1">
