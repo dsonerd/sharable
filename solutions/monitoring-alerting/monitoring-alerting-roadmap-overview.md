@@ -1,9 +1,9 @@
 # Monitoring & Alerting Roadmap — Overview
 
-> **Version**: 2.0
+> **Version**: 2.1
 > **Date**: 2026-03-20
 > **Author**: IT Operations
-> **Status**: Revised — incorporating CIO review feedback
+> **Status**: Revised — incorporating CIO review feedback and insurance-domain monitoring research
 > **Audience**: CIO, Board, Department Heads, IT Management
 > **Companion document**: `monitoring-alerting-roadmap-detail.md` (technical reference)
 
@@ -54,6 +54,28 @@ With 3 App Ops + 3 DevOps = 6 engineers eligible for on-call, the rotation suppo
 
 ## 3. What We Monitor
 
+### 3.1 Design Principle: Journey-First Monitoring
+
+Technical metrics alone cannot prove the business is running. A healthy infrastructure can still hide a broken application submit flow or a stalled underwriting queue. TCLife's monitoring is therefore organized around **customer and business journeys first**, with technical layers supporting them.
+
+The nine core journeys we monitor end-to-end:
+
+| Journey | What we trace |
+|---------|--------------|
+| **J1 Digital acquisition** | Landing > product browse > quote/illustration > lead capture > agent assignment |
+| **J2 Sales submission** | Illustration > rider selection > proposal save > document upload > declaration > payment > submit |
+| **J3 Identity & payment** | eKYC/liveness > payment auth/capture > callback > receipt |
+| **J4 Underwriting** | STP rules > referrals > manual underwriting > evidence > decision |
+| **J5 Policy issuance** | Policy number > schedule/posting > document generation > delivery > rider activation |
+| **J6 After-sales servicing** | Contact/beneficiary change, premium mode change, loan/withdrawal, rider add/drop |
+| **J7 Billing & persistency** | Renewal due > debit attempt > grace > arrears > reinstatement/lapse |
+| **J8 Claims & benefits** | FNOL > intake > assessment > fraud checks > approval/reject > payment |
+| **J9 Agent/Ops productivity** | Queue receive > case work > handoff > closure > quality check |
+
+Each journey is supported by metrics from the technical monitoring layers below. When a journey metric degrades, technical layers help diagnose why.
+
+### 3.2 Monitoring Domains
+
 TCLife's monitoring covers eight domains. Each addresses a distinct operational risk.
 
 ```
@@ -74,6 +96,10 @@ TCLife's monitoring covers eight domains. Each addresses a distinct operational 
 
   Cross-cutting: DATA PROTECTION
   PII scrubbing in logs, access controls on dashboards, data sovereignty
+
+  Cross-cutting: RIDER MONITORING
+  Rider attachment, eligibility, pricing, issuance, renewal, and claimability
+  treated as first-class monitoring dimensions across all relevant journeys
 ```
 
 ### Domain Coverage by Phase
@@ -93,9 +119,11 @@ TCLife's monitoring covers eight domains. Each addresses a distinct operational 
 
 ## 4. Metrics by Stakeholder
 
-What each department sees — and why it matters to them.
+What each department sees — why it matters to them — and what "good" looks like.
 
 ### Operations Department (ITO)
+
+**Goal**: Work queues stay current and SLA compliant. No stuck cases or silent failures.
 
 | What They See | Why It Matters | Example |
 |--------------|----------------|---------|
@@ -104,17 +132,31 @@ What each department sees — and why it matters to them.
 | On-call dashboard | Know who is responsible | "Nguyen is primary on-call this week" |
 | Batch job completion matrix | Verify daily operations | "GL file delivered on time; NAV calculation pending" |
 | Incident metrics (MTTD, MTTR) | Track operational performance | "P1 MTTD improved from 45 min to 4 min" |
+| Work queue backlogs and SLA breach counts | Prevents queue pile-up | "Underwriting queue: 0 items past SLA; oldest case: 4h" |
+| Exception taxonomy by reason/product/rider | Root-cause lens for process improvement | "Top exception: missing medical evidence (32 cases)" |
+
+**Top risks to surface**: Queue pile-up, integration failures, document/image delays, rules-engine errors, payment posting mismatch, stuck cases with no status change.
 
 ### Sales / Distribution
 
+**Goal**: Illustrate, quote, submit, and track case status quickly. High conversion, low dropout.
+
 | What They See | Why It Matters | Example |
 |--------------|----------------|---------|
-| Sale Portal availability and performance | Agent productivity | "Sale Portal P95 response time: 380ms" |
+| Sale Portal availability and performance | Agent productivity — lost selling time hurts NBP | "Sale Portal P95 response time: 380ms" |
 | Quote-to-proposal conversion rate | System friction detection | "Conversion dropped to 22% — investigate UX issue" |
 | Policy issuance pipeline status | Revenue visibility | "127 policies issued today, within normal range" |
 | Commission batch processing status | Agent compensation assurance | "Commission run completed; 412 agents processed" |
+| Lead routing and assignment lag | Prevents lead decay | "Hot lead queue: 0 unassigned > 15 min" |
+| Rider pricing/eligibility accuracy | Rider defects create complaints and leakage | "Rider conflict rate this week: 0.1%" |
+| Case-status visibility and sync lag | Agents need accurate next actions | "Portal-to-core status sync lag: < 2 min average" |
+| Post-issue quality (free-look, early cancellation) | Detects mis-selling or process defects | "Free-look rate by channel: within normal range" |
+
+**Top risks to surface**: Portal outage, quote errors, rider pricing defects, lead assignment delays, case status not updating, high cancellation/free-look rate.
 
 ### Customer / End User
+
+**Goal**: Buy, view, pay, service, and claim without friction.
 
 | What They See (via operations) | Why It Matters | Example |
 |-------------------------------|----------------|---------|
@@ -122,6 +164,23 @@ What each department sees — and why it matters to them.
 | Claims processing time | Policyholder experience | "Average registration-to-assessment: 1.8 days" |
 | Policy servicing response time | Policyholder satisfaction | "Surrender request processing: within SLA" |
 | Real user performance (RUM) | Actual user experience in the field | "Mobile users in Mekong Delta: 3.2s page load" |
+| Login and session health | Customers must access policies | "Login success rate: 99.7%; OTP delivery P95: 2.1s" |
+| Payment success and receipt delivery | Immediate premium/revenue protection | "Payment callback success: 99.9%; 0 duplicate charges" |
+| Rider display and eligibility accuracy | Rider mismatch creates complaints | "Quote-to-issue rider consistency: 100%" |
+
+**Top risks to surface**: Slow portals, broken eKYC, payment failures, policy pack not delivered, rider mismatch, duplicate charges.
+
+### Underwriting
+
+**Goal**: High STP rate, fast turnaround, clean data, no silent rule misconfiguration.
+
+| What They See | Why It Matters | Example |
+|--------------|----------------|---------|
+| STP rate by product/channel/rider | Primary cost and turnaround metric | "STP rate: 78% (target: 75%); CI rider STP: 65%" |
+| Decision turnaround time (P50/P95) | Customer and sales experience | "P95 underwriting TAT: 6h (standard), 18h (underwritten)" |
+| Referral backlog and oldest case age | Detects capacity or rule defects | "Manual referral backlog: 12 cases; oldest: 8h" |
+| Rules-engine health and error count | STP depends on stable decisioning | "Rule evaluation errors: 0 in last 24h" |
+| Decision mix by product/rider/channel | Catches silent misconfiguration | "Approve/refer/decline mix: within normal distribution" |
 
 ### Finance
 
@@ -131,18 +190,23 @@ What each department sees — and why it matters to them.
 | Premium collection success rate | Revenue assurance | "98.3% collection success; 1.7% failed — retry scheduled" |
 | NAV calculation completion | UL fund reporting | "NAV calculated by 09:48 — within 10:00 AM deadline" |
 | Bank reconciliation status | Financial accuracy | "Reconciliation complete; zero variances" |
+| Renewal due pipeline (7/30 day view) | Forward-looking revenue risk | "Premium at risk next 30 days: VND 2.1B; collection gap: 3%" |
+| Billing posting controls | Prevents complaints and leakage | "Duplicate retries: 0; premium allocation errors: 0" |
 
 ### Management / CIO
 
 | What They See | Why It Matters | Example |
 |--------------|----------------|---------|
 | Business health — single dashboard | "Is the business running?" | Green/yellow/red status for all business processes |
+| Journey health summary | End-to-end flow status | "J2 Sales submission: green; J4 Underwriting: yellow (STP dip)" |
 | SLA compliance (30-day rolling) | Risk and performance posture | "Sale Portal: 99.96% (target: 99.95%)" |
 | Vendor (Insuremo) SLA tracking | Vendor accountability | "Insuremo: 99.87% availability (contract: 99.9%) — vendor notified" |
 | Incident trend (monthly) | Operational maturity | "P1 incidents: 2 this month vs. 5 last month" |
 | Monitoring program progress | Investment tracking | "Phase 2: 80% complete, on schedule" |
 
-### Compliance
+### Compliance / Risk
+
+**Goal**: Complete audit trails, access anomalies surfaced, report completeness, policy wording traceability.
 
 | What They See | Why It Matters | Example |
 |--------------|----------------|---------|
@@ -150,6 +214,8 @@ What each department sees — and why it matters to them.
 | Incident history (policyholder impact) | Audit trail | "3 incidents affected policyholders in Q1; all resolved within SLA" |
 | Batch processing proof | Financial reporting integrity | "All GL, regulatory, and NAV batches completed within SLA for 90 consecutive days" |
 | Data breach / security event log | Data protection compliance | "Zero data breach events in Q1" |
+| Audit trail completeness | No audit trail = control failure | "% critical actions logged with actor/time/object/result: 100%" |
+| Consent and privacy controls | Required governance evidence | "Consent capture success: 100%; DSAR SLA adherence: 100%" |
 
 > **Note on regulatory citations**: Specific Vietnamese regulatory instruments referenced in this roadmap (Circular 125/2018/TT-BTC, Decree 13/2023/ND-CP, Insurance Law 2022, Circular 50/2017/TT-BTC) are **pending verification by Legal/Compliance**. Compliance requirements described here represent the team's current understanding and must be validated before being presented as authoritative.
 
@@ -380,3 +446,4 @@ To move this roadmap from "conditionally approved" to "approved for execution":
 |---------|------|--------|---------|
 | 1.0 | 2026-03-20 | IT Operations | Initial draft (single document) |
 | 2.0 | 2026-03-20 | IT Operations | Restructured into overview + detail; incorporated CIO review (43 findings); added team structure, staffing plan, human costs, missing monitoring domains (RUM, cost, commission), PII scrubbing, training as Phase 1 deliverable |
+| 2.1 | 2026-03-20 | IT Operations | Added journey-first monitoring approach (9 core business journeys); enriched stakeholder metrics with persona-specific goals, risk surfaces, and domain-specific metrics (underwriting, billing/persistency); added rider monitoring as cross-cutting dimension. Reference: `reference.research.md` |

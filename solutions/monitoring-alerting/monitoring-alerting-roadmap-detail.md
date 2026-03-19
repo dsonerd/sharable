@@ -1,9 +1,9 @@
 # Monitoring & Alerting Roadmap — Technical Reference
 
-> **Version**: 2.0
+> **Version**: 2.1
 > **Date**: 2026-03-20
 > **Author**: IT Operations
-> **Status**: Revised — incorporating CIO review findings (R-001 through R-043)
+> **Status**: Revised — incorporating CIO review findings (R-001 through R-043) and insurance-domain monitoring research
 > **Audience**: IT Operations, DevOps, Application Support, Engineering
 > **Companion document**: `monitoring-alerting-roadmap-overview.md` (executive overview)
 
@@ -28,7 +28,13 @@
 15. [Cost Considerations](#15-cost-considerations)
 16. [Risks & Dependencies](#16-risks--dependencies)
 17. [CIO Review Findings — Resolution Matrix](#17-cio-review-findings--resolution-matrix)
-18. [Appendix: Cross-References to Existing Work](#18-appendix-cross-references-to-existing-work)
+18. [Core Business Journeys to Monitor](#18-core-business-journeys-to-monitor)
+19. [Domain-Specific Monitoring Matrices](#19-domain-specific-monitoring-matrices)
+20. [Service Level Objectives (SLOs)](#20-service-level-objectives-slos)
+21. [First 25 Alerts — Prioritized Implementation List](#21-first-25-alerts--prioritized-implementation-list)
+22. [Canonical Telemetry Data Model](#22-canonical-telemetry-data-model)
+23. [Composite Alert Patterns](#23-composite-alert-patterns)
+24. [Appendix: Cross-References to Existing Work](#24-appendix-cross-references-to-existing-work)
 
 ---
 
@@ -42,7 +48,9 @@ This roadmap defines a **four-phase implementation plan** to build a comprehensi
 
 **Target state**: Every P1/P2 incident is detected by monitoring before users report it. Every business-critical batch job is tracked for timeliness and success. The CIO has a single dashboard showing system health, SLA compliance, and business processing status.
 
-**Changes from v1.0**: This version incorporates all 43 CIO review findings (10 high, 21 medium, 12 low). Major additions: team structure and staffing plan, training as Phase 1 deliverable, missing monitoring domains (RUM, AWS cost, commission batch), PII scrubbing policy, human cost model, and regulatory citation qualification. See Section 17 for the full resolution matrix.
+**Changes from v1.0**: v2.0 incorporates all 43 CIO review findings (10 high, 21 medium, 12 low). Major additions: team structure and staffing plan, training as Phase 1 deliverable, missing monitoring domains (RUM, AWS cost, commission batch), PII scrubbing policy, human cost model, and regulatory citation qualification. See Section 17 for the full resolution matrix.
+
+**Changes from v2.0 to v2.1**: Added journey-first monitoring framework (9 core journeys, Section 18), domain-specific monitoring matrices (Section 19), formal SLO set (Section 20), prioritized first 25 alerts (Section 21), canonical telemetry data model (Section 22), composite alert patterns (Section 23), rider monitoring as first-class dimension throughout, strengthened InsureMO instrumentation checklist (Section 7), and strengthened regulatory citations (Section 11). Reference: `reference.research.md`.
 
 ---
 
@@ -255,6 +263,7 @@ TCLife's monitoring covers four layers plus two cross-cutting domains:
 | **UL NAV calculation** | NAV calculation completion time; variance from expected; fund price freshness | Regulatory requirement; policyholder statements depend on accurate NAV |
 | **Surrender value** | Calculation accuracy (compare with actuarial baseline); batch completion | Scenario from IM backlog — 347 policies with zero surrender value |
 | **Quotation engine** | Quote generation time; quote-to-proposal conversion rate | Agent productivity; system responsiveness |
+| **Rider lifecycle** | Rider eligibility decision accuracy; rider premium computation; attach/detach success; rider issue vs. quote consistency; rider renewal status; rider claim events | For a UL-focused insurer with CI, HI, MR riders, rider defects are a major source of complaints, leakage, and regulatory risk. Rider monitoring is a first-class dimension, not an afterthought. |
 | **Document generation** | Document generation success rate; printing partner file delivery timeliness | Policyholder communication; regulatory filings |
 | **Regulatory reporting** | Report generation completion; data freshness; submission timeliness; **regulatory filing countdown (R-017)** | MOF compliance; audit trail |
 | **Reinsurance data** | Cession data generation timeliness; reconciliation status | Treaty compliance; financial accuracy |
@@ -603,7 +612,33 @@ When the health prober detects degradation:
 - Confirm probing is within acceptable load and will not be rate-limited or flagged.
 - Document in vendor monitoring agreement.
 
-### 7.3 Limitations to Acknowledge
+### 7.3 InsureMO Business Event Instrumentation Checklist
+
+Beyond the health prober, TCLife must ensure that business events are emitted at every policy-lifecycle transition — either from InsureMO directly (if configurable) or from the integration layer that calls InsureMO. These events form the foundation of journey monitoring (Section 18).
+
+**Required business events to capture**:
+
+| Event | Key fields | Journey |
+|-------|-----------|---------|
+| `quote_created` / `quote_saved` | quote_id, product, rider set, premium amount, sum assured, channel | J1, J2 |
+| `application_submitted` | application_id, product, rider set, required fields completion %, document completeness | J2 |
+| `kyc_passed` / `kyc_failed` | KYC provider, status, retries, OCR confidence, liveness result | J3 |
+| `payment_authorized` / `payment_captured` | transaction_id, gateway, amount, authorization result, duplicate-payment flag | J3 |
+| `underwriting_referred` / `underwriting_decided` | case_id, STP/manual/referral path, rules triggered, decision, TAT | J4 |
+| `policy_issued` | policy_id, issuance timestamp, effective date, schedule creation | J5 |
+| `rider_issued` / `rider_activated` | rider_code, rider eligibility result, rider premium, attach/detach status, rider-package version | J5 |
+| `document_delivered` | template version, product/rider version, delivery channel, acknowledgement status | J5 |
+| `premium_posted` / `premium_collected` | installment schedule, collection attempt result, auto-debit success | J7 |
+| `renewal_due` / `lapse_started` / `reinstated` | policy_id, grace status, arrears bucket, lapse/reinstatement status | J7 |
+| `claim_registered` / `claim_paid` | claim_id, event type, FNOL timestamp, triage result, payout turnaround | J8 |
+
+**For every InsureMO API call, capture**: endpoint, operation name, business object, request ID, correlation ID, latency, response code, idempotency key, retry count, failure class, vendor/service dependency, release version.
+
+**For rider logic specifically, capture**: rider eligibility decision, premium computation inputs, rider-package version, offer shown, offer accepted, rider issue result, and downstream claimability status.
+
+**For every cross-system update**: store before/after status and reconciliation markers so silent sync failures are visible.
+
+### 7.4 Limitations to Acknowledge
 
 - We cannot monitor Insuremo's internal performance (DB queries, queue depths, memory usage)
 - We depend on vendor notification for planned maintenance and known issues
@@ -682,6 +717,7 @@ Deploy a **Batch Job Monitor** as a persistent service on EKS. Since it is a lon
 | Partner acknowledgment missing | No ACK within expected window | SEV3 |
 | **Commission job failed** | `batch_job_status{job_name="commission"} == 0` | **SEV2 (R-016)** |
 | **Regulatory filing countdown** | Filing deadline < T-2 days and job not started | **SEV2 (R-017)** |
+| **Auto-debit success rate drop** | Auto-debit success % below threshold or gateway-wide failure | **SEV1 (gateway failure) / SEV2 (success dip)** |
 
 ### 8.4 File Exchange Monitoring Pattern
 
@@ -910,12 +946,16 @@ TCLife is regulated by the Vietnam Ministry of Finance (MOF) and the Insurance S
 
 | Requirement Area | Regulatory Basis (PENDING VERIFICATION) | Monitoring Implication |
 |-----------------|----------------------------------------|----------------------|
+| **Insurance business information systems** | Insurance Business Law 08/2022/QH15 (effective 01/01/2023) — requires insurers to establish, maintain, and operate information systems appropriate to scale; support updating, processing, storing, and securing insurance information; provide data to national insurance business database (pending Legal review) | Observability must cover both business process completeness and evidentiary audit trails. Technology use is explicitly framed across product design, risk assessment, underwriting, contracting, policy admin, loss assessment, claims, statistics, reporting, and anti-fraud. |
 | **Business continuity** | Circular 125/2018/TT-BTC and related MOF guidance on IT risk management for insurers (pending Legal review) | Must demonstrate system availability measurement and incident response capability |
-| **Data protection** | Cybersecurity Law 2018, Decree 13/2023/ND-CP on personal data protection (pending Legal review) | Must detect and report data breaches; monitoring must cover access anomalies and data exfiltration signals; **breach notification timelines, data processing logs, and cross-border data transfer monitoring requirements apply (R-027)** |
-| **Financial reporting accuracy** | Insurance Law 2022 (amended), Circular 50/2017/TT-BTC (pending Legal review) | Must ensure accuracy of financial data processing — monitoring of GL, NAV, premium, and claims calculations |
+| **Data protection** | Cybersecurity Law 2018, Decree 13/2023/ND-CP on personal data protection (pending Legal review) | Must detect and report data breaches; monitoring must cover access anomalies and data exfiltration signals; **breach notification timelines, data processing logs, and cross-border data transfer monitoring requirements apply (R-027)**. Must cover consent events, PII/health-data access, export, retention, data deletion, and third-party processing. |
+| **Product rules and rider separation** | Decree 46/2023 and Circular 67/2023 — from 1 July 2025, investment-linked life products are expected to separate core benefits from supplementary riders (CI, accident, hospitalization) (pending Legal review) | Monitoring must treat rider attachment, eligibility, pricing, issuance, renewal, and claimability as first-class telemetry dimensions. Rider defects carry regulatory as well as operational risk. |
+| **Financial reporting accuracy** | Insurance Law 08/2022/QH15, Circular 50/2017/TT-BTC (pending Legal review) | Must ensure accuracy of financial data processing — monitoring of GL, NAV, premium, and claims calculations |
+| **Digital distribution targets** | Decision 07/QD-TTg — Vietnam 2030 insurance market strategy targets average 10% annual growth in insurance products distributed via digital channels (2023-2030) (pending Legal review) | Digital sales-path reliability is a board-level KPI, not just an IT KPI. Portal availability and conversion funnel monitoring are strategic. |
 | **Operational risk management** | MOF guidelines on operational risk for financial institutions (pending Legal review) | Must demonstrate operational risk controls including system monitoring and incident management |
 | **Outsourcing and vendor management** | MOF guidance on outsourcing of critical functions (pending Legal review) | Must independently monitor vendor-managed systems (Insuremo) and track vendor SLA compliance |
 | **IT risk management** | **Circular 09/2020/TT-NHNN or insurance-sector equivalent (pending Legal review) (R-027)** | **IT risk management requirements for financial institutions — may mandate specific monitoring and reporting controls** |
+| **Insurance data and reporting** | Circular 67/2023/TT-BTC — insurance data/reporting templates including life-insurance insured-person and risk data dimensions (age, gender, smoking status, insured risks, policy year statistics) (pending Legal review) | Monitoring should ensure data completeness for regulatory reporting templates. Batch monitoring must verify report generation and submission timeliness. |
 
 > **Action required**: Legal/Compliance team must review this section to: (a) verify citations are correct and currently in force, (b) identify any missing regulations, (c) confirm retention requirements with legal basis, (d) assess data protection implications for the monitoring stack itself (see Section 12).
 
@@ -1067,6 +1107,7 @@ If this data flows into OpenSearch and Grafana, **the monitoring stack itself be
 **Phase 1 exit criteria**:
 - Team trained on Prometheus, Grafana, OpenSearch
 - All P1-triggering infrastructure conditions have automated alerts
+- First 17 alerts from the prioritized list (Section 21) deployed and tested
 - On-call engineer receives phone alerts for SEV1/SEV2 within 30 seconds
 - Infrastructure dashboards show real data for all production services
 - Synthetic probes confirm portal reachability every 60 seconds
@@ -1094,6 +1135,9 @@ If this data flows into OpenSearch and Grafana, **the monitoring stack itself be
 | **Status page evaluation** | Evaluate and select status page solution **(R-011)** | App Ops | Decision documented |
 | **Alert tuning cycle** | Review all Phase 1 alerts; adjust thresholds; retire false positives | Service Quality | False positive rate < 20% |
 | **Operations dashboards** | Build Level 2 alert overview and application health dashboards | App Ops | Operational dashboards in daily use |
+| **Alerts 18-25 deployment** | Deploy remaining alerts from the prioritized list (Section 21): rider mismatch, STP drop, UW backlog, queue backlog, doc generation, delivery success, privileged access, WAF surge | DevOps + App Ops | Alerts 18-25 active and tested |
+| **SLO measurement foundation** | Establish SLI measurement for the starter SLO set (Section 20): portal availability, login, quote, submit, payment callback, issuance | DevOps + Service Quality | SLI data being collected; 30-day baselines building |
+| **InsureMO business event instrumentation** | Implement business event capture per Section 7.3 checklist for key InsureMO API touchpoints | DevOps + Integration | Business events emitted for quote, submit, payment, issuance, rider activation |
 
 **Phase 2 exit criteria**:
 - Application-level alerts detect error rate spikes and latency degradation before users report
@@ -1103,6 +1147,8 @@ If this data flows into OpenSearch and Grafana, **the monitoring stack itself be
 - PII scrubbing active in log pipeline
 - RUM baseline data available
 - Basic compliance evidence available
+- First 25 alerts all deployed (Section 21)
+- SLO measurement infrastructure in place; SLI baselines building
 
 ### Phase 3: Business Metrics & Batch Monitoring (Months 7-9)
 
@@ -1128,6 +1174,11 @@ If this data flows into OpenSearch and Grafana, **the monitoring stack itself be
 | **Business Pulse TV dashboard** | Build TV-mode dashboard showing daily business health | App Ops | Displayed in operations area |
 | **CIO Management dashboard** | Build Level 1 business health dashboard | Service Quality | CIO can view business processing status in one screen |
 | **Status page deployment** | Deploy selected status page solution **(R-011)** | App Ops | External communication channel operational |
+| **Journey monitoring dashboards** | Build end-to-end journey health views for J2 (sales submission), J4 (underwriting), J5 (policy issuance), J7 (billing/persistency) per Section 18 | Service Quality + DevOps | Journey-level dashboards showing end-to-end flow health |
+| **Rider monitoring** | Implement rider lifecycle monitoring per Section 18.3: eligibility, pricing, issuance, quote-to-issue consistency, renewal, claimability | DevOps + App Ops | Rider metrics visible; quote/issue mismatch alerting active |
+| **SLO targets and tracking** | Set formal SLO targets per Section 20; configure error budget tracking and burn rate alerts | Service Quality + DevOps | SLO dashboard live; error budget burn alerts active |
+| **Domain monitoring matrices** | Implement underwriting/STP, billing/persistency, ops workflow monitoring per Section 19 | App Ops + Service Quality | Domain dashboards operational with alert coverage |
+| **Composite alert patterns** | Implement multi-signal alerts per Section 23: sales submission blocked, payment pipeline failure, underwriting stall, portal degradation | DevOps | Composite alerts reduce noise vs. single-metric paging |
 
 **Phase 3 exit criteria**:
 - Every daily batch job has automated monitoring with SLA alerting
@@ -1136,6 +1187,10 @@ If this data flows into OpenSearch and Grafana, **the monitoring stack itself be
 - Reconciliation mismatches generate alerts within 2 hours of batch completion
 - CIO dashboard provides single-pane view of business + system health
 - Regulatory filing countdown active
+- Journey-level monitoring operational for J2, J4, J5, J7
+- Rider lifecycle monitoring operational with quote-to-issue mismatch alerting
+- SLO targets set and error budget tracking active
+- Composite alerts deployed for critical business flows
 
 ### Phase 4: Advanced Capabilities (Months 10-12)
 
@@ -1351,7 +1406,244 @@ This section maps every CIO review finding (R-001 through R-043) to its resoluti
 
 ---
 
-## 18. Appendix: Cross-References to Existing Work
+## 18. Core Business Journeys to Monitor
+
+> _New section in v2.1. Adapted from insurance-domain monitoring research (see `reference.research.md`)._
+
+### 18.1 Design Principle
+
+Monitor by customer journey first, service second. A healthy microservice estate can still hide a broken submit flow or underwriting queue. Every journey uses a unique journey ID / application ID / policy ID / rider instance ID to stitch events end-to-end across portals, InsureMO services, underwriting engines, payment, messaging, and document services.
+
+### 18.2 Journey Definitions
+
+| Journey | Critical span to trace | Key metrics | Phase |
+|---------|----------------------|-------------|-------|
+| **J1 Digital acquisition** | Landing > product browse > quote/illustration start > lead capture > agent assignment / digital direct continuation | Lead capture rate, agent assignment latency, quote start rate | Phase 3 |
+| **J2 Sales submission** | Illustration > rider selection > proposal save > document upload > declaration > payment init > application submit | Submit success %, save failure %, premium calc latency, rider conflict rate, incomplete submission rate | Phase 2-3 |
+| **J3 Identity & payment** | eKYC / liveness / OCR > payment auth/capture > callback > receipt issuance | eKYC pass rate, payment callback success %, duplicate charge count, receipt generation success | Phase 2-3 |
+| **J4 Underwriting** | STP rules > referrals > manual underwriting > evidence requests > decision > offer / counter-offer / reject | STP rate by product/channel/rider, decision TAT (P50/P95), referral backlog age, rules-engine error count, decision mix | Phase 3 |
+| **J5 Policy issuance** | Policy number generation > schedule/accounting posting > document generation > delivery/acknowledgement > rider activation | Issue success %, duplicate policy number, posting success, document generation success, rider activation success %, rider effective-date mismatch | Phase 3 |
+| **J6 After-sales servicing** | Contact changes, beneficiary change, premium mode change, loan/withdrawal/top-up, rider add/drop where allowed | Endorsement completion %, profile change success %, servicing SLA adherence | Phase 3 |
+| **J7 Billing & persistency** | Renewal due > debit attempt > grace > arrears > reinstatement / lapse | Auto-debit success %, grace count, aging buckets, lapse rate, reinstatement rate, premium at risk | Phase 3 |
+| **J8 Claims & benefits** | FNOL > intake > assessment > fraud checks > approval/reject > payment | FNOL submission success, claims backlog by age, approve/pend/reject mix, payout success, reopen rate | Phase 3-4 |
+| **J9 Agent/Ops productivity** | Queue receive > case work > handoff > closure > quality check | Queue backlog, oldest item age, SLA breach count, manual rework rate, exception taxonomy | Phase 3 |
+
+### 18.3 Rider Monitoring as a Cross-Cutting Dimension
+
+For a UL-focused insurer with CI, HI, and MR riders, rider monitoring is not a sub-item of policy monitoring — it is a first-class dimension that cuts across multiple journeys.
+
+| Rider lifecycle stage | Journey | What to monitor | Alert trigger |
+|----------------------|---------|----------------|---------------|
+| **Eligibility decision** | J2 | Rider eligibility rule error %, mismatch between offer and rules | P2 if eligibility engine errors rise above threshold |
+| **Premium computation** | J2 | Rider premium calculation inputs, rider-package version, computation accuracy | P2 if premium calculation errors detected |
+| **Offer display** | J2 | Rider offer visibility %, offer acceptance rate by rider type | Business alert if offer visibility drops |
+| **Attachment at quote** | J2 | Rider attach rate by product/channel, rider conflict rate | P3 on rising conflict rate |
+| **Issuance** | J5 | Rider issue success %, quote-to-issue rider mismatch, rider effective-date mismatch | P1 if quote/issue rider mismatch exceeds threshold |
+| **Premium posting** | J7 | Rider premium posting %, rider premium allocation accuracy | P1 on posting failure for riders |
+| **Renewal** | J7 | Rider renewal status, rider lapse distinct from base policy | Business alert on rider-specific lapse patterns |
+| **Claimability** | J8 | Rider claim events, rider-specific benefit payouts, rider coverage verification | P2 if rider claimability status conflicts with active policy |
+
+---
+
+## 19. Domain-Specific Monitoring Matrices
+
+> _New section in v2.1. Detailed monitoring matrices by operational domain, adapted from insurance-domain monitoring research. These complement the business process monitoring in Section 4.5 and the journey framework in Section 18._
+
+### 19.1 Underwriting and STP Monitoring
+
+| What to monitor | Metric / indicator | Alert trigger | Owner |
+|----------------|-------------------|---------------|-------|
+| STP rate | % cases auto-decisioned by product/channel/rider | Business alert if STP drops > 5 pts vs baseline for 1h/day | Underwriting / rules owner |
+| Decision latency | P50/P95 underwriting TAT from submit to decision | P2 if P95 exceeds SLA; P1 if queue stoppage | Underwriting Ops |
+| Referral volume | Manual referral count, age buckets, oldest case age | P2 if backlog age > SLA | Ops manager |
+| Rules-engine health | Rule evaluation latency, error count, external-data timeout | P1 if errors > threshold or external dependency timeouts spike | Rules/integration team |
+| Medical evidence workflow | APS/lab request success, document turnaround, missing evidence aging | Business/Ops alert by backlog bucket | Underwriting Ops |
+| Decision mix anomaly | Approve/refer/decline/counter-offer by product/rider/channel | Business anomaly alert on sudden distribution shift | Chief underwriter |
+| Underwriting data quality | Missing declarations, conflicting answers, OCR extraction mismatch | Business alert daily by source/channel | UW governance |
+
+### 19.2 Billing, Collections, and Persistency
+
+| What to monitor | Metric / indicator | Alert trigger | Owner |
+|----------------|-------------------|---------------|-------|
+| Renewal due pipeline | Policies due next 7/30 days, premium at risk | Daily business alert for abnormal due vs collected gap | Collections / finance |
+| Auto-debit success | Bank/card debit success %, retry success, return codes | P1 if gateway/bank-wide failure; P2 if success dips below threshold | Payments / collections |
+| Grace and arrears | Grace count, aging buckets, premium in arrears, lapse risk | Business alert daily by cohort/channel | Collections / actuarial / sales |
+| Lapse/reinstatement | Lapse rate, reinstatement rate, turnaround time | Weekly alert on abnormal cohort shift | Business owner |
+| Collection controls | Duplicate retries, wrong amount posted, premium allocation errors | P1 on financial posting defect; P2 on growing exception queue | Finance systems |
+
+### 19.3 Claims and Benefit Servicing
+
+> _Recommended for Phase 3 planning even if full claims monitoring is Phase 3-4._
+
+| What to monitor | Metric / indicator | Alert trigger | Owner |
+|----------------|-------------------|---------------|-------|
+| FNOL intake | FNOL submission success, attachment success, P95 latency | P1 if FNOL unavailable | Claims digital team |
+| Claims backlog | Open claims by aging bucket, oldest claim age, missing-doc age | P2/P1 depending on breach severity | Claims Ops |
+| Decision quality | Approve/pend/reject mix, reopen rate, leakage/fraud flags | Business anomaly alert | Claims leadership |
+| Payout execution | Payment success, payout reversal, bank-return rate | P1 if payout channel fails | Claims + finance |
+
+### 19.4 Ops Workflow and Exception Monitoring
+
+| What to monitor | Metric / indicator | Alert trigger | Owner |
+|----------------|-------------------|---------------|-------|
+| Work queues | Items by queue, oldest item age, SLA breach count | P1 if queue frozen; P2 if oldest age crosses SLA | Ops control tower |
+| Stuck cases | No-status-change > N minutes/hours, repeated retries, dead-letter volume | P1 if systemic; P2 if local backlog | Ops + integration |
+| Manual rework | Cases touched > 1 time, re-open rate, handoff count | Daily business alert | Process owner |
+| Exception taxonomy | Volume by reason code, by product/rider/channel/release | Daily/weekly anomaly alert | Ops excellence |
+| Batch / EOD / reconciliations | Job completion, duration, late finish, reconciliation breaks | P1 if failed or incomplete | Platform/Ops/finance |
+
+### 19.5 Security, Fraud, and Compliance Monitoring
+
+> _Extends Section 4.6 with domain-specific detail._
+
+| What to monitor | Metric / indicator | Alert trigger | Owner |
+|----------------|-------------------|---------------|-------|
+| WAF / edge protection | Blocked requests, allowed vs blocked trend, challenge/captcha metrics | P1 if attack impacts service; P2 on block surge or false-positive spike | SecOps |
+| Identity security | Admin login anomalies, MFA bypass attempts, privilege escalation, inactive-account use | P1 for privileged anomalies | IAM/SecOps |
+| PII / health data access | Sensitive-data read/export volume, unusual query patterns, after-hours access, mass-download attempts | P1 for confirmed high-risk events | SecOps / DPO |
+| Consent & privacy controls | Consent capture success, consent withdrawal processing, data-subject request SLA, deletion completion | P2 if requests miss SLA; P1 if control breaks | Compliance / DPO |
+| Audit trail completeness | % critical actions logged with actor/time/object/result | P1 if logging gaps detected on regulated actions | Platform + compliance |
+| Fraud indicators | Duplicate identities, repeated failed KYC, payment/card anomalies, suspicious claim/application clusters | P2/P1 depending on severity | Fraud team |
+
+---
+
+## 20. Service Level Objectives (SLOs)
+
+> _New section in v2.1. Formal SLO set as a foundation for error budget management. Adapted from insurance-domain monitoring research._
+
+### 20.1 SLO Design Principles
+
+- Set a small number of top-level SLOs first. Everything else supports them.
+- SLOs are internal commitments — they define what "good enough" means before users notice degradation.
+- Error budgets (1 - SLO target) give teams freedom to deploy and iterate; burning budget triggers protective action.
+- SLO targets below are **starter objectives** that must be calibrated from TCLife's own volume, seasonality, product mix, channel mix, and acceptable business risk.
+
+### 20.2 Starter SLO Set
+
+| Service / Journey | SLI (Service Level Indicator) | Starter objective | Measurement notes |
+|------------------|------------------------------|------------------|-------------------|
+| Customer portal availability | Successful synthetic runs / total runs | 99.9% monthly | Run from Vietnam + one external region |
+| Customer login | Successful login requests / total login requests | 99.5% monthly | Separate OTP provider failures from platform failures |
+| Quote create | Successful quote creates / total quote attempts | 99.5% monthly | Segment by product and channel |
+| Application submit | Successful submits / total attempts | 99.5% monthly | Track both frontend and backend commit success |
+| Payment callback | Successful callbacks / total payment completions | 99.9% monthly | Revenue-protecting operation — tight target |
+| Underwriting decision latency | % cases decided within SLA | 95% within agreed SLA | Use separate STP and manual SLA targets |
+| Policy issuance | Successful issuance / eligible-to-issue cases | 99.7% monthly | Core fulfillment SLO |
+| Billing collection | Successful premium postings / successful collections | 99.9% monthly | Finance-critical |
+| Ops work item timeliness | % work items closed within SLA | 95% by queue | Use queue-specific SLA targets |
+
+### 20.3 Relationship to Existing KPIs
+
+The SLOs in Section 20.2 complement the KPIs in Section 10. KPIs measure operational targets (e.g., "policy issuance end-to-end time < 4 hours"). SLOs define availability/reliability commitments that, when breached, indicate the service is failing users.
+
+**Implementation phasing**: SLOs should be introduced in Phase 2-3 alongside the business metrics work. Phase 2 establishes the measurement infrastructure; Phase 3 sets and begins tracking the SLO targets.
+
+---
+
+## 21. First 25 Alerts — Prioritized Implementation List
+
+> _New section in v2.1. A prioritized list of the first alerts to implement, covering Phase 1-2 scope. Adapted from insurance-domain monitoring research._
+
+This list defines the order in which alerts should be built and activated. Alerts 1-17 target Phase 1; alerts 18-25 target Phase 2.
+
+| # | Alert | Category | Phase | Severity |
+|---|-------|----------|-------|----------|
+| 1 | Public customer portal synthetic failure | Availability | 1 | SEV1 |
+| 2 | Sales portal login success below threshold | Availability | 1 | SEV1 |
+| 3 | Application submit success below threshold | Business | 1 | SEV1 |
+| 4 | Payment callback failures above threshold | Business | 1 | SEV1 |
+| 5 | Policy issuance success below threshold | Business | 1 | SEV1 |
+| 6 | ALB unhealthy targets > 0 | Infrastructure | 1 | SEV1 |
+| 7 | ALB target 5XX sustained | Infrastructure | 1 | SEV1 |
+| 8 | ALB P95 target response time breach | Infrastructure | 1 | SEV2 |
+| 9 | Compute service desired != running tasks/pods | Infrastructure | 1 | SEV1 |
+| 10 | Compute CPU/memory saturation sustained | Infrastructure | 1 | SEV2 |
+| 11 | Lambda throttles > 0 for critical functions | Infrastructure | 1 | SEV1 |
+| 12 | RDS connection/latency/storage risk | Infrastructure | 1 | SEV1/SEV2 |
+| 13 | SQS backlog age or DLQ messages > 0 | Infrastructure | 1 | SEV1 |
+| 14 | EventBridge failed invocations rise | Infrastructure | 1 | SEV2 |
+| 15 | AWS Health event impacting critical services | Infrastructure | 1 | SEV2 |
+| 16 | GuardDuty High-severity finding | Security | 1 | SEV1 |
+| 17 | Certificate expiry < 30 days | Infrastructure | 1 | SEV2 |
+| 18 | Rider issue mismatch between quote and issue | Business | 2 | SEV1 |
+| 19 | Underwriting STP rate sudden drop | Business | 2 | SEV2 |
+| 20 | Underwriting oldest case age above SLA | Business | 2 | SEV2 |
+| 21 | Work queue backlog age above SLA | Ops | 2 | SEV2 |
+| 22 | Document generation halted | Business | 2 | SEV2 |
+| 23 | Outbound delivery (email/SMS) success drop | Business | 2 | SEV2 |
+| 24 | Privileged access anomaly | Security | 2 | SEV1 |
+| 25 | WAF block/challenge surge with customer impact | Security | 2 | SEV2 |
+
+> **Starter thresholds**: Use the thresholds in this document only as initial operating baselines. Final thresholds must be calibrated from TCLife's own volume, seasonality, product mix, channel mix, and acceptable business risk. For life insurance, daily and weekly cohort analysis is as important as minute-level technical alarms.
+
+---
+
+## 22. Canonical Telemetry Data Model
+
+> _New section in v2.1. Defines the minimum telemetry fields to collect per data domain. Adapted from insurance-domain monitoring research._
+
+### 22.1 Design Principles
+
+- Use a unique journey ID / application ID / policy ID / rider instance ID to stitch events end-to-end across portals, InsureMO, underwriting engines, payment, messaging, CRM, and document services.
+- Every important action must emit both a **business event** and a **technical event**.
+- Every failed customer step must have a machine-readable failure code, human-readable message, and ownership tag.
+- Segment all metrics by channel (agency, bancassurance, digital direct, partner), product, rider, sales team, geography, release version, and vendor dependency.
+- Keep cardinality controlled: use stable business dimensions, not arbitrary free-text.
+
+### 22.2 Data Domains and Minimum Fields
+
+| Data domain | Minimum telemetry / master data fields |
+|------------|---------------------------------------|
+| **Customer & prospect** | customer_id, lead_id, segment, acquisition channel, campaign, assigned agent, province, device/browser, consent status, eKYC status, fraud flags |
+| **Quote / illustration** | quote_id, product, rider set, premium mode, premium amount, sum assured, benefit illustration version, save/submit timestamps, quote acceptance status |
+| **Application / proposal** | application_id, required fields completion %, document completeness, medical question set version, declaration flags, underwriting class requested |
+| **eKYC / identity** | KYC provider, status, retries, OCR confidence, liveness result, mismatch reason, document expiry, watchlist/sanctions outcome if used |
+| **Payment** | transaction_id, gateway, authorization result, capture result, amount, currency, duplicate-payment flag, refund/void, settlement status |
+| **Underwriting / STP** | underwriting_case_id, STP/manual/referral path, rules triggered, score, evidence requested, turnaround time, pending reason, decision, decision owner |
+| **Policy issuance** | policy_id, issuance timestamp, effective date, cooling-off state, schedule creation, document generation, delivery status, policy pack acknowledgement |
+| **Riders** | rider_code, rider eligibility result, rider premium, attach/detach status, rider issue timestamp, rider renewal status, rider claim events, rider-package version |
+| **Billing / collections** | installment schedule, next due date, grace status, collection attempts, auto-debit success, arrears bucket, lapse/reinstatement status |
+| **Servicing** | endorsement type, beneficiary change, address/contact change, policy loan, top-up, partial withdrawal, surrender, turnaround time, failure reason |
+| **Claims / benefits** | claim_id, event type, FNOL timestamp, document completeness, triage result, fraud flags, adjudication outcome, payout turnaround, repudiation reason |
+| **Agent / distribution** | agent_id, activity funnel, login, quote count, proposal count, conversion, cancellation/free-look, persistency by cohort, training/licence status if managed in platform |
+| **Ops / workflow** | queue, work item age, backlog volume, SLA breach count, manual touches, handoff count, rework rate, exception reason taxonomy |
+| **Compliance / audit** | consent events, policy wording version, disclosure shown/accepted, data export, privileged access, report submission status, immutable audit trail |
+
+### 22.3 Implementation Notes
+
+- Not all fields are required from day one. Phase 1-2 focuses on infrastructure and application telemetry. Phase 3 introduces business-domain fields.
+- The data model is a target schema — actual implementation depends on what InsureMO exposes, what the integration layer can capture, and what custom instrumentation is built.
+- Cardinality management is critical: channel, product, rider, and geography are stable dimensions. Avoid high-cardinality labels like free-text error messages in Prometheus metrics (use OpenSearch for those).
+
+---
+
+## 23. Composite Alert Patterns
+
+> _New section in v2.1. Multi-signal alerting to reduce noise and increase confidence. Adapted from insurance-domain monitoring research._
+
+### 23.1 Why Composite Alerts
+
+Single-metric alerts generate noise. A brief dip in submit success rate might be a network blip; a brief rise in queue backlog might be a normal batch cycle. Composite alerts combine multiple signals to page only when the evidence of real customer or business harm is strong.
+
+### 23.2 Recommended Composite Alert Patterns
+
+| Composite alert | Signals combined | Page when | Rationale |
+|----------------|-----------------|-----------|-----------|
+| **Sales submission blocked** | Application submit success falls AND underwriting queue backlog rises AND no successful policy issuance events observed | All three conditions true for > 10 min | Single signal may be transient; three signals together confirm end-to-end blockage |
+| **Payment pipeline failure** | Payment callback failures rise AND premium posting halted AND duplicate-charge anomaly detected | Two of three conditions true for > 5 min | Prevents paging on transient gateway blips while catching real payment outages |
+| **Underwriting stall** | STP rate drops > 5 pts AND oldest case age exceeds SLA AND rules-engine error count rising | First two conditions true for > 30 min | STP dips can be caused by product mix; adding rules-engine errors confirms systemic issue |
+| **Portal degradation** | Synthetic check fails AND RUM page load P95 degrades > 50% AND login success drops | Synthetic failure + one of the other conditions | Synthetic-only alerting catches hard down; adding RUM/login catches soft degradation |
+| **Batch job chain failure** | GL batch fails AND premium reconciliation shows mismatch AND NAV calculation not started by deadline | Any two conditions true | Batch failures often cascade; composite alert identifies chain failures before downstream impact |
+
+### 23.3 Implementation Notes
+
+- Composite alerts require the underlying single-metric alerts to exist first (Phase 1-2). Composite logic is layered on top in Phase 2-3.
+- Implementation options: Alertmanager recording rules that combine signals, or Grafana alert rules with multiple conditions.
+- Use anomaly alerts (not static thresholds) for business metrics that vary by time of day, day of week, or season — e.g., quote-to-submit conversion, rider attach rate, decision mix, free-look rate, early lapse, claims reopen rate.
+
+---
+
+## 24. Appendix: Cross-References to Existing Work
 
 This roadmap builds on and connects to several existing documents in the TCLife workspace:
 
@@ -1365,6 +1657,7 @@ This roadmap builds on and connects to several existing documents in the TCLife 
 | **Incident Scenarios** | `solutions/incident-management/scenarios.md` | Business scenarios (e.g., 347 policies with zero surrender value) inform which business metrics to monitor |
 | **L1 Support Frontline** | `solutions/L1-support-frontline/l1-support-frontline.md` | L1 uses monitoring dashboards for incident detection and triage; dashboard design must support L1 workflows |
 | **CIO Review** | `solutions/monitoring-alerting/cio-review-monitoring-roadmap.md` | 43 findings incorporated in v2.0; resolution matrix in Section 17 |
+| **Insurance-Domain Monitoring Research** | `solutions/monitoring-alerting/reference.research.md` | Comprehensive monitoring blueprint for Vietnam life insurer on eBao InsureMO / AWS. Source for v2.1 additions: journey framework, domain matrices, SLOs, first 25 alerts, data model, composite alerts, regulatory citations, InsureMO instrumentation checklist. |
 
 ### Incident Management Backlog Items Addressed
 
@@ -1384,3 +1677,4 @@ This roadmap builds on and connects to several existing documents in the TCLife 
 |---------|------|--------|---------|
 | 1.0 | 2026-03-20 | IT Operations | Initial draft |
 | 2.0 | 2026-03-20 | IT Operations | Restructured into overview + detail; incorporated 43 CIO review findings; added: team structure (7 people), staffing plan, training plan, RUM, cost monitoring, commission batch, PII scrubbing policy, human costs, regulatory citation qualification, governance structure. Full resolution matrix in Section 17. |
+| 2.1 | 2026-03-20 | IT Operations | Added: journey-first monitoring framework (9 core journeys, Sec 18), rider monitoring as cross-cutting dimension (Sec 18.3), domain-specific monitoring matrices for underwriting/STP, billing/persistency, claims, ops workflow, security/fraud/compliance (Sec 19), formal SLO set with starter objectives (Sec 20), prioritized first 25 alerts (Sec 21), canonical telemetry data model across 14 domains (Sec 22), composite multi-signal alert patterns (Sec 23), InsureMO instrumentation checklist (Sec 7.3), strengthened regulatory citations with Insurance Business Law 08/2022/QH15, Decree 46/2023, Circular 67/2023, Decision 07/QD-TTg (Sec 11.1, all pending Legal verification). Reference: `reference.research.md`. |
