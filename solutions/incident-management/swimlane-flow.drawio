@@ -305,9 +305,6 @@
         <mxCell id="405" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1;fontSize=8;fontColor=#15803D;dashed=1;dashPattern=4 2;" value="📄 Escalation Policy" vertex="1">
           <mxGeometry x="555" y="1408" width="135" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="530" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=10;" value="&lt;b&gt;Notify Stakeholders&lt;/b&gt;&lt;br&gt;(P1 only)" vertex="1">
-          <mxGeometry x="870" y="1350" width="155" height="45" as="geometry" />
-        </mxCell>
         <mxCell id="221" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;fontSize=10;" value="Receive status updates&lt;br&gt;(P1:30m · P2:1hr)" vertex="1">
           <mxGeometry x="1140" y="1355" width="160" height="40" as="geometry" />
         </mxCell>
@@ -573,10 +570,7 @@
         </mxCell>
 
         <!-- Management row: left-to-right notification flow -->
-        <mxCell id="600" edge="1" parent="1" source="220" target="530" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="601" edge="1" parent="1" source="530" target="221" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
+        <mxCell id="600" edge="1" parent="1" source="220" target="221" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="602" edge="1" parent="1" source="221" target="560" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;html=1;strokeWidth=1;strokeColor=#CBD5E1;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
