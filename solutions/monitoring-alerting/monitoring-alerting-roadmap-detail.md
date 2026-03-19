@@ -1,9 +1,9 @@
 # Monitoring & Alerting Roadmap — Technical Reference
 
-> **Version**: 2.1
+> **Version**: 2.2
 > **Date**: 2026-03-20
 > **Author**: IT Operations
-> **Status**: Revised — incorporating CIO review findings (R-001 through R-043) and insurance-domain monitoring research
+> **Status**: Revised — incorporating CIO review findings (R-001 through R-043), insurance-domain monitoring research, and deep expansion of monitoring and alerting strategy sections
 > **Audience**: IT Operations, DevOps, Application Support, Engineering
 > **Companion document**: `monitoring-alerting-roadmap-overview.md` (executive overview)
 
@@ -15,7 +15,27 @@
 2. [Team Structure & Staffing Plan](#2-team-structure--staffing-plan)
 3. [Current State Assessment](#3-current-state-assessment)
 4. [Monitoring Strategy](#4-monitoring-strategy)
+   - 4.1 Layered Monitoring Model
+   - 4.2 Layer 1 — Infrastructure Monitoring (Core Metrics, EKS Deep Dive, Database Deep Dive, Deployment Health)
+   - 4.3 Layer 2 — Platform / Middleware (SQS/EventBridge, Cache, API Gateway, Certificates/DNS)
+   - 4.4 Layer 3 — Application (Instrumentation, Golden Signals, Health Checks, Log Levels, Correlation IDs)
+   - 4.5 Layer 4 — Business Process (Journey-First Monitoring, Failure Detection, Rider Lifecycle, Segmentation)
+   - 4.6 Security (AWS Services, SIEM-Lite, PII Access, Fraud Indicators)
+   - 4.7 RUM (Web Vitals SLOs, Segmentation, Alerting)
+   - 4.8 Cost Monitoring (Anomaly Scenarios, Reserved Capacity Tracking)
 5. [Alerting Strategy](#5-alerting-strategy)
+   - 5.1 Severity Levels
+   - 5.2 Alert Routing and Notification Channels
+   - 5.3 On-Call Model
+   - 5.4 Alert Quality Principles
+   - 5.5 Alert Inhibition and Grouping
+   - 5.6 Alert Lifecycle Management (States, ITSM Integration)
+   - 5.7 Alert Runbook Template (Standard Template, Example Runbook)
+   - 5.8 Alert Naming Convention (Format, Label Taxonomy)
+   - 5.9 Escalation Flow (Flowchart, Auto-Escalation, Business/After-Hours)
+   - 5.10 Alert Testing Strategy (Unit Testing, Game Days, Promotion)
+   - 5.11 Alert Noise Management (Composite Alerts, Noise Budget, Quality Report)
+   - 5.12 Business Alert Routing (Technical vs Business, Routing Matrix, Format)
 6. [Tool Mapping](#6-tool-mapping)
 7. [EbaoTech Insuremo Integration](#7-ebaotech-insuremo-integration)
 8. [Batch Job & File Exchange Monitoring](#8-batch-job--file-exchange-monitoring)
@@ -51,6 +71,8 @@ This roadmap defines a **four-phase implementation plan** to build a comprehensi
 **Changes from v1.0**: v2.0 incorporates all 43 CIO review findings (10 high, 21 medium, 12 low). Major additions: team structure and staffing plan, training as Phase 1 deliverable, missing monitoring domains (RUM, AWS cost, commission batch), PII scrubbing policy, human cost model, and regulatory citation qualification. See Section 17 for the full resolution matrix.
 
 **Changes from v2.0 to v2.1**: Added journey-first monitoring framework (9 core journeys, Section 18), domain-specific monitoring matrices (Section 19), formal SLO set (Section 20), prioritized first 25 alerts (Section 21), canonical telemetry data model (Section 22), composite alert patterns (Section 23), rider monitoring as first-class dimension throughout, strengthened InsureMO instrumentation checklist (Section 7), and strengthened regulatory citations (Section 11). Reference: `reference.research.md`.
+
+**Changes from v2.1 to v2.2**: Deep expansion of Sections 4 (Monitoring Strategy) and 5 (Alerting Strategy). Section 4 now includes: EKS cluster-level monitoring, RDS/Aurora connection pooling and slow query detection, deployment health tracking, full SQS/EventBridge/cache/API Gateway metrics with thresholds, golden signals per service, health check endpoint specification, log level strategy, correlation ID propagation, journey-first business process failure detection with concrete scenarios, AWS security services integration (GuardDuty/Security Hub/Inspector/Macie), SIEM-lite approach using OpenSearch, PII access monitoring, fraud indicators, RUM Web Vitals SLO targets with segmentation, and insurance-specific cost anomaly scenarios. Section 5 now includes: alert lifecycle with ITSM integration, runbook template with example, naming convention and label taxonomy, escalation flowchart with auto-escalation, alert testing strategy with game days, noise management with composite alerts and noise budget, and business alert routing distinguishing technical from business stakeholder alerts.
 
 ---
 
@@ -192,6 +214,8 @@ TCLife's monitoring covers four layers plus two cross-cutting domains:
 
 **Data sources**: Prometheus (kube-state-metrics, cAdvisor, node-exporter), CloudWatch metrics.
 
+#### 4.2.1 Core Infrastructure Metrics
+
 | What to Monitor | Metric | Tool | Threshold (Alert) |
 |----------------|--------|------|-------------------|
 | Node health | `kube_node_status_condition{condition="Ready"}` | Prometheus | Any node NotReady > 2 min |
@@ -199,89 +223,429 @@ TCLife's monitoring covers four layers plus two cross-cutting domains:
 | CPU utilization | `container_cpu_usage_seconds_total` / limits | Prometheus | > 80% sustained 5 min |
 | Memory utilization | `container_memory_working_set_bytes` / limits | Prometheus | > 85% sustained 5 min |
 | Disk I/O and capacity | `node_filesystem_avail_bytes` | Prometheus | < 15% free |
+| ALB 5xx rate | `HTTPCode_ELB_5XX_Count` | CloudWatch | > 1% of total requests |
+| ALB latency | `TargetResponseTime` | CloudWatch | P99 > 2 seconds |
+| ALB unhealthy targets | `UnHealthyHostCount` | CloudWatch | > 0 sustained 2 min |
+| Lambda errors | `Errors` | CloudWatch | > 5% invocation error rate |
+| Lambda duration | `Duration` | CloudWatch | P95 > 80% of timeout |
+| Lambda throttles | `Throttles` | CloudWatch | > 0 for critical functions |
+| S3 request errors | `4xxErrors`, `5xxErrors` | CloudWatch | Sustained spike |
+| VPC flow anomalies | VPC Flow Logs | OpenSearch | Unusual traffic patterns |
+| **EKS cluster version** | Custom check or `kube_node_info` | Prometheus / CloudWatch | **EKS version within 60 days of EOL (R-006)** |
+| AWS Health events | `AWS Health` via EventBridge | CloudWatch / EventBridge | Any event impacting critical services |
+
+#### 4.2.2 EKS-Specific Deep Dive
+
+TCLife runs all application workloads on Amazon EKS. Beyond basic node and pod metrics, EKS-specific monitoring must cover cluster-level health, managed node groups, scheduling behavior, and auto-scaling dynamics.
+
+| What to Monitor | Metric | Tool | Threshold (Alert) |
+|----------------|--------|------|-------------------|
+| Cluster API server health | `apiserver_request_total`, `apiserver_request_duration_seconds` | Prometheus | Error rate > 1% or P99 latency > 1s |
+| etcd health | `etcd_server_has_leader`, `etcd_disk_wal_fsync_duration_seconds` | Prometheus (control plane metrics) | Leader loss or WAL fsync P99 > 100ms |
+| Node group scaling | `kube_node_status_condition` by node group | Prometheus | Node group at min capacity and pods pending > 2 min |
+| Pending pods | `kube_pod_status_phase{phase="Pending"}` | Prometheus | Any pod pending > 5 min (excludes expected job scheduling) |
+| Failed scheduling | `scheduler_schedule_attempts_total{result="error"}` | Prometheus | > 0 sustained 5 min |
+| HPA behavior | `kube_horizontalpodautoscaler_status_current_replicas` vs `_desired_replicas` | Prometheus | Desired != current for > 5 min; current at max replicas sustained 10 min |
+| HPA scaling ceiling | `kube_horizontalpodautoscaler_spec_max_replicas` vs current replicas | Prometheus | Current = max for > 15 min (capacity risk) |
+| Pod evictions | `kube_pod_status_reason{reason="Evicted"}` | Prometheus | > 3 evictions in 15 min per node |
+| Container OOMKills | `kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}` | Prometheus | Any OOMKill on business-critical workload |
+| CoreDNS latency | `coredns_dns_request_duration_seconds` | Prometheus | P99 > 200ms (DNS failures cause silent cascading issues) |
+| Node resource pressure | `kube_node_status_condition{condition=~"DiskPressure\|MemoryPressure\|PIDPressure"}` | Prometheus | Any pressure condition True > 1 min |
+
+**Why this matters for TCLife**: Pod scheduling failures and HPA ceiling hits during peak hours (e.g., start of business when agents log in simultaneously, or end of day during batch processing) can cause portal slowness or submission failures that appear as application-layer problems but originate in infrastructure capacity.
+
+#### 4.2.3 Database Deep Dive (RDS/Aurora)
+
+TCLife's databases hold policy, claims, financial, and customer data. Database degradation directly impacts every business journey.
+
+| What to Monitor | Metric | Tool | Threshold (Alert) |
+|----------------|--------|------|-------------------|
 | RDS connections | `DatabaseConnections` | CloudWatch | > 80% max connections |
 | RDS CPU | `CPUUtilization` | CloudWatch | > 75% sustained 10 min |
 | RDS storage | `FreeStorageSpace` | CloudWatch | < 20% free |
 | RDS replication lag | `ReplicaLag` | CloudWatch | > 10 seconds |
-| ALB 5xx rate | `HTTPCode_ELB_5XX_Count` | CloudWatch | > 1% of total requests |
-| ALB latency | `TargetResponseTime` | CloudWatch | P99 > 2 seconds |
-| SQS queue depth | `ApproximateNumberOfMessagesVisible` | CloudWatch | > age threshold (queue-specific) |
-| SQS dead letter queue | `ApproximateNumberOfMessagesVisible` on DLQ | CloudWatch | > 0 messages |
-| Lambda errors | `Errors` | CloudWatch | > 5% invocation error rate |
-| Lambda duration | `Duration` | CloudWatch | P95 > 80% of timeout |
-| S3 request errors | `4xxErrors`, `5xxErrors` | CloudWatch | Sustained spike |
-| VPC flow anomalies | VPC Flow Logs | OpenSearch | Unusual traffic patterns |
-| **EKS cluster version** | Custom check or `kube_node_info` | Prometheus / CloudWatch | **EKS version within 60 days of EOL (R-006)** |
+| Connection pool utilization | Application-level pool metrics (e.g., HikariCP `active_connections` / `max_pool_size`) | Prometheus | > 80% pool utilization sustained 5 min |
+| Connection pool wait time | `hikaricp_connections_pending` or equivalent | Prometheus | > 0 pending connections sustained 2 min |
+| Slow query count | `slow_query_count` from Performance Insights or application logs | CloudWatch / OpenSearch | > 10 slow queries (>1s) in 5 min window |
+| Long-running queries | Queries running > 30 seconds (Performance Insights) | CloudWatch | Any query > 60s (potential lock holder) |
+| Read/write IOPS | `ReadIOPS`, `WriteIOPS` | CloudWatch | > 80% provisioned IOPS sustained 10 min |
+| Buffer cache hit ratio | `BufferCacheHitRatio` | CloudWatch | < 95% (indicates insufficient memory) |
+| Deadlocks | `Deadlocks` (Performance Insights or pg_stat) | CloudWatch / Prometheus | > 0 deadlocks per 5 min |
+| Failover events | RDS event notifications | CloudWatch Events / EventBridge | Any failover event (SEV2) |
+| Burst balance (gp3/gp2) | `BurstBalance` | CloudWatch | < 20% (I/O throttling imminent) |
+
+**Connection pooling requirements**: All application services connecting to RDS must use connection pooling (e.g., HikariCP for Java/Spring, pgBouncer for direct connections). Monitor pool-level metrics alongside database-level connections to distinguish between application-side pool exhaustion and database-side connection limits.
+
+**Slow query detection flow**:
+1. Enable RDS Performance Insights (no additional agent required for RDS)
+2. Set `log_min_duration_statement = 1000` (1 second) in PostgreSQL parameter group
+3. Route slow query logs to OpenSearch for pattern analysis
+4. Alert on slow query volume spikes (not individual queries) to avoid noise
+
+**Failover monitoring**: If using Multi-AZ RDS or Aurora, monitor failover events via EventBridge. A failover causes a brief outage (typically 30-60 seconds for Aurora, 60-120 seconds for RDS Multi-AZ). The monitoring system must detect this and suppress downstream application alerts for the failover window.
+
+#### 4.2.4 Deployment and Release Health Monitoring
+
+Deployments are the most common cause of production incidents. Monitoring must detect bad releases quickly enough to roll back before business impact accumulates.
+
+| What to Monitor | Metric | Tool | Threshold (Alert) |
+|----------------|--------|------|-------------------|
+| Error budget burn post-deploy | 5xx rate delta in 15 min after deploy vs. 1h pre-deploy baseline | Prometheus | > 2x baseline error rate within 15 min of deploy |
+| Rollback detection | Deployment version reverted (Kubernetes rollout undo) | Prometheus / Kubernetes events | Any rollback on production namespace |
+| Canary health (if applicable) | Canary pod error rate vs stable pods | Prometheus | Canary error rate > 5x stable error rate |
+| Deploy frequency | Deployments per day/week | Prometheus (custom metric from CI/CD) | Informational — no alert, trend only |
+| Deploy duration | Time from deploy start to all pods healthy | Prometheus / CI/CD | > 2x rolling average deploy duration |
+| Failed deploys | CI/CD pipeline failures on production | CI/CD system -> Prometheus | Any failed production deploy |
+| Post-deploy latency shift | P95 latency delta in 30 min after deploy | Prometheus | P95 increases > 50% vs pre-deploy |
+
+**Implementation**: Annotate Grafana dashboards with deployment events (timestamp + version + deployer). This makes visual correlation between deploys and metric changes immediate. Use Kubernetes deployment annotations or CI/CD webhook to emit deploy events.
+
+**Error budget burn rule**: After a production deployment, if the 5xx error rate exceeds 2x the pre-deployment baseline within 15 minutes, fire a SEV2 alert to the deploying team. If the error budget burn rate for the affected SLO exceeds 1% in 1 hour post-deploy, fire a SEV1 alert recommending immediate rollback.
 
 ### 4.3 Layer 2 — Platform / Middleware Monitoring
 
-**Scope**: Message queues, caching layers, API gateways, service mesh (if any), DNS resolution, certificate expiry.
+**Scope**: Message queues (SQS), event bus (EventBridge), caching layers (ElastiCache), API gateways, DNS resolution, certificate expiry, secrets management.
 
-| What to Monitor | Why | Tool |
-|----------------|-----|------|
-| Message queue consumer lag | Backlog buildup means processing is behind | Prometheus custom metrics or CloudWatch |
-| Cache hit/miss ratio | Cache degradation causes latency spikes | Prometheus (ElastiCache metrics via CloudWatch exporter) |
-| API Gateway latency and error rates | Gateway is the front door for all API traffic | CloudWatch + Prometheus |
-| TLS certificate expiry | Expired certs cause outages | Prometheus blackbox_exporter or cert-manager metrics |
-| DNS resolution time | DNS failures are silent killers | Prometheus blackbox_exporter |
-| Secrets rotation status | Expired credentials cause auth failures | Custom metric from Secrets Manager events |
+**Why this layer is critical**: Platform services sit between application code and infrastructure. A degraded SQS queue or an exhausted ElastiCache cluster causes application-level symptoms (slow responses, failed transactions) that are hard to diagnose if platform metrics are not monitored independently.
+
+#### 4.3.1 SQS and EventBridge Deep Dive
+
+SQS queues and EventBridge are the asynchronous backbone for TCLife's integration layer — connecting portals to InsureMO, batch job triggers, payment callbacks, and notification delivery.
+
+| What to Monitor | Metric | Tool | Threshold (Alert) |
+|----------------|--------|------|-------------------|
+| Queue message age | `ApproximateAgeOfOldestMessage` | CloudWatch | > SLA threshold per queue (see below) |
+| Queue depth | `ApproximateNumberOfMessagesVisible` | CloudWatch | > 2x normal depth sustained 10 min |
+| DLQ message count | `ApproximateNumberOfMessagesVisible` on DLQ | CloudWatch | > 0 messages (SEV1 for payment/issuance queues, SEV2 for others) |
+| Messages sent vs received | `NumberOfMessagesSent` vs `NumberOfMessagesReceived` | CloudWatch | Sustained divergence > 10 min (producer/consumer mismatch) |
+| Empty receives | `NumberOfEmptyReceives` | CloudWatch | Informational — high empty receive rate wastes compute but is not urgent |
+| EventBridge failed invocations | `FailedInvocations` | CloudWatch | > 0 sustained 5 min (SEV2) |
+| EventBridge rule throttling | `ThrottledRules` | CloudWatch | > 0 (SEV2 — events being dropped) |
+| EventBridge invocation latency | `InvocationLatency` | CloudWatch | P95 > 5s for business-critical rules |
+
+**Queue-specific SLA thresholds** (adjust after baseline measurement):
+
+| Queue | Max acceptable message age | DLQ severity |
+|-------|---------------------------|-------------|
+| Payment callbacks | 2 min | SEV1 |
+| Policy issuance events | 5 min | SEV1 |
+| Notification delivery | 15 min | SEV2 |
+| Batch job triggers | Per job schedule tolerance | SEV2 |
+| Audit/logging events | 30 min | SEV3 |
+
+**DLQ management**: Every SQS queue handling business transactions must have a DLQ configured. DLQ messages represent events that failed processing after max retries — they are potential data loss. Alert immediately and require manual review before purging.
+
+#### 4.3.2 Cache Layer (ElastiCache)
+
+Caching protects downstream databases and accelerates frequently-accessed data (product configurations, rider pricing tables, agent sessions, frequently-viewed policy summaries).
+
+| What to Monitor | Metric | Tool | Threshold (Alert) |
+|----------------|--------|------|-------------------|
+| Cache hit ratio | `CacheHitRate` | CloudWatch | < 90% sustained 15 min (SEV3 — potential cache invalidation issue) |
+| Evictions | `Evictions` | CloudWatch | > 0 sustained and rising (memory pressure) |
+| Current connections | `CurrConnections` | CloudWatch | > 80% max connections |
+| Memory utilization | `DatabaseMemoryUsagePercentage` | CloudWatch | > 80% (SEV3), > 90% (SEV2 — eviction storm imminent) |
+| CPU utilization | `EngineCPUUtilization` | CloudWatch | > 75% sustained 10 min |
+| Replication lag | `ReplicationLag` | CloudWatch | > 1s (if using read replicas) |
+| Swap usage | `SwapUsage` | CloudWatch | > 50MB (indicates memory pressure) |
+
+**Why cache matters for insurance**: Product configuration and rider pricing table lookups happen on every quotation. If cache is cold or degraded, these lookups fall through to the database, causing latency spikes in the quotation engine that directly impact agent productivity.
+
+#### 4.3.3 API Gateway Monitoring
+
+If TCLife uses API Gateway as the front door for external and internal API traffic, it is the single chokepoint where all client requests enter.
+
+| What to Monitor | Metric | Tool | Threshold (Alert) |
+|----------------|--------|------|-------------------|
+| 4xx error rate | `4XXError` | CloudWatch | > 5% sustained 5 min (client errors — may indicate breaking API change) |
+| 5xx error rate | `5XXError` | CloudWatch | > 1% sustained 5 min (SEV2), > 5% (SEV1) |
+| Latency | `Latency` (P50, P95, P99) | CloudWatch | P99 > 3s sustained 5 min |
+| Integration latency | `IntegrationLatency` | CloudWatch | P99 > 2s (backend response time) |
+| Request count | `Count` | CloudWatch | Informational; alert on sudden traffic drop > 50% (signals possible routing issue or outage) |
+| Throttling | `ThrottleCount` | CloudWatch | > 0 sustained (SEV2 — legitimate traffic being rejected) |
+| Cache hit ratio (if enabled) | `CacheHitCount` / `CacheMissCount` | CloudWatch | Informational — drop in cache hits after deploy may indicate changed API patterns |
+
+#### 4.3.4 Certificate and DNS Health
+
+| What to Monitor | Metric | Tool | Threshold (Alert) |
+|----------------|--------|------|-------------------|
+| TLS certificate expiry | Certificate remaining days | Prometheus blackbox_exporter or cert-manager | < 30 days (SEV3), < 14 days (SEV2), < 7 days (SEV1) |
+| DNS resolution time | DNS lookup latency | Prometheus blackbox_exporter | > 500ms (SEV3 — DNS failures cascade silently) |
+| DNS resolution failure | DNS lookup failure rate | Prometheus blackbox_exporter | Any resolution failure for critical endpoints |
+| Secrets rotation status | Last rotation timestamp | Custom metric from Secrets Manager events | Secret not rotated within policy window |
+| Certificate chain validity | Full chain verification | Prometheus blackbox_exporter | Any chain validation failure |
 
 ### 4.4 Layer 3 — Application Monitoring
 
 **Scope**: All TCLife-owned applications — Sale Portal, Customer Portal, middleware/integration services, batch processing applications.
 
-**Instrumentation standard**: All applications MUST expose:
+#### 4.4.1 Instrumentation Standard
+
+All applications MUST expose:
 - HTTP request duration histogram (`http_request_duration_seconds_bucket`)
 - HTTP request counter by status code (`http_requests_total`)
 - Custom business event counters (per application)
 - Structured JSON logging to OpenSearch
 - **Health check endpoint** (`/health` or `/healthz`) returning structured status including downstream dependency checks **(R-005)**
 
-| What to Monitor | Metric | Tool |
-|----------------|--------|------|
-| Request latency (P50, P95, P99) | `histogram_quantile` on HTTP duration | Prometheus + Grafana |
-| Error rate (4xx, 5xx) | `rate(http_requests_total{status=~"[45].."}[5m])` | Prometheus + Grafana |
-| Throughput (RPM) | `rate(http_requests_total[5m]) * 60` | Prometheus + Grafana |
-| Application error logs | Error/exception patterns | OpenSearch + alerting |
-| Slow query detection | Database query duration > threshold | Application logs -> OpenSearch |
-| Dependency health | Circuit breaker state, downstream call latency | Prometheus custom metrics |
-| Session/authentication metrics | Login success/failure rate, session count | Prometheus custom metrics |
-| API endpoint-level breakdown | Per-endpoint latency/error/throughput | Prometheus labels |
-| **Health check status** | `/health` endpoint per service **(R-005)** | Prometheus blackbox_exporter or custom |
+**Business event instrumentation**: At every significant state transition, the application must emit both a **business event** (for business monitoring) and a **technical event** (for operational monitoring). Business events use domain language; technical events use standard observability fields.
 
-**Distributed tracing** (future consideration): Instrument with OpenTelemetry for request tracing across services. Not in Phase 1-2 scope, but the instrumentation standard should be OTel-compatible from the start.
+| Transition | Business event example | Technical event |
+|-----------|----------------------|-----------------|
+| Quote created | `quote_created{product="UL", channel="agency", rider_set="CI+HI"}` | HTTP 200, latency histogram, trace span |
+| Application submitted | `application_submitted{product="UL", channel="digital"}` | HTTP 200, latency, payload size |
+| Payment authorized | `payment_authorized{gateway="bank_X", amount_range="high"}` | HTTP 200, callback latency, idempotency key |
+| Underwriting decided | `underwriting_decision{path="STP", decision="approve", product="UL"}` | Rules engine latency, external dependency calls |
+| Policy issued | `policy_issued{product="UL", rider_count="2"}` | Document generation time, posting success |
+| Rider activated | `rider_activated{rider_code="CI", product="UL"}` | Rider validation latency, rider-package version match |
+| Claim registered | `claim_registered{event_type="hospitalization", product="HI"}` | FNOL intake latency, attachment upload success |
+
+Every failed customer step must include: machine-readable failure code, human-readable message, and ownership tag (which team is responsible).
+
+#### 4.4.2 Golden Signals Framework
+
+Apply the four golden signals (traffic, latency, errors, saturation) to each TCLife service. This ensures consistent coverage and makes it easy to compare service health across the platform.
+
+| Service | Traffic | Latency (P95 target) | Errors (target) | Saturation |
+|---------|---------|---------------------|-----------------|------------|
+| **Sale Portal** | Requests/sec, active sessions, quotes/hour | < 500ms page load, < 2s API calls | < 0.1% 5xx, < 1% business errors | CPU/memory vs limits, connection pool, concurrent sessions |
+| **Customer Portal** | Requests/sec, active sessions, self-service transactions/hour | < 1s page load, < 3s API calls | < 0.1% 5xx, < 1% business errors | CPU/memory vs limits, connection pool |
+| **Integration/Middleware** | Messages/sec, API calls to InsureMO/hour | < 1s per API call, < 5s per complex operation | < 0.5% failed integrations | Queue depth, thread pool utilization, connection pool |
+| **Batch Processing** | Jobs/hour, records/batch | Per-job SLA (see Section 8) | 0% failed jobs (every failure is an incident) | CPU during batch windows, I/O throughput |
+| **Notification Service** | Emails/SMS per hour, push notifications | < 30s delivery for transactional messages | < 2% delivery failure | Queue depth, provider rate limits |
+
+#### 4.4.3 Metric Table
+
+| What to Monitor | Metric | Tool | Threshold (Alert) |
+|----------------|--------|------|-------------------|
+| Request latency (P50, P95, P99) | `histogram_quantile` on HTTP duration | Prometheus + Grafana | P95 > service-specific target (see golden signals above) |
+| Error rate (4xx, 5xx) | `rate(http_requests_total{status=~"[45].."}[5m])` | Prometheus + Grafana | 5xx > 0.1% sustained 5 min; 4xx spike > 3x baseline |
+| Throughput (RPM) | `rate(http_requests_total[5m]) * 60` | Prometheus + Grafana | Drop > 50% from baseline (possible outage or routing issue) |
+| Application error logs | Error/exception patterns | OpenSearch + alerting | Error volume spike > 3x rolling average |
+| Slow query detection | Database query duration > threshold | Application logs -> OpenSearch | > 10 slow queries (>1s) per 5 min window |
+| Dependency health | Circuit breaker state, downstream call latency | Prometheus custom metrics | Circuit breaker open on any critical dependency |
+| Session/authentication metrics | Login success/failure rate, session count | Prometheus custom metrics | Login success < 95% for 10 min |
+| API endpoint-level breakdown | Per-endpoint latency/error/throughput | Prometheus labels | Endpoint-specific SLO breach |
+| **Health check status** | `/health` endpoint per service **(R-005)** | Prometheus blackbox_exporter or custom | Health check failure > 2 consecutive checks |
+
+#### 4.4.4 Health Check Endpoint Specification
+
+Every TCLife service must expose a `/health` endpoint that returns a structured response. The health check is the single source of truth for "is this service ready to serve traffic?"
+
+**Required response format**:
+
+```json
+{
+  "status": "healthy | degraded | unhealthy",
+  "timestamp": "2026-03-20T10:15:30Z",
+  "version": "1.4.2",
+  "uptime_seconds": 86400,
+  "checks": {
+    "database": { "status": "healthy", "latency_ms": 5 },
+    "cache": { "status": "healthy", "latency_ms": 2 },
+    "insuremo_api": { "status": "healthy", "latency_ms": 120 },
+    "sqs_queue": { "status": "healthy", "queue_depth": 12 }
+  }
+}
+```
+
+**Rules**:
+- `status` is `healthy` only when ALL dependency checks pass.
+- `status` is `degraded` when non-critical dependencies fail (e.g., cache is down but database is up).
+- `status` is `unhealthy` when any critical dependency fails (e.g., database unreachable).
+- Kubernetes readiness probe should use `/health` — an unhealthy response removes the pod from the load balancer.
+- Kubernetes liveness probe should use a simpler `/livez` endpoint that checks only process health (not dependencies) to avoid restart loops when dependencies are temporarily unavailable.
+- Health checks must complete within 5 seconds. If a dependency check times out, report it as unhealthy rather than hanging.
+
+#### 4.4.5 Log Level Strategy
+
+Consistent log levels across all services ensure that log-based alerting works reliably and operators can filter effectively.
+
+| Level | When to use | Alerting behavior |
+|-------|------------|-------------------|
+| **FATAL** | Process cannot continue — data corruption risk, unrecoverable state, security breach detected | SEV1 alert immediately. Any FATAL log entry is an incident. |
+| **ERROR** | Operation failed but process continues — failed API call after retries, failed transaction, unhandled exception | Alert on volume spike (> 3x rolling average in 5 min). Individual errors logged but not alerted unless sustained. |
+| **WARN** | Unexpected condition that may lead to errors — retry attempts, deprecated API usage, approaching resource limits, slow queries | No immediate alert. Review in daily ops standup. Alert if WARN volume trends upward for 3+ days. |
+| **INFO** | Normal business events — successful transactions, state transitions, batch job completion | Never alert. Used for operational dashboards and audit trail. |
+| **DEBUG** | Detailed diagnostic information — request/response payloads, internal state | Never in production by default. Enable per-service via runtime flag for troubleshooting only. Must not contain PII. |
+
+**Sensitive data rules**: No log level may contain unmasked PII (see Section 12). Policy numbers, customer names, national IDs, and health data must be masked or tokenized before logging. Use structured fields with masking applied at the logging framework level.
+
+#### 4.4.6 Correlation ID and Trace Context Propagation
+
+Every request entering TCLife's system must carry a correlation ID (also called trace ID) that propagates across all services and is included in every log entry, metric label, and event. This is the single most important requirement for debugging cross-service issues.
+
+**Requirements**:
+- Generate a unique correlation ID (`X-Correlation-ID` header) at the API gateway or load balancer for every inbound request.
+- Propagate the correlation ID to all downstream service calls, queue messages, and database operations.
+- Include the correlation ID in every structured log entry as a top-level field (`correlation_id`).
+- Include the correlation ID in Prometheus exemplars (where supported) to link metrics to traces.
+- For business journeys, also propagate a business context (application ID, policy ID, claim ID) alongside the technical correlation ID.
+
+**Propagation chain example**:
+```
+Browser -> ALB (generates correlation_id) -> Sale Portal -> SQS message (carries correlation_id in attributes) -> Integration Service -> InsureMO API (passes correlation_id)
+```
+
+**Implementation**: Use OpenTelemetry context propagation (W3C Trace Context format) even before full distributed tracing is implemented. This ensures the header format and propagation logic are in place for Phase 3-4 when tracing is enabled.
+
+**Distributed tracing** (Phase 3-4): Instrument with OpenTelemetry for full request tracing across services. The correlation ID and context propagation implemented in Phase 1-2 forms the foundation. Not in Phase 1-2 scope, but the instrumentation standard must be OTel-compatible from the start.
 
 ### 4.5 Layer 4 — Business Process Monitoring
 
 **Scope**: Insurance-specific business flows that directly impact policyholders, agents, and regulatory compliance.
 
-| Business Process | What to Monitor | Why |
-|-----------------|----------------|-----|
-| **Policy issuance** | End-to-end time from submission to policy activation; conversion rate; rejection rate by reason | Agents blocked = revenue impact; SLA to policyholders |
-| **Claims processing** | Claim registration to assessment time; assessment to payment time; auto-approval rate; rejection rate | Regulatory SLA; policyholder experience; fraud detection signal |
-| **Premium collection** | Collection success rate; failed payment retry rate; grace period utilization; lapse rate | Revenue assurance; policyholder retention |
-| **UL NAV calculation** | NAV calculation completion time; variance from expected; fund price freshness | Regulatory requirement; policyholder statements depend on accurate NAV |
-| **Surrender value** | Calculation accuracy (compare with actuarial baseline); batch completion | Scenario from IM backlog — 347 policies with zero surrender value |
-| **Quotation engine** | Quote generation time; quote-to-proposal conversion rate | Agent productivity; system responsiveness |
-| **Rider lifecycle** | Rider eligibility decision accuracy; rider premium computation; attach/detach success; rider issue vs. quote consistency; rider renewal status; rider claim events | For a UL-focused insurer with CI, HI, MR riders, rider defects are a major source of complaints, leakage, and regulatory risk. Rider monitoring is a first-class dimension, not an afterthought. |
-| **Document generation** | Document generation success rate; printing partner file delivery timeliness | Policyholder communication; regulatory filings |
-| **Regulatory reporting** | Report generation completion; data freshness; submission timeliness; **regulatory filing countdown (R-017)** | MOF compliance; audit trail |
-| **Reinsurance data** | Cession data generation timeliness; reconciliation status | Treaty compliance; financial accuracy |
-| **Commission calculation (R-016)** | Commission run completion; agent count processed; accuracy vs expected; timeliness | **Agent/sales force compensation — failed commission run creates immediate pain across entire distribution channel** |
+#### 4.5.1 Design Principle: Monitor by Journey, Not Just by Service
+
+A healthy microservice estate can still hide a broken submission flow or a stalled underwriting queue. Business process monitoring must be organized by **customer journey first, service second**. Every journey uses a unique journey ID / application ID / policy ID / rider instance ID to stitch events end-to-end across portals, InsureMO services, underwriting engines, payment, messaging, and document services.
+
+The nine core business journeys (J1-J9) defined in Section 18 provide the framework. This section defines HOW each business process is monitored — the data source, collection method, and specific detection patterns.
+
+#### 4.5.2 Business Process Monitoring Matrix
+
+| Business Process | What to Monitor | Why | Data Source | Collection Method | Key Metric Type |
+|-----------------|----------------|-----|-------------|-------------------|----------------|
+| **Policy issuance** | End-to-end time from submission to policy activation; conversion rate; rejection rate by reason | Agents blocked = revenue impact; SLA to policyholders | InsureMO API timestamps + Portal events | Prometheus counters emitted at each state transition; InsureMO API polling for timestamps | Duration histogram, success counter |
+| **Claims processing** | Claim registration to assessment time; assessment to payment time; auto-approval rate; rejection rate | Regulatory SLA; policyholder experience; fraud detection signal | InsureMO claims API + FNOL portal events | Event-driven: business events emitted at registration, assessment, decision, payment | Duration histogram, ratio gauge |
+| **Premium collection** | Collection success rate; failed payment retry rate; grace period utilization; lapse rate | Revenue assurance; policyholder retention | Payment gateway callbacks + InsureMO billing API | Payment callback events -> Prometheus counter; daily InsureMO query for grace/lapse | Success rate gauge, aging buckets |
+| **UL NAV calculation** | NAV calculation completion time; variance from expected; fund price freshness | Regulatory requirement; policyholder statements depend on accurate NAV | Batch job monitor + InsureMO fund management API | Batch completion event -> Prometheus; periodic NAV freshness check | Batch completion gauge, variance gauge |
+| **Surrender value** | Calculation accuracy (compare with actuarial baseline); batch completion | Scenario from IM backlog — 347 policies with zero surrender value | Reconciliation batch output + actuarial baseline | Batch reconciliation: compare computed values vs actuarial expected range | Reconciliation status gauge |
+| **Quotation engine** | Quote generation time; quote-to-proposal conversion rate | Agent productivity; system responsiveness | Sale Portal application metrics | Prometheus histogram on quote API; conversion funnel counter | Duration histogram, conversion ratio |
+| **Rider lifecycle** | Rider eligibility, premium computation, attach/detach, issue consistency, renewal, claim events | For a UL-focused insurer with CI, HI, MR riders, rider defects are a major source of complaints, leakage, and regulatory risk | InsureMO rider APIs + Portal events + Batch reconciliation | Event-driven at each rider lifecycle stage; daily reconciliation for drift detection | Multi-stage success counters |
+| **Document generation** | Document generation success rate; printing partner file delivery timeliness | Policyholder communication; regulatory filings | Document service metrics + S3 file exchange events | Prometheus counter on document generation; S3 event for partner file delivery | Success rate gauge, SLA gauge |
+| **Regulatory reporting** | Report generation completion; data freshness; submission timeliness; **regulatory filing countdown (R-017)** | MOF compliance; audit trail | Batch job monitor + regulatory calendar | Calendar-aware countdown metric; batch completion event | Countdown gauge, completion status |
+| **Reinsurance data** | Cession data generation timeliness; reconciliation status | Treaty compliance; financial accuracy | Batch job monitor + reconciliation output | Batch completion + reconciliation status metric | Reconciliation gauge |
+| **Commission calculation (R-016)** | Commission run completion; agent count processed; accuracy vs expected; timeliness | **Agent/sales force compensation — failed commission run creates immediate pain across entire distribution channel** | Batch job monitor + commission reconciliation | Batch event + reconciliation: agent count and total amount vs expected range | Completion gauge, accuracy gauge |
+
+#### 4.5.3 Journey-Level Monitoring: How to Detect Common Failure Modes
+
+Business process monitoring must answer specific detection questions. For each critical scenario, the table below defines what signals to watch and how the monitoring system detects the problem.
+
+| Failure scenario | How we detect it | Signals combined | Alert severity |
+|-----------------|------------------|-----------------|---------------|
+| **Policy issuance is stuck** | No `policy_issued` events for > 1 hour during business hours, while `application_submitted` events continue arriving | Submit counter rising + issue counter flat + InsureMO API latency normal | SEV1 — new business is blocked |
+| **Premium collection failed silently** | Auto-debit success rate drops below threshold, but no payment gateway error alerts fired (gateway reports success, but funds not collected) | Payment callback success rate dropping + bank reconciliation mismatch next morning | SEV1 — revenue leakage |
+| **Underwriting queue is stalled** | Oldest pending case age exceeds SLA, referral backlog growing, but no rules-engine errors (cases are arriving but not being processed) | Referral backlog age rising + zero decisions in 30 min + no system errors | SEV2 — may be staffing or manual process issue, escalate to operations |
+| **Rider mismatch at issuance** | Rider set on issued policy differs from rider set on accepted quote | Quote-to-issue rider reconciliation detects mismatch (daily batch or real-time event comparison) | SEV1 — policyholder has wrong coverage |
+| **Surrender value calculation error** | Batch produces policies with surrender value outside actuarial expected range (e.g., zero surrender value) | Reconciliation batch flags deviation > threshold vs actuarial baseline | SEV1 — direct financial and regulatory impact (IM backlog scenario) |
+| **NAV calculation missed deadline** | NAV batch not completed by 10:00 AM on business day | Batch completion timestamp > deadline threshold | SEV2 — policyholder statements and regulatory reporting affected |
+| **Commission run failure** | Commission batch fails or produces agent count significantly below expected | Batch status = failed OR agent count deviation > 10% from expected | SEV2 — entire sales force compensation affected |
+| **Document generation halted** | Document generation success rate drops to zero while policy issuance continues | Policy issued counter rising + document generation counter flat | SEV2 — policyholders not receiving policy packs |
+
+#### 4.5.4 Rider Lifecycle Monitoring
+
+For a UL-focused insurer with CI, HI, and MR riders, rider monitoring is a first-class dimension that cuts across multiple journeys. Rider defects create policyholder complaints, financial leakage, and regulatory risk (per Decree 46/2023 and Circular 67/2023 rider separation requirements).
+
+| Rider lifecycle stage | Journey | What to monitor | Data source | Collection method | Alert trigger |
+|----------------------|---------|----------------|-------------|-------------------|---------------|
+| **Eligibility decision** | J2 Sales | Rider eligibility rule error %, mismatch between offer and rules | InsureMO rules engine + Sale Portal | Event on eligibility check; Prometheus counter by result | SEV2 if eligibility engine errors rise above threshold |
+| **Premium computation** | J2 Sales | Rider premium calculation inputs, rider-package version, computation accuracy | InsureMO premium calc API | Event on premium computation; compare output vs expected range | SEV2 if premium calculation errors detected |
+| **Offer display** | J2 Sales | Rider offer visibility %, offer acceptance rate by rider type | Sale Portal metrics | Prometheus counter on rider offers shown vs accepted | Business alert if offer visibility drops |
+| **Attachment at quote** | J2 Sales | Rider attach rate by product/channel, rider conflict rate | Sale Portal + InsureMO | Counter on rider attach events; conflict detection on save | SEV3 on rising conflict rate |
+| **Issuance** | J5 Policy | Rider issue success %, quote-to-issue rider mismatch, rider effective-date mismatch | InsureMO issuance API + reconciliation | Real-time event comparison or daily reconciliation batch | SEV1 if quote/issue rider mismatch exceeds threshold |
+| **Premium posting** | J7 Billing | Rider premium posting %, rider premium allocation accuracy | InsureMO billing API + finance reconciliation | Batch reconciliation: rider premium posted vs expected | SEV1 on posting failure for riders |
+| **Renewal** | J7 Billing | Rider renewal status, rider lapse distinct from base policy | InsureMO renewal processing | Daily query: riders not renewed while base policy active | Business alert on rider-specific lapse patterns |
+| **Claimability** | J8 Claims | Rider claim events, rider-specific benefit payouts, rider coverage verification | InsureMO claims API | Event on rider claim submission; cross-check with active coverage | SEV2 if rider claimability status conflicts with active policy |
+
+#### 4.5.5 Metric Segmentation
+
+All business process metrics must be segmented by the following dimensions to enable meaningful analysis:
+
+| Dimension | Examples | Why |
+|-----------|---------|-----|
+| **Channel** | Agency, bancassurance, digital direct, partner | Different channels have different volume patterns and SLAs |
+| **Product** | UL, CI, HI, MR | Product-specific issues need product-specific routing |
+| **Rider** | CI rider, HI rider, MR rider | Rider-level issues are distinct from base product issues |
+| **Geography** | Province, region | Network quality and agent density vary across Vietnam |
+| **Release version** | Application version tag | Enables immediate correlation between deploys and business metric changes |
+
+> **Cardinality warning**: Use only stable business dimensions in Prometheus metrics. High-cardinality fields (agent ID, customer ID, free-text error messages) belong in OpenSearch logs, not Prometheus labels.
 
 ### 4.6 Security Monitoring
 
-**Scope**: Threat detection, access anomalies, data exfiltration, compliance violations.
+**Scope**: Threat detection, access anomalies, data exfiltration, compliance violations, fraud indicators.
+
+TCLife holds policyholder PII, health data (for HI and MR products), and financial data. Security monitoring is not optional — it is a regulatory requirement under Vietnam's Cybersecurity Law 2018 and Decree 13/2023/ND-CP on personal data protection. Without a dedicated SIEM, TCLife uses OpenSearch as a SIEM-lite platform for security event aggregation, correlation, and alerting.
+
+#### 4.6.1 AWS-Native Security Services Integration
+
+| Service | What it detects | Integration | Phase | Alert routing |
+|---------|----------------|-------------|-------|--------------|
+| **GuardDuty** | Threat intelligence-based detection: unauthorized access, cryptocurrency mining, data exfiltration, compromised credentials, malicious IP contact | Enable in all regions -> EventBridge -> OpenSearch. Alert on High/Medium findings. | **Late Phase 1 (R-007)** — managed service, minimal setup | High findings -> SEV1 (immediate page); Medium -> SEV2 |
+| **Security Hub** | Aggregated security posture: CIS benchmarks, PCI-DSS checks, best practices compliance | Enable with AWS Foundational Security Best Practices standard -> findings to OpenSearch | Phase 2 | Critical/High findings -> SEV2; review others weekly |
+| **Inspector** | Vulnerability scanning of EC2 instances and container images | Enable for EKS workloads -> findings to Security Hub -> OpenSearch | Phase 2 | Critical CVEs on production workloads -> SEV2 |
+| **Macie** | Sensitive data discovery in S3 (PII, health data in unexpected locations) | Enable on S3 buckets containing logs and exports -> findings to Security Hub | Phase 2-3 | Any PII/health data found in non-designated buckets -> SEV2 |
+| **CloudTrail** | API activity logging for all AWS account actions | Already active -> route management events to OpenSearch; enable data events for S3 and Lambda in Phase 2 | Phase 1 (management), Phase 2 (data events) | Specific anomaly rules (see below) |
+| **AWS Config** | Configuration compliance: detects drift from security baselines | Enable rules for critical resources (S3, RDS, IAM) -> non-compliant findings to Security Hub | Phase 2 | Non-compliant critical resource -> SEV3 |
+
+#### 4.6.2 SIEM-Lite Approach with OpenSearch
+
+TCLife does not have a dedicated SIEM (Splunk, Sentinel, etc.). OpenSearch serves as the centralized security event store with correlation and alerting capabilities.
+
+**Data sources flowing into OpenSearch for security analysis**:
+
+| Source | Log type | Volume estimate | Retention |
+|--------|---------|----------------|-----------|
+| CloudTrail | Management events, data events | Medium | 90 days hot, 5 years archive (S3) |
+| GuardDuty findings | Threat detection findings | Low | 1 year hot, 5 years archive |
+| WAF logs | Blocked/allowed request details | High during attacks | 30 days hot, 90 days archive |
+| VPC Flow Logs | Network traffic metadata | High | 30 days hot, 90 days archive |
+| Application auth logs | Login success/failure, session events | Medium | 90 days hot, 1 year archive |
+| RDS audit logs | Database query audit trail | Medium-High | 90 days hot, 5 years archive |
+| S3 access logs | Object-level access patterns | Medium | 90 days hot, 1 year archive |
+
+**OpenSearch security alerting rules** (implement in Phase 2):
+
+| Rule | Detection logic | Severity |
+|------|----------------|----------|
+| Root account login | CloudTrail: `userIdentity.type = "Root"` and event = `ConsoleLogin` | SEV1 — root login should never happen in normal operations |
+| New IAM admin user created | CloudTrail: `CreateUser` or `AttachUserPolicy` with admin policy | SEV1 |
+| IAM policy change on production | CloudTrail: `PutRolePolicy`, `AttachRolePolicy` on production roles | SEV2 |
+| S3 bucket made public | CloudTrail: `PutBucketPolicy` or `PutBucketAcl` with public access | SEV1 |
+| Brute force login attempts | Application logs: > 10 failed logins from same IP in 5 min | SEV2 |
+| After-hours privileged access | CloudTrail: admin actions between 22:00-06:00 on weekdays or anytime on weekends | SEV2 |
+| Mass data export | S3 access logs: > 1000 object downloads from single principal in 1 hour | SEV1 — potential data exfiltration |
+| Security group modification | CloudTrail: `AuthorizeSecurityGroupIngress` opening 0.0.0.0/0 | SEV1 |
+
+#### 4.6.3 PII and Sensitive Data Access Monitoring
+
+TCLife processes health data (HI and MR claims), financial data (premium, NAV, surrender values), and personal identification data. Access to this data must be monitored.
+
+| What to monitor | Detection method | Alert trigger | Owner |
+|----------------|-----------------|---------------|-------|
+| Sensitive data read volume | Track read operations on tables/S3 paths containing PII/health data | Volume > 2x baseline in 1 hour | SecOps / DPO |
+| Unusual query patterns | RDS audit logs: queries on customer/claims tables from new or unusual principals | New principal accessing sensitive tables | SecOps |
+| After-hours access | Application auth logs + database audit: access to customer data outside business hours | Any access to health/claims data between 22:00-06:00 without on-call justification | SecOps / DPO |
+| Mass download attempts | S3 access logs + application logs: bulk export of customer records | > 100 customer records exported in single session | SEV1 — SecOps / DPO |
+| PII in logs | Log scanning for patterns matching national ID, phone number, health data in non-designated log fields | Any unmasked PII detected in application logs | SEV2 — DevOps (fix masking) |
+| Consent and privacy controls | Consent capture success, consent withdrawal processing, data-subject request SLA, deletion completion | Requests miss SLA (SEV2); consent control mechanism breaks (SEV1) | Compliance / DPO |
+
+#### 4.6.4 Fraud Indicators
+
+Insurance fraud detection is primarily a business function, but the monitoring system should surface early signals.
+
+| Indicator | Detection method | Alert routing |
+|-----------|-----------------|---------------|
+| Duplicate identities | Application data: same national ID / phone / address with different customer records | Business alert to fraud team (daily report) |
+| Repeated failed KYC | eKYC service: > 3 failed verifications from same device/IP in 24 hours | Business alert to fraud team |
+| Payment anomalies | Payment gateway: card used across multiple policies with different holders | Business alert to fraud team |
+| Suspicious claim clusters | Claims data: multiple claims from same hospital/provider in short period, or claims filed immediately after policy activation | Business alert to claims + fraud team (weekly analysis) |
+| High-value application patterns | Unusually high sum assured applications with minimal documentation | Business alert to underwriting + fraud team |
+
+#### 4.6.5 Security Monitoring Routing Table
 
 | What to Monitor | Tool | Priority |
 |----------------|------|----------|
-| AWS GuardDuty findings | CloudWatch Events -> OpenSearch | **Late Phase 1 / Phase 1.5 for basic integration (R-007)**; full alerting Phase 2 |
+| AWS GuardDuty findings | EventBridge -> OpenSearch | **Late Phase 1 (R-007)** |
+| Security Hub findings | Security Hub -> OpenSearch | Phase 2 |
 | WAF blocked requests and rate limiting | AWS WAF logs -> OpenSearch | Phase 2 |
-| IAM anomalies (root login, new admin users, policy changes) | CloudTrail -> OpenSearch | Phase 2 |
+| IAM anomalies (root login, admin users, policy changes) | CloudTrail -> OpenSearch | Phase 2 |
 | Failed authentication attempts (brute force) | Application logs -> OpenSearch | Phase 2 |
 | S3 public access or policy changes | CloudTrail -> OpenSearch + Config Rules | Phase 2 |
+| Inspector vulnerability findings | Inspector -> Security Hub -> OpenSearch | Phase 2 |
+| Macie sensitive data findings | Macie -> Security Hub -> OpenSearch | Phase 2-3 |
 | Unusual database query patterns | RDS audit logs -> OpenSearch | Phase 3 |
-| Data exfiltration signals (large data exports) | VPC Flow Logs + S3 access logs | Phase 3 |
+| Data exfiltration signals (large data exports) | VPC Flow Logs + S3 access logs -> OpenSearch | Phase 3 |
 | Certificate and key usage anomalies | CloudTrail -> OpenSearch | Phase 3 |
 | **Monitoring stack access patterns (R-041)** | CloudTrail + Grafana audit logs | **Phase 2 — monitor who accesses the monitoring system itself** |
 
@@ -293,23 +657,63 @@ TCLife's monitoring covers four layers plus two cross-cutting domains:
 
 **Scope**: Actual end-user experience for Sale Portal and Customer Portal, captured from the browser/device.
 
-**Why this matters**: Synthetic probes from inside the VPC cannot detect performance issues experienced by agents in remote areas of Vietnam (slow mobile networks, high latency). RUM captures what real users actually experience.
+**Why this matters**: Synthetic probes from inside the VPC cannot detect performance issues experienced by agents in remote areas of Vietnam (slow mobile networks, high latency, varied device quality). RUM captures what real users actually experience. For TCLife, where agents operate across all 63 provinces with varying network infrastructure, the gap between synthetic health and real-user experience can be substantial.
 
 **Approach**: Grafana Faro (open-source RUM agent) or equivalent lightweight frontend instrumentation.
 
-| What to Monitor | Metric | Source |
-|----------------|--------|--------|
-| Page load time (LCP, FCP, TTFB) | Web Vitals metrics | Grafana Faro |
-| JavaScript errors | Error count and type by page | Grafana Faro |
-| Session drop-off / rage clicks | User frustration signals | Grafana Faro |
-| Mobile vs desktop performance | Segmented load times | Grafana Faro |
-| Geographic performance (Vietnam regions) | Latency by region | Grafana Faro |
-| API call latency (from browser) | XHR/Fetch timing | Grafana Faro |
+#### 4.7.1 Core Web Vitals with SLO Targets
+
+| Metric | Description | Good | Needs Improvement | Poor | TCLife SLO Target |
+|--------|------------|------|-------------------|------|------------------|
+| **LCP** (Largest Contentful Paint) | Time until the largest content element is visible | < 2.5s | 2.5s - 4.0s | > 4.0s | 75th percentile < 2.5s |
+| **FID** (First Input Delay) | Time from first user interaction to browser response | < 100ms | 100ms - 300ms | > 300ms | 75th percentile < 100ms |
+| **CLS** (Cumulative Layout Shift) | Visual stability — unexpected layout movements | < 0.1 | 0.1 - 0.25 | > 0.25 | 75th percentile < 0.1 |
+| **TTFB** (Time to First Byte) | Server response time as experienced by the user | < 800ms | 800ms - 1.8s | > 1.8s | 75th percentile < 800ms |
+| **FCP** (First Contentful Paint) | Time until first content is painted on screen | < 1.8s | 1.8s - 3.0s | > 3.0s | 75th percentile < 1.8s |
+
+#### 4.7.2 Full RUM Metric Table
+
+| What to Monitor | Metric | Source | Threshold (Alert) |
+|----------------|--------|--------|-------------------|
+| Page load time (LCP, FCP, TTFB) | Web Vitals metrics | Grafana Faro | LCP P75 > 4.0s sustained 15 min (SEV2) |
+| JavaScript errors | Error count and type by page | Grafana Faro | JS error rate > 1% of sessions (SEV3); > 5% (SEV2) |
+| Session drop-off / rage clicks | User frustration signals (rapid repeated clicks on same element) | Grafana Faro | Rage click rate > 5% of sessions on critical pages (SEV3) |
+| Mobile vs desktop performance | Segmented load times by device class | Grafana Faro | Mobile LCP > 2x desktop LCP sustained (SEV3 — investigate) |
+| Geographic performance (Vietnam regions) | Latency by province/region | Grafana Faro | Specific province P75 > 2x national average (SEV3) |
+| API call latency (from browser) | XHR/Fetch timing by endpoint | Grafana Faro | API call P95 > 5s from browser (SEV3) |
+| Login flow performance | End-to-end login duration including OTP | Grafana Faro | Login flow > 10s P75 (SEV2) |
+| Quote/submission flow completion | Funnel completion rate by step | Grafana Faro | Step drop-off rate > 20% vs baseline (business alert) |
+| Error boundary triggers | React error boundary activations | Grafana Faro | Any error boundary on critical page (SEV3) |
+
+#### 4.7.3 Segmentation Dimensions
+
+All RUM data must be segmented by the following dimensions to enable targeted diagnosis:
+
+| Dimension | Values | Why |
+|-----------|--------|-----|
+| **Portal** | Sale Portal, Customer Portal | Different user populations and performance expectations |
+| **Device type** | Desktop, Mobile, Tablet | Agents in the field use mobile; office agents use desktop |
+| **Browser** | Chrome, Safari, Edge, Firefox, Samsung Internet | Browser-specific rendering issues |
+| **OS** | Windows, macOS, Android, iOS | Mobile OS differences affect performance |
+| **Network type** | WiFi, 4G, 3G (where available from Network Information API) | Agents in rural provinces may be on 3G |
+| **Geography / Province** | Vietnam province or region grouping | Network infrastructure quality varies significantly |
+| **Application version** | Frontend build version | Correlate performance regressions with specific releases |
+
+#### 4.7.4 Alerting Thresholds for RUM
+
+| Alert | Condition | Severity | Routing |
+|-------|-----------|----------|---------|
+| Portal performance degradation | LCP P75 > 4.0s for 15 min | SEV2 | Dev team + Ops |
+| JS error spike | JS error rate doubles vs 7-day baseline for 10 min | SEV3 | Dev team |
+| Login flow degradation | Login success rate < 95% AND login duration P75 > 10s for 10 min | SEV2 | Identity team + Ops |
+| Geographic hotspot | Any province LCP P75 > 3x national median for 30 min | SEV3 | Ops (investigate CDN/routing) |
+| Mobile-specific degradation | Mobile LCP P75 > 6s while desktop < 3s for 30 min | SEV3 | Dev team (mobile optimization) |
+| Critical page error | Error boundary triggered on payment, submission, or claims page | SEV2 | Dev team |
 
 **Phasing**:
-- **Phase 2**: Foundation — deploy Faro agent on Sale Portal and Customer Portal; collect baseline data
-- **Phase 3**: Full — dashboards, alerting on performance degradation, geographic segmentation
-- **Phase 4**: Advanced — correlation with backend metrics, user journey tracking
+- **Phase 2**: Foundation — deploy Faro agent on Sale Portal and Customer Portal; collect baseline data; establish initial segmentation
+- **Phase 3**: Full — dashboards with geographic heatmaps, alerting on performance degradation, funnel analysis by segment
+- **Phase 4**: Advanced — correlation with backend metrics, user journey tracking, proactive performance budgets per page
 
 > _R-022 note: Engineering dashboard "JS error rates" metric for Sale Portal requires this RUM infrastructure. Until Phase 2, this metric comes from backend error logs only (incomplete view)._
 
@@ -317,16 +721,41 @@ TCLife's monitoring covers four layers plus two cross-cutting domains:
 
 > _New section — addresses R-004._
 
-**Scope**: AWS spend anomaly detection, budget alerts, cost visibility in Grafana.
+**Scope**: AWS spend anomaly detection, budget alerts, cost visibility in Grafana, insurance-specific cost pattern awareness.
 
-**Why this matters**: For a fully AWS-hosted company, unexpected cost spikes (runaway Lambda, S3 storage explosion, RDS upsizing, data transfer charges) are operational events.
+**Why this matters**: For a fully AWS-hosted company, unexpected cost spikes (runaway Lambda, S3 storage explosion, RDS upsizing, data transfer charges) are operational events. Insurance operations have distinct cost patterns — batch processing windows consume significant compute, data replication generates transfer charges, and OpenSearch storage grows steadily with log retention.
+
+#### 4.8.1 Core Cost Monitoring Components
 
 | Component | Implementation | Phase |
 |-----------|---------------|-------|
 | CloudWatch Billing Alarms | Set budget thresholds; alert on exceeding 80%, 100% | **Phase 1** — simple to implement, immediate value |
 | AWS Cost Anomaly Detection | Enable; route anomaly findings to Slack/email | **Phase 1** |
 | Cost dashboard in Grafana | CloudWatch billing metrics visualized in Grafana | **Phase 1** |
+| Service-level cost breakdown | Cost Explorer data surfaced per service (EKS, RDS, OpenSearch, S3, Lambda) | **Phase 2** |
 | Monitoring stack cost tracking | Dedicated dashboard for AMP, AMG, OpenSearch, CloudWatch costs | **Phase 4** — optimize after steady state reached |
+
+#### 4.8.2 Insurance-Specific Cost Anomaly Scenarios
+
+| Scenario | Root cause pattern | Detection method | Alert |
+|----------|-------------------|-----------------|-------|
+| **Batch processing cost spike** | End-of-month batch runs (commission, GL, regulatory reports) consume more compute than expected; stuck batch job runs indefinitely | Cost Anomaly Detection + batch job duration monitoring | SEV3 if cost > 150% of expected batch window; SEV2 if batch job runs > 3x expected duration (compute waste) |
+| **Data transfer during replication** | Cross-region or cross-AZ data transfer charges from database replication, S3 replication, or log shipping | CloudWatch billing: data transfer line item trending up | SEV3 if data transfer cost increases > 30% month-over-month |
+| **OpenSearch storage growth** | Log volume grows as monitoring coverage expands; retention policies not tuned | OpenSearch cluster storage utilization + billing | SEV3 at 70% storage; review retention policies. Budget impact review quarterly. |
+| **Lambda invocation runaway** | Failed Lambda retries in a loop (e.g., DLQ handler or event-driven function with bad data) | Lambda invocation count spike + cost anomaly | SEV2 if invocation count > 10x baseline in 1 hour |
+| **RDS storage auto-scaling** | RDS storage auto-scales beyond budget due to slow query log growth, audit log volume, or data growth | RDS allocated storage metric vs budget | SEV3 when RDS storage reaches 80% of budgeted maximum |
+| **EKS node group over-provisioning** | HPA scales out during peak but does not scale in (incorrect scale-down configuration) | Node count vs workload utilization off-peak | SEV4 (informational) — review in monthly cost analysis |
+
+#### 4.8.3 Reserved Capacity vs On-Demand Tracking
+
+| Resource | Current commitment | What to track | Review frequency |
+|----------|-------------------|---------------|-----------------|
+| RDS instances | Document current RI/Savings Plan status | On-demand hours vs reserved hours; RI utilization % | Quarterly |
+| EKS node group EC2 | Document current RI/Savings Plan status | On-demand instance hours; spot instance interruptions if using spot | Quarterly |
+| OpenSearch | Document current RI status | Reserved vs on-demand node hours; storage tier utilization | Quarterly |
+| Data transfer | No commitment model | Cross-AZ and cross-region transfer trends | Monthly |
+
+**Cost governance**: Include a cost summary panel in the monthly SLA report (Section 10.5). Flag any service where actual spend exceeds budget by > 20%. Cost optimization decisions (e.g., purchasing reserved capacity, adjusting retention policies, right-sizing instances) should be reviewed quarterly by IT Manager and CIO.
 
 ---
 
@@ -336,12 +765,12 @@ TCLife's monitoring covers four layers plus two cross-cutting domains:
 
 Alerting severity aligns with the incident classification system defined in `solutions/incident-management/classification.md`:
 
-| Alert Severity | Maps to Incident Priority | Response Expectation | Examples |
-|---------------|--------------------------|---------------------|----------|
-| **SEV1 — Critical** | P1 | Immediate page; 15-min response | Core system down, data breach detected, all users blocked, financial data corruption |
-| **SEV2 — Major** | P2 | Urgent notification; 30-min response | Significant degradation, key function unavailable, batch job SLA at risk |
-| **SEV3 — Warning** | P3 | Business hours notification; 2-hr response | Elevated error rate, capacity approaching threshold, single-service degradation |
-| **SEV4 — Info** | P4 / no incident | Logged for review; no immediate action | Transient anomaly, below-threshold metric deviation, informational event |
+| Alert Severity | Maps to Incident Priority | Response Expectation | Insurance-Specific Examples |
+|---------------|--------------------------|---------------------|---------------------------|
+| **SEV1 — Critical** | P1 | Immediate page; 15-min response | Sale Portal or Customer Portal completely down; application submit or payment callback halted (new business blocked); data breach with policyholder PII/health data exposure; InsureMO core system unreachable (all operations stopped); rider mismatch between quote and issued policy (wrong coverage delivered); auto-debit gateway failure affecting all premium collections |
+| **SEV2 — Major** | P2 | Urgent notification; 30-min response | Significant portal degradation (P95 latency > 3x normal); STP rate collapses > 10 pts (underwriting queue building); batch job SLA at risk (GL, commission, regulatory report); RDS connection pool exhaustion; DLQ messages accumulating on business-critical queues; surrender value calculation batch produces unexpected results |
+| **SEV3 — Warning** | P3 | Business hours notification; 2-hr response | Elevated 5xx error rate on non-critical endpoint; cache hit ratio dropping; single province experiencing slow portal performance; quota approaching for individual agent; certificate expiry < 30 days; cost anomaly detected but not impacting service |
+| **SEV4 — Info** | P4 / no incident | Logged for review; no immediate action | Transient metric deviation; OpenSearch storage approaching threshold; rider attach rate slightly below historical average; single failed KYC attempt; deployment completed successfully |
 
 ### 5.2 Alert Routing and Notification Channels
 
@@ -369,7 +798,7 @@ See Section 2.2 for on-call rotation details with the 7-person team structure.
 | **Tune aggressively in first 30 days** | Every new alert gets a 30-day review; adjust thresholds based on actual behavior |
 | **No duplicate alerts** | Suppress child alerts when parent alert fires (e.g., don't alert on every pod restart when the node is down) |
 | **Alert routing matches responsibility** | Infrastructure alerts go to infra on-call; application alerts go to app on-call |
-| **Document every alert** | Each alert rule has a linked runbook explaining: what it means, what to check, how to resolve |
+| **Document every alert** | Each alert rule has a linked runbook explaining: what it means, what to check, how to resolve (see Section 5.7 for template) |
 | **Weekly alert review** | Review all alerts from the past week; identify false positives, tune, or retire. **Owned by Service Quality.** |
 
 ### 5.5 Alert Inhibition and Grouping
@@ -388,6 +817,14 @@ inhibit_rules:
   - source_matchers: [alertname="InsuremoAPIUnreachable"]
     target_matchers: [alertname=~"PolicyIssuance.*|ClaimsProcessing.*"]
 
+  # If RDS is down, suppress application-level database error alerts
+  - source_matchers: [severity="critical", alertname="RDSConnectionFailure"]
+    target_matchers: [alertname=~"SlowQuery.*|AppDatabaseError.*"]
+
+  # If payment gateway is down, suppress individual payment failure alerts
+  - source_matchers: [alertname="PaymentGatewayDown"]
+    target_matchers: [alertname=~"PremiumCollection.*|PaymentCallback.*"]
+
 group_by: [alertname, namespace, severity]
 group_wait: 30s
 group_interval: 5m
@@ -402,6 +839,395 @@ route:
       repeat_interval: 4h
     - matchers: [severity="warning"]
       repeat_interval: 12h
+```
+
+### 5.6 Alert Lifecycle Management
+
+Every alert follows a defined lifecycle from firing to post-mortem. Clear state transitions ensure alerts are not forgotten, responsibility is explicit, and resolution is tracked.
+
+#### 5.6.1 Alert States
+
+```
+  FIRING ─────► ACKNOWLEDGED ─────► INVESTIGATING ─────► RESOLVED ─────► POST-MORTEM
+    │               │                     │                   │               │
+    │  On-call acks │  Responder begins   │  Issue fixed,     │  For SEV1/2:  │
+    │  within SLA   │  diagnosis work     │  monitoring       │  RCA within   │
+    │               │                     │  confirms normal  │  5 biz days   │
+    │               │                     │                   │               │
+    └── Auto-escalate if not acked ───────┘                   │               │
+                                                              │               │
+    If alert re-fires within 24h of resolve ─────────────────►│ REOPENED      │
+```
+
+#### 5.6.2 State Transition Rules
+
+| State | Who transitions | When | Required actions |
+|-------|----------------|------|-----------------|
+| **Firing** | System (Alertmanager/PagerDuty) | Alert condition met | Alert delivered to routing targets |
+| **Acknowledged** | On-call engineer | Within SLA (15 min SEV1, 30 min SEV2) | Engineer confirms they are aware and investigating. If they cannot handle, must escalate immediately. |
+| **Investigating** | Responder | After initial triage | Update incident channel with initial assessment: scope, impact, and estimated time to resolution |
+| **Resolved** | Responder | When monitoring confirms the condition has cleared | Document what was done. If a workaround was applied, create a follow-up ticket for root fix. |
+| **Post-mortem** | Incident Commander or Service Quality | Within 5 business days for SEV1/SEV2 | Complete RCA document. Identify action items. Update runbooks if needed. |
+
+#### 5.6.3 ITSM Integration
+
+| Severity | ITSM behavior |
+|----------|--------------|
+| **SEV1** | Auto-create P1 incident ticket when alert fires. Link alert ID to ticket. Ticket must be resolved before alert can be closed. |
+| **SEV2** | Auto-create P2 incident ticket when alert fires. Same linking and resolution requirement. |
+| **SEV3** | Create ticket only if alert persists > 4 hours or on-call engineer manually escalates. |
+| **SEV4** | No ticket. Reviewed in weekly alert review. |
+
+**Implementation**: PagerDuty/OpsGenie webhook creates ITSM ticket on SEV1/SEV2 alert creation. Ticket ID is attached to the alert as an annotation. When the alert resolves, the ITSM ticket is updated but not auto-closed (human must confirm resolution).
+
+### 5.7 Alert Runbook Template
+
+Every alert rule must have an associated runbook. No alert goes to production without a runbook. The runbook is linked from the alert notification (PagerDuty/OpsGenie custom field or Alertmanager annotation).
+
+#### 5.7.1 Standard Runbook Template
+
+```markdown
+# Runbook: {alert_name}
+
+## Overview
+- **Alert name**: {alert_name}
+- **Severity**: {SEV1|SEV2|SEV3|SEV4}
+- **Owner team**: {team}
+- **Last updated**: {date}
+- **Related SLO**: {SLO name if applicable}
+
+## What is happening?
+{Plain-language description of what this alert means. Include business impact.}
+
+## Who is affected?
+{Policyholders? Agents? Internal operations? Regulatory reporting? Which product lines?}
+
+## Investigation steps
+1. {Step 1: Check dashboard X — link}
+2. {Step 2: Check log query Y — link}
+3. {Step 3: Verify dependent service Z status}
+4. {Step 4: Check recent deployments — link to deploy dashboard}
+
+## Common causes and fixes
+| Cause | How to confirm | Fix |
+|-------|---------------|-----|
+| {Cause 1} | {Diagnostic step} | {Resolution step} |
+| {Cause 2} | {Diagnostic step} | {Resolution step} |
+| {Cause 3} | {Diagnostic step} | {Resolution step} |
+
+## Escalation
+- If not resolved within {X minutes}: escalate to {team/person}
+- If vendor-related: contact {vendor} at {contact info}
+- If data integrity issue: involve {data team} immediately
+
+## Related alerts
+- {List of alerts that often fire together or are related}
+
+## History
+- {Date}: {Notable incident and resolution}
+```
+
+#### 5.7.2 Example Runbook: RDS Connection Pool Exhausted
+
+```markdown
+# Runbook: infra_rds_connection_pool_exhausted
+
+## Overview
+- **Alert name**: infra_rds_connection_pool_exhausted
+- **Severity**: SEV2
+- **Owner team**: DevOps / Platform
+- **Last updated**: 2026-03-20
+- **Related SLO**: Customer Portal availability (99.9%), Sale Portal availability (99.95%)
+
+## What is happening?
+RDS database connections have exceeded 80% of the maximum allowed connections.
+Application services are likely experiencing connection timeouts or slow query
+performance. If connections reach 100%, new requests will fail entirely.
+
+## Who is affected?
+All portal users (agents and policyholders). All business processes that
+require database access (policy issuance, claims, premium collection, quotation).
+
+## Investigation steps
+1. Check RDS CloudWatch dashboard: DatabaseConnections metric
+   Link: {Grafana dashboard URL}
+2. Check application connection pool metrics (HikariCP active/pending)
+   Link: {Grafana dashboard URL}
+3. Check for long-running queries in Performance Insights
+   Link: {AWS Console Performance Insights URL}
+4. Check if a batch job is running that may consume extra connections
+5. Check recent deployments that may have changed pool configuration
+
+## Common causes and fixes
+| Cause | How to confirm | Fix |
+|-------|---------------|-----|
+| Batch job consuming connections | Check batch job dashboard for running jobs | Wait for batch completion or terminate if stuck |
+| Connection leak in application | HikariCP pending connections rising while active is stable | Restart affected application pods (rolling restart) |
+| Slow queries holding connections | Performance Insights shows long-running queries | Identify and kill blocking queries; create follow-up ticket for query optimization |
+| Pool misconfiguration after deploy | Recent deployment changed pool settings | Rollback deployment or adjust pool configuration |
+
+## Escalation
+- If not resolved within 30 minutes: escalate to IT Manager
+- If connection count reaches 95%: escalate immediately to SEV1
+- If root cause is database performance: engage AWS support
+
+## Related alerts
+- infra_rds_cpu_high
+- app_slow_query_spike
+- app_portal_error_rate_high
+
+## History
+- (No incidents recorded yet — update after first occurrence)
+```
+
+### 5.8 Alert Naming Convention
+
+Consistent alert naming enables filtering, routing, and analysis. Every alert follows a standard naming pattern.
+
+#### 5.8.1 Naming Format
+
+```
+{domain}_{service}_{condition}
+```
+
+**Examples**:
+- `infra_rds_connection_pool_exhausted`
+- `infra_eks_node_not_ready`
+- `infra_alb_5xx_rate_high`
+- `app_sale_portal_error_rate_high`
+- `app_customer_portal_login_success_low`
+- `biz_policy_issuance_halted`
+- `biz_premium_collection_success_low`
+- `biz_rider_quote_issue_mismatch`
+- `biz_commission_run_failed`
+- `sec_guardduty_high_finding`
+- `sec_iam_root_login`
+- `sec_pii_mass_download`
+- `batch_gl_posting_failed`
+- `batch_nav_calculation_late`
+
+#### 5.8.2 Label Taxonomy
+
+Every alert must carry the following labels:
+
+| Label | Purpose | Values |
+|-------|---------|--------|
+| `severity` | Routing and escalation | `critical`, `major`, `warning`, `info` |
+| `domain` | Top-level category | `infra`, `app`, `biz`, `sec`, `batch`, `cost` |
+| `team` | Responsible team for routing | `devops`, `appops`, `security`, `business`, `vendor` |
+| `service` | Affected service or component | `sale_portal`, `customer_portal`, `rds`, `eks`, `insuremo`, `payment_gateway` |
+| `environment` | Deployment environment | `prod`, `staging`, `dr` |
+| `product` | Insurance product (if applicable) | `ul`, `ci`, `hi`, `mr`, `all` |
+| `channel` | Distribution channel (if applicable) | `agency`, `bancassurance`, `digital`, `all` |
+
+### 5.9 Escalation Flow
+
+#### 5.9.1 Escalation Flowchart
+
+```
+  ALERT FIRES
+       │
+       ▼
+  ┌─────────────────────────────────┐
+  │  Delivered to on-call via       │
+  │  PagerDuty/OpsGenie             │
+  └──────────────┬──────────────────┘
+                 │
+       ┌─────────┴──────────┐
+       │                    │
+       ▼                    ▼
+  ACKNOWLEDGED         NOT ACKNOWLEDGED
+  within SLA           within SLA
+       │                    │
+       ▼                    ▼
+  ┌────────────┐    ┌──────────────────────┐
+  │  TRIAGE    │    │  AUTO-ESCALATION     │
+  │            │    │  SEV1: 15 min -> CIO │
+  │  Can I     │    │  SEV2: 30 min -> ITM │
+  │  resolve?  │    └──────────────────────┘
+  └──┬─────┬───┘
+     │     │
+     ▼     ▼
+   YES     NO
+     │     │
+     ▼     ▼
+  RESOLVE  ESCALATE MANUALLY
+     │     │
+     │     ├── Vendor issue? ──► Contact EbaoTech / AWS support
+     │     ├── App code issue? ──► Dev team
+     │     ├── Security event? ──► IT Manager + Security
+     │     ├── Business impact? ──► Business stakeholder
+     │     └── Cross-team? ──► Incident Commander
+     │
+     ▼
+  CONFIRM RESOLUTION
+  (monitoring shows normal)
+     │
+     ▼
+  CLOSE ALERT
+     │
+     ├── SEV1/SEV2: Post-mortem within 5 business days
+     └── SEV3: Update runbook if new root cause found
+```
+
+#### 5.9.2 Time-Based Auto-Escalation Rules
+
+| Condition | Escalation action |
+|-----------|------------------|
+| SEV1 not acknowledged in 15 min | Page IT Manager + CIO via SMS and phone |
+| SEV1 not resolved in 1 hour | CIO notified; bridge call initiated |
+| SEV1 not resolved in 4 hours | Executive escalation; vendor engagement if applicable |
+| SEV2 not acknowledged in 30 min | Page IT Manager |
+| SEV2 not resolved in 2 hours | IT Manager reviews; considers upgrading to SEV1 |
+| SEV3 not resolved in 24 hours | Team lead review in daily standup |
+
+#### 5.9.3 Business Hours vs After-Hours Behavior
+
+| Severity | Business hours (08:00-18:00 Mon-Fri) | After hours (18:00-08:00, weekends, holidays) |
+|----------|-------------------------------------|-----------------------------------------------|
+| **SEV1** | Immediate page to on-call + IT Manager | Immediate page to on-call; auto-escalate to IT Manager at 15 min; CIO SMS at 30 min |
+| **SEV2** | Immediate page to on-call | Page on-call; auto-escalate to IT Manager at 30 min. If non-time-sensitive (e.g., batch job that can retry in morning), on-call may defer to next business day with documented justification. |
+| **SEV3** | Slack notification; daily standup review | No notification. Queued for next business day review. |
+| **SEV4** | Slack low-priority channel | No notification. Weekly review only. |
+
+### 5.10 Alert Testing Strategy
+
+Alerts are production code. Untested alerts give false confidence. TCLife must validate that alerts fire correctly, reach the right people, and produce actionable notifications.
+
+#### 5.10.1 Alert Rule Unit Testing
+
+Before deploying any new or modified alert rule to production:
+
+| Test type | How | When | Owner |
+|-----------|-----|------|-------|
+| **Syntax validation** | `promtool check rules <file>` for Prometheus rules; OpenSearch alerting API validation | Before every rule deployment | DevOps |
+| **Threshold validation** | Replay historical metrics against the new rule to verify it would have fired (or not) at the correct times | Before every new alert | DevOps + Service Quality |
+| **Routing validation** | Send a test alert through Alertmanager to verify it reaches the correct PagerDuty/Slack channel | Before every new alert | DevOps |
+| **Runbook validation** | Walk through the runbook steps and verify all dashboard links and log queries work | Before every new alert | App Ops |
+| **Inhibition testing** | Verify that child alerts are correctly suppressed when parent alert fires | After any inhibition rule change | DevOps |
+
+#### 5.10.2 Game Day Exercises
+
+Periodic game days validate that the end-to-end alerting pipeline works: alert fires, notification reaches on-call, responder follows runbook, resolution is achieved.
+
+| Exercise | Frequency | Scope | Owner |
+|----------|-----------|-------|-------|
+| **Alert delivery test** | Monthly | Fire a synthetic SEV2 alert; verify it reaches on-call via PagerDuty/OpsGenie; verify Slack notification; verify ITSM ticket creation | Service Quality |
+| **Tabletop incident drill** | Quarterly | Walk through a realistic incident scenario (e.g., "InsureMO API is unreachable") without actually breaking production. Review what alerts would fire, who responds, what runbooks to follow. | IT Manager + Service Quality |
+| **Controlled fault injection** (Phase 3+) | Semi-annually | Introduce a controlled failure in staging (e.g., kill a pod, saturate a queue) and verify detection, alerting, and response. | DevOps |
+| **On-call handoff drill** | With each new on-call rotation | New on-call confirms they can access PagerDuty, Grafana, OpenSearch, and runbooks; reviews active alerts and recent incidents | App Ops |
+
+#### 5.10.3 Alert Rule Promotion Process
+
+```
+DEV/LOCAL ──► STAGING ──► PRODUCTION
+   │              │            │
+   Test with      Run for      Monitor for
+   synthetic      3-5 days     30 days;
+   data           to validate  tune thresholds
+                  thresholds   based on
+                  against      actual behavior
+                  real-like
+                  traffic
+```
+
+### 5.11 Alert Noise Management
+
+Alert fatigue is the primary threat to alerting effectiveness. If the on-call engineer receives 50 alerts per shift, they will ignore all of them. TCLife targets a high signal-to-noise ratio from day one.
+
+#### 5.11.1 Composite Alert Patterns
+
+Single-metric alerts generate noise. A brief dip in submit success rate might be a network blip; a brief rise in queue backlog might be a normal batch cycle. Composite alerts combine multiple signals to page only when the evidence of real customer or business harm is strong.
+
+| Composite alert | Signals combined | Page when | Rationale |
+|----------------|-----------------|-----------|-----------|
+| **Sales submission blocked** | Application submit success falls AND underwriting queue backlog rises AND no successful policy issuance events observed | All three conditions true for > 10 min | Single signal may be transient; three signals together confirm end-to-end blockage |
+| **Payment pipeline failure** | Payment callback failures rise AND premium posting halted AND duplicate-charge anomaly detected | Two of three conditions true for > 5 min | Prevents paging on transient gateway blips while catching real payment outages |
+| **Underwriting stall** | STP rate drops > 5 pts AND oldest case age exceeds SLA AND rules-engine error count rising | First two conditions true for > 30 min | STP dips can be caused by product mix; adding rules-engine errors confirms systemic issue |
+| **Portal degradation** | Synthetic check fails AND RUM page load P95 degrades > 50% AND login success drops | Synthetic failure + one of the other conditions | Synthetic-only alerting catches hard down; adding RUM/login catches soft degradation |
+| **Batch job chain failure** | GL batch fails AND premium reconciliation shows mismatch AND NAV calculation not started by deadline | Any two conditions true | Batch failures often cascade; composite alert identifies chain failures before downstream impact |
+
+**Implementation**: Composite alerts require the underlying single-metric alerts to exist first (Phase 1-2). Composite logic is layered on top in Phase 2-3 using Alertmanager recording rules or Grafana alert rules with multiple conditions. Use anomaly detection (not static thresholds) for business metrics that vary by time of day, day of week, or season.
+
+> _Detailed composite alert implementation patterns are in Section 23._
+
+#### 5.11.2 Noise Budget
+
+Define a target ratio of actionable alerts to total alerts. Track and review monthly.
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| **Actionable alert ratio** | > 80% of all alerts result in human action | Weekly review: count alerts that led to investigation or resolution vs total alerts |
+| **False positive rate** | < 20% | Weekly review: count alerts that required no action and were not informational |
+| **Alerts per on-call shift** | < 10 SEV1/SEV2 alerts per 8-hour shift | PagerDuty/OpsGenie reporting |
+| **Flapping alert count** | 0 flapping alerts sustained > 7 days | Alertmanager metrics: alerts that fire and resolve repeatedly |
+| **Time to tune** | < 5 business days from identification to threshold adjustment | Track in alert review process |
+
+#### 5.11.3 Monthly Alert Quality Report
+
+Service Quality produces a monthly alert quality report. Template:
+
+| Section | Content |
+|---------|---------|
+| **Summary** | Total alerts by severity; actionable ratio; false positive count; top 5 noisiest alerts |
+| **New alerts deployed** | List of new alert rules added this month; initial performance assessment |
+| **Alerts tuned** | Threshold adjustments made; before/after false positive comparison |
+| **Alerts retired** | Alert rules removed and rationale |
+| **Top incidents detected by alerting** | SEV1/SEV2 incidents first detected by monitoring (vs user-reported) |
+| **Missed incidents** | Any SEV1/SEV2 incident NOT detected by monitoring — root cause and gap analysis |
+| **Recommendations** | New alerts to create, thresholds to adjust, runbooks to update |
+
+### 5.12 Business Alert Routing
+
+Not all alerts go to engineers. Business anomalies — changes in conversion rates, underwriting mix shifts, collection pattern changes — should route to business stakeholders who can interpret and act on them.
+
+#### 5.12.1 Technical vs Business Alert Distinction
+
+| Alert type | Definition | Routing | Response expectation |
+|-----------|-----------|---------|---------------------|
+| **Technical alert** | Infrastructure, platform, or application health issue that requires engineering intervention | SRE / DevOps / App Ops on-call via PagerDuty | Immediate (SEV1/2) or business hours (SEV3/4) |
+| **Business alert** | Business metric anomaly that requires domain expertise to interpret and act on | Business team queue via Slack channel or email | Business hours review; daily or weekly depending on urgency |
+
+#### 5.12.2 Business Alert Routing Matrix
+
+| Business alert | Routing target | Channel | Frequency |
+|---------------|---------------|---------|-----------|
+| STP rate dropped > 5 pts vs baseline | Underwriting desk + Rules owner | Slack #underwriting-alerts + email | Real-time during business hours |
+| Quote-to-proposal conversion drop > 10 pts | Sales Operations | Slack #sales-ops-alerts | Hourly digest during business hours |
+| Auto-debit success rate below threshold | Collections + Finance | Slack #collections-alerts + email | Real-time |
+| Lapse rate spike for a cohort | Collections + Actuarial + Sales | Email report | Daily |
+| Claims decision mix anomaly (sudden shift in approve/reject ratio) | Claims leadership + Fraud team | Slack #claims-alerts | Real-time during business hours |
+| Free-look/early cancellation spike by agent or channel | Sales leadership + Compliance | Email report | Daily |
+| Rider attach rate change by product/channel | Product team + Sales Ops | Slack #product-alerts | Daily digest |
+| Commission run discrepancy | Sales Operations + Finance | Slack #sales-ops-alerts + email | Immediately after commission run |
+| Regulatory report generation at risk | Compliance + IT Manager | Slack #compliance-alerts + email | At T-5 and T-2 days |
+
+#### 5.12.3 Business Alert Format
+
+Business alerts must be understandable by non-technical stakeholders. Include:
+
+- **What changed**: Plain-language description of the metric shift
+- **Magnitude**: Current value vs baseline/expected value
+- **Since when**: When the anomaly started
+- **Affected scope**: Which product, channel, geography, agent group
+- **Suggested action**: What the business stakeholder should investigate
+- **Dashboard link**: Direct link to the relevant Grafana dashboard
+
+**Example business alert**:
+```
+ALERT: STP Rate Drop — Underwriting
+
+STP rate for UL product (agency channel) has dropped from 72% to 58%
+over the past 2 hours. This is the largest drop in 30 days.
+
+Affected: UL product, agency channel, all provinces
+Since: 2026-03-20 10:30
+Current: 58% (baseline: 72%)
+
+Suggested action: Check if a rule configuration change was deployed.
+Review referral reasons for new referrals in the past 2 hours.
+
+Dashboard: {link}
 ```
 
 ---
@@ -1678,3 +2504,4 @@ This roadmap builds on and connects to several existing documents in the TCLife 
 | 1.0 | 2026-03-20 | IT Operations | Initial draft |
 | 2.0 | 2026-03-20 | IT Operations | Restructured into overview + detail; incorporated 43 CIO review findings; added: team structure (7 people), staffing plan, training plan, RUM, cost monitoring, commission batch, PII scrubbing policy, human costs, regulatory citation qualification, governance structure. Full resolution matrix in Section 17. |
 | 2.1 | 2026-03-20 | IT Operations | Added: journey-first monitoring framework (9 core journeys, Sec 18), rider monitoring as cross-cutting dimension (Sec 18.3), domain-specific monitoring matrices for underwriting/STP, billing/persistency, claims, ops workflow, security/fraud/compliance (Sec 19), formal SLO set with starter objectives (Sec 20), prioritized first 25 alerts (Sec 21), canonical telemetry data model across 14 domains (Sec 22), composite multi-signal alert patterns (Sec 23), InsureMO instrumentation checklist (Sec 7.3), strengthened regulatory citations with Insurance Business Law 08/2022/QH15, Decree 46/2023, Circular 67/2023, Decision 07/QD-TTg (Sec 11.1, all pending Legal verification). Reference: `reference.research.md`. |
+| 2.2 | 2026-03-20 | IT Operations | Deep expansion of Sections 4 and 5. Section 4: added EKS-specific monitoring (4.2.2), database deep dive with connection pooling and slow query detection (4.2.3), deployment/release health monitoring (4.2.4), expanded platform/middleware with concrete metrics for SQS/EventBridge/cache/API Gateway (4.3), added golden signals framework per service (4.4.2), health check endpoint specification (4.4.4), log level strategy (4.4.5), correlation ID propagation requirements (4.4.6), journey-first business process monitoring with failure detection patterns (4.5), expanded security with AWS-native services integration, SIEM-lite approach, PII access monitoring, fraud indicators (4.6), added RUM SLO targets and segmentation dimensions (4.7), added insurance-specific cost anomaly scenarios (4.8). Section 5: added alert lifecycle management with ITSM integration (5.6), alert runbook template with example (5.7), alert naming convention and label taxonomy (5.8), escalation flowchart with auto-escalation rules (5.9), alert testing strategy including game days (5.10), alert noise management with composite patterns and noise budget (5.11), business alert routing matrix distinguishing technical from business alerts (5.12). |
