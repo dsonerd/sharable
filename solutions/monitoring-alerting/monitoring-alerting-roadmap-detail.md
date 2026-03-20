@@ -1,9 +1,9 @@
 # Monitoring & Alerting Roadmap — Technical Reference
 
-> **Version**: 2.2
+> **Version**: 2.3
 > **Date**: 2026-03-20
 > **Author**: IT Operations
-> **Status**: Revised — incorporating CIO review findings (R-001 through R-043), insurance-domain monitoring research, and deep expansion of monitoring and alerting strategy sections
+> **Status**: Revised — incorporating CIO review findings (R-001 through R-043), insurance-domain monitoring research, deep expansion of monitoring and alerting strategy sections, and deep research findings on regulatory framework, AWS-native observability, SRE burn-rate alerting, InsureMO native telemetry, privacy-incident alerting, and AML/fraud production telemetry
 > **Audience**: IT Operations, DevOps, Application Support, Engineering
 > **Companion document**: `monitoring-alerting-roadmap-overview.md` (executive overview)
 
@@ -20,22 +20,23 @@
    - 4.3 Layer 2 — Platform / Middleware (SQS/EventBridge, Cache, API Gateway, Certificates/DNS)
    - 4.4 Layer 3 — Application (Instrumentation, Golden Signals, Health Checks, Log Levels, Correlation IDs)
    - 4.5 Layer 4 — Business Process (Journey-First Monitoring, Failure Detection, Rider Lifecycle, Segmentation)
-   - 4.6 Security (AWS Services, SIEM-Lite, PII Access, Fraud Indicators)
-   - 4.7 RUM (Web Vitals SLOs, Segmentation, Alerting)
+   - 4.6 Security (AWS Services, SIEM-Lite, PII Access, Fraud Indicators, Privacy-Incident Alerting, AML/Fraud Production Telemetry)
+   - 4.7 RUM (Web Vitals SLOs, Segmentation, Alerting, CloudWatch RUM vs Grafana Faro Evaluation)
    - 4.8 Cost Monitoring (Anomaly Scenarios, Reserved Capacity Tracking)
 5. [Alerting Strategy](#5-alerting-strategy)
    - 5.1 Severity Levels
    - 5.2 Alert Routing and Notification Channels
    - 5.3 On-Call Model
    - 5.4 Alert Quality Principles
-   - 5.5 Alert Inhibition and Grouping
-   - 5.6 Alert Lifecycle Management (States, ITSM Integration)
-   - 5.7 Alert Runbook Template (Standard Template, Example Runbook)
-   - 5.8 Alert Naming Convention (Format, Label Taxonomy)
-   - 5.9 Escalation Flow (Flowchart, Auto-Escalation, Business/After-Hours)
-   - 5.10 Alert Testing Strategy (Unit Testing, Game Days, Promotion)
-   - 5.11 Alert Noise Management (Composite Alerts, Noise Budget, Quality Report)
-   - 5.12 Business Alert Routing (Technical vs Business, Routing Matrix, Format)
+   - 5.5 SLO Burn-Rate and Multi-Window Alerting
+   - 5.6 Alert Inhibition and Grouping
+   - 5.7 Alert Lifecycle Management (States, ITSM Integration)
+   - 5.8 Alert Runbook Template (Standard Template, Example Runbook)
+   - 5.9 Alert Naming Convention (Format, Label Taxonomy)
+   - 5.10 Escalation Flow (Flowchart, Auto-Escalation, Business/After-Hours)
+   - 5.11 Alert Testing Strategy (Unit Testing, Game Days, Promotion, Canary Fail-on-Demand, Security Simulations, Privacy Tabletop)
+   - 5.12 Alert Noise Management (Composite Alerts, Noise Budget, Quality Report)
+   - 5.13 Business Alert Routing (Technical vs Business, Routing Matrix, Format)
 6. [Tool Mapping](#6-tool-mapping)
 7. [EbaoTech Insuremo Integration](#7-ebaotech-insuremo-integration)
 8. [Batch Job & File Exchange Monitoring](#8-batch-job--file-exchange-monitoring)
@@ -73,6 +74,8 @@ This roadmap defines a **four-phase implementation plan** to build a comprehensi
 **Changes from v2.0 to v2.1**: Added journey-first monitoring framework (9 core journeys, Section 18), domain-specific monitoring matrices (Section 19), formal SLO set (Section 20), prioritized first 25 alerts (Section 21), canonical telemetry data model (Section 22), composite alert patterns (Section 23), rider monitoring as first-class dimension throughout, strengthened InsureMO instrumentation checklist (Section 7), and strengthened regulatory citations (Section 11). Reference: `reference.research.md`.
 
 **Changes from v2.1 to v2.2**: Deep expansion of Sections 4 (Monitoring Strategy) and 5 (Alerting Strategy). Section 4 now includes: EKS cluster-level monitoring, RDS/Aurora connection pooling and slow query detection, deployment health tracking, full SQS/EventBridge/cache/API Gateway metrics with thresholds, golden signals per service, health check endpoint specification, log level strategy, correlation ID propagation, journey-first business process failure detection with concrete scenarios, AWS security services integration (GuardDuty/Security Hub/Inspector/Macie), SIEM-lite approach using OpenSearch, PII access monitoring, fraud indicators, RUM Web Vitals SLO targets with segmentation, and insurance-specific cost anomaly scenarios. Section 5 now includes: alert lifecycle with ITSM integration, runbook template with example, naming convention and label taxonomy, escalation flowchart with auto-escalation, alert testing strategy with game days, noise management with composite alerts and noise budget, and business alert routing distinguishing technical from business stakeholder alerts.
+
+**Changes from v2.2 to v2.3**: Strengthened based on deep research report findings. Key additions: **(1) Regulatory**: Updated Section 11 with precise law references — Personal Data Protection Law 91/2025/QH15 (72-hour breach notification, 60-day cross-border transfer impact assessment dossier), AML Law 14/2022/QH15 (suspicious activity patterns for life insurance), Circular 70/2022/TT-BTC (risk management/internal control), Decree 53/2022/ND-CP (cybersecurity/data locality), Insurance Business Law 08/2022/QH15 with expanded outcome-based requirements; added critical insight that observability data itself is regulated personal data. **(2) Security**: Added privacy-incident alerting category (Section 4.6.5) with 72-hour notification workflow support; added AML/fraud as production telemetry (Section 4.6.6); strengthened Macie and Security Hub descriptions; added privacy/aml domain labels. **(3) Alerting**: Added SLO burn-rate / multi-window alerting strategy (Section 5.5) with worked examples for TCLife SLOs. **(4) InsureMO**: Added eBaoCloud native API gateway telemetry insight (Section 7.2.0) — leverage native dashboarding before custom probers; added OTel instrumentation at InsureMO boundary with PII redaction (Section 7.4). **(5) RUM**: Added CloudWatch RUM as alternative to Grafana Faro with evaluation criteria (Section 4.7). **(6) Testing**: Added canary fail-on-demand, escalation routing drills, trace completeness tests, security simulations, privacy tabletop exercises to alert testing strategy (Section 5.11.2). **(7) Data sovereignty**: Expanded Section 12.3 with AWS Hanoi Local Zone detail and cross-border transfer implications for observability data. All regulatory citations remain pending Legal/Compliance verification. Reference: `deep-research-report.md`.
 
 ---
 
@@ -565,16 +568,16 @@ All business process metrics must be segmented by the following dimensions to en
 
 **Scope**: Threat detection, access anomalies, data exfiltration, compliance violations, fraud indicators.
 
-TCLife holds policyholder PII, health data (for HI and MR products), and financial data. Security monitoring is not optional — it is a regulatory requirement under Vietnam's Cybersecurity Law 2018 and Decree 13/2023/ND-CP on personal data protection. Without a dedicated SIEM, TCLife uses OpenSearch as a SIEM-lite platform for security event aggregation, correlation, and alerting.
+TCLife holds policyholder PII, health data (for HI and MR products), and financial data. Security monitoring is not optional — it is a regulatory requirement under Vietnam's Cybersecurity Law 2018, the Personal Data Protection Law 91/2025/QH15 (which imposes a 72-hour breach notification requirement and cross-border transfer impact assessment within 60 days — see Section 11.1), and AML Law 14/2022/QH15 (which requires detection of suspicious activity patterns in life insurance — pending Legal/Compliance verification). Without a dedicated SIEM, TCLife uses OpenSearch as a SIEM-lite platform for security event aggregation, correlation, and alerting.
 
 #### 4.6.1 AWS-Native Security Services Integration
 
 | Service | What it detects | Integration | Phase | Alert routing |
 |---------|----------------|-------------|-------|--------------|
 | **GuardDuty** | Threat intelligence-based detection: unauthorized access, cryptocurrency mining, data exfiltration, compromised credentials, malicious IP contact | Enable in all regions -> EventBridge -> OpenSearch. Alert on High/Medium findings. | **Late Phase 1 (R-007)** — managed service, minimal setup | High findings -> SEV1 (immediate page); Medium -> SEV2 |
-| **Security Hub** | Aggregated security posture: CIS benchmarks, PCI-DSS checks, best practices compliance | Enable with AWS Foundational Security Best Practices standard -> findings to OpenSearch | Phase 2 | Critical/High findings -> SEV2; review others weekly |
+| **Security Hub** | **Central aggregation point** for all security findings: GuardDuty, Macie, Inspector, Config, and third-party findings flow into Security Hub for unified posture management. Also runs CIS benchmarks and AWS Foundational Security Best Practices checks. Alert flow: Security Hub -> EventBridge -> SNS for enrichment/automation and consistent routing | Enable with AWS Foundational Security Best Practices standard -> findings to EventBridge + OpenSearch | Phase 2 | Critical/High findings -> SEV2; review others weekly |
 | **Inspector** | Vulnerability scanning of EC2 instances and container images | Enable for EKS workloads -> findings to Security Hub -> OpenSearch | Phase 2 | Critical CVEs on production workloads -> SEV2 |
-| **Macie** | Sensitive data discovery in S3 (PII, health data in unexpected locations) | Enable on S3 buckets containing logs and exports -> findings to Security Hub | Phase 2-3 | Any PII/health data found in non-designated buckets -> SEV2 |
+| **Macie** | Sensitive data discovery in S3 — detects PII, health data, and financial data in unexpected locations, including within observability artifacts (logs, trace exports, canary screenshots). Critical because observability data itself can become regulated personal data under Personal Data Protection Law 91/2025/QH15 (pending Legal verification) | Enable on S3 buckets containing logs, exports, and observability artifacts -> findings to Security Hub | Phase 2-3 | Any PII/health data found in non-designated buckets -> SEV2 |
 | **CloudTrail** | API activity logging for all AWS account actions | Already active -> route management events to OpenSearch; enable data events for S3 and Lambda in Phase 2 | Phase 1 (management), Phase 2 (data events) | Specific anomaly rules (see below) |
 | **AWS Config** | Configuration compliance: detects drift from security baselines | Enable rules for critical resources (S3, RDS, IAM) -> non-compliant findings to Security Hub | Phase 2 | Non-compliant critical resource -> SEV3 |
 
@@ -632,7 +635,47 @@ Insurance fraud detection is primarily a business function, but the monitoring s
 | Suspicious claim clusters | Claims data: multiple claims from same hospital/provider in short period, or claims filed immediately after policy activation | Business alert to claims + fraud team (weekly analysis) |
 | High-value application patterns | Unusually high sum assured applications with minimal documentation | Business alert to underwriting + fraud team |
 
-#### 4.6.5 Security Monitoring Routing Table
+#### 4.6.5 Privacy-Incident Alerting
+
+> _New in v2.3. Informed by deep research on Personal Data Protection Law 91/2025/QH15 requirements (pending Legal/Compliance verification)._
+
+Privacy incidents are a distinct alert category — not just a subset of security alerts. They require a specific response workflow aligned with the 72-hour notification requirement under the Personal Data Protection Law 91/2025/QH15 (pending Legal verification).
+
+| Privacy incident type | Detection method | Alert severity | Response workflow |
+|----------------------|-----------------|---------------|-------------------|
+| **PII leakage into logs/traces** | Macie on S3 log buckets; log scanning for patterns matching national ID, phone, health data in non-designated fields | SEV2 | Immediate: stop PII propagation (fix masking). Assess: was PII accessed? Scope: how many records? Notify: begin 72-hour clock if breach criteria met |
+| **PII in observability artifacts** | Macie on S3 buckets storing Synthetics canary screenshots, trace exports, RUM session replays | SEV2 | Same as above. Observability data itself is regulated personal data if it contains PII. |
+| **Unexpected data export** | S3 access logs + VPC Flow Logs: data leaving designated data zones, cross-border transfer to regions outside ap-southeast-1 | SEV1 | Immediate investigation. Assess cross-border transfer compliance. If personal data exported without impact assessment dossier, escalate to DPO/Legal |
+| **Anomalous access to sensitive data** | CloudTrail + RDS audit: unusual principals querying customer/claims/health data tables; volume spikes; after-hours access | SEV2 | Correlate with on-call/maintenance schedule. If unexplained, escalate to SecOps + DPO |
+| **Consent mechanism failure** | Application logs: consent capture endpoint failures; consent record write failures | SEV1 | Processing personal data without captured consent creates immediate compliance exposure |
+| **Cross-border transfer anomaly** | VPC Flow Logs + CloudTrail: logs/traces/backups routed to non-approved regions | SEV1 | Verify against approved transfer destinations. If unapproved, halt transfer and notify DPO |
+
+**72-hour notification support**: When a privacy incident is declared, the monitoring system must capture and preserve:
+- Timestamp of detection (start of 72-hour clock)
+- Scope of affected data (records, data categories, subjects)
+- Evidence trail (logs, access records, flow data)
+- Containment actions taken and timestamps
+
+**Implementation**: Privacy-incident alerts route to both SecOps and DPO/Compliance. Phase 2 for basic detection (PII in logs); Phase 3 for full privacy-incident workflow aligned with 72-hour notification requirement.
+
+#### 4.6.6 AML and Fraud as Production Telemetry
+
+> _New in v2.3. Informed by deep research on AML Law 14/2022/QH15 (effective 1 March 2023) and suspicious activity indicators for life insurance (pending Legal/Compliance verification)._
+
+AML and fraud detection should be treated as **production telemetry**, not only periodic reports. The AML Law 14/2022/QH15 establishes suspicious transaction reporting requirements, and industry guidance highlights specific suspicious activity patterns for life insurance.
+
+The fraud indicators in Section 4.6.4 cover general patterns. The following AML-specific detection categories require real-time or near-real-time monitoring:
+
+| AML detection category | Specific indicators | Data source | Detection approach | Alert routing |
+|-----------------------|--------------------|-----------|--------------------|--------------|
+| **Premium/payment anomalies** | Unusually large single premiums; rapid premium payments exceeding expected pattern; payments from unexpected third parties; multiple payment methods for single policy | Payment gateway + InsureMO billing API | Threshold-based + anomaly detection vs. product/channel baseline | Fraud/AML team (business alert, daily or real-time) |
+| **Early surrender patterns** | Surrender requests within first 1-2 years, especially on high-value policies; surrender immediately after large premium payment | InsureMO policy servicing API | Pattern detection: correlate surrender timing with premium history | Fraud/AML team (business alert, daily) |
+| **Unusual beneficiary/ownership changes** | Frequent beneficiary changes; assignment to unrelated parties; ownership transfer patterns | InsureMO endorsement API | Change frequency anomaly vs. baseline; relationship data cross-check where available | Fraud/AML team (business alert, per event for high-value policies) |
+| **Agent/channel anomalies** | Single agent with disproportionate volume of high-value policies; concentrated geographic clusters of similar policies; agent submitting policies for related/connected individuals | InsureMO agent/distribution data + application data | Statistical outlier detection on agent-level aggregates | Fraud/AML team + distribution management (weekly analysis) |
+
+**Implementation phasing**: Phase 3-4. Requires business metric instrumentation from Phase 3. AML detection logic should be reviewed by Compliance/AML officer for calibration before activation. These are **business alerts** — they route to the fraud/AML team, not to engineering on-call.
+
+#### 4.6.7 Security Monitoring Routing Table
 
 | What to Monitor | Tool | Priority |
 |----------------|------|----------|
@@ -648,6 +691,8 @@ Insurance fraud detection is primarily a business function, but the monitoring s
 | Data exfiltration signals (large data exports) | VPC Flow Logs + S3 access logs -> OpenSearch | Phase 3 |
 | Certificate and key usage anomalies | CloudTrail -> OpenSearch | Phase 3 |
 | **Monitoring stack access patterns (R-041)** | CloudTrail + Grafana audit logs | **Phase 2 — monitor who accesses the monitoring system itself** |
+| **Privacy-incident detection** | Macie + log scanning + CloudTrail + VPC Flow Logs | **Phase 2 (basic), Phase 3 (full workflow with 72-hour notification support)** |
+| **AML/fraud production telemetry** | InsureMO API data + payment gateway + agent distribution data | **Phase 3-4 (requires business metric instrumentation)** |
 
 > _GuardDuty basic integration pulled into late Phase 1 per R-007. It is a managed service requiring minimal setup — enable, route findings to OpenSearch, alert on High-severity findings. Incremental effort is small; risk reduction is meaningful given TCLife handles policyholder PII and health data._
 
@@ -659,7 +704,14 @@ Insurance fraud detection is primarily a business function, but the monitoring s
 
 **Why this matters**: Synthetic probes from inside the VPC cannot detect performance issues experienced by agents in remote areas of Vietnam (slow mobile networks, high latency, varied device quality). RUM captures what real users actually experience. For TCLife, where agents operate across all 63 provinces with varying network infrastructure, the gap between synthetic health and real-user experience can be substantial.
 
-**Approach**: Grafana Faro (open-source RUM agent) or equivalent lightweight frontend instrumentation.
+**Approach**: Two primary options should be evaluated during Phase 2:
+
+| Option | Description | Advantages | Considerations |
+|--------|------------|-----------|----------------|
+| **CloudWatch RUM** (AWS-native) | AWS managed real-user monitoring service. Deep research recommends this for AWS-native stacks. Captures page load, JS errors, HTTP errors, and client-side performance metrics natively. Integrates with X-Ray for end-to-end trace correlation. | Fully managed; native X-Ray integration for browser-to-backend tracing; no separate infrastructure to maintain; data stays within AWS ecosystem (relevant for data sovereignty); built-in session sampling and privacy controls | Vendor lock-in to AWS; less customizable than open-source; data flows to CloudWatch (may need separate pipeline to Grafana/OpenSearch) |
+| **Grafana Faro** (open-source) | Open-source RUM agent from Grafana Labs. Sends data to Grafana Cloud or self-hosted Grafana/OpenSearch backend. | Open-source; integrates naturally with existing AMG + AMP + OpenSearch stack; flexible data routing; supports OpenTelemetry trace context for correlation | Requires more operational effort; self-hosted data pipeline management; may need additional infrastructure |
+
+**Recommendation**: Evaluate both during Phase 2 foundation work. Decision criteria: (1) data sovereignty requirements (CloudWatch RUM keeps data within AWS and is relevant to cross-border transfer considerations — see Section 12.3), (2) trace correlation depth (CloudWatch RUM + X-Ray provides browser-to-backend trace stitching), (3) integration with existing Grafana dashboards (Faro integrates more naturally), (4) operational overhead (CloudWatch RUM is fully managed). **Phase 2 deliverable: select one option and deploy.**
 
 #### 4.7.1 Core Web Vitals with SLO Targets
 
@@ -801,7 +853,66 @@ See Section 2.2 for on-call rotation details with the 7-person team structure.
 | **Document every alert** | Each alert rule has a linked runbook explaining: what it means, what to check, how to resolve (see Section 5.7 for template) |
 | **Weekly alert review** | Review all alerts from the past week; identify false positives, tune, or retire. **Owned by Service Quality.** |
 
-### 5.5 Alert Inhibition and Grouping
+### 5.5 SLO Burn-Rate and Multi-Window Alerting
+
+> _New in v2.3. Informed by deep research on SRE best practices for reducing alert fatigue while maintaining detection sensitivity._
+
+In addition to the three existing alert types (hard thresholds, anomaly alerts, composite alerts), TCLife should adopt **SLO burn-rate alerting** as a fourth alerting strategy for customer-facing services. This approach, documented in the Google SRE Workbook, significantly reduces alert fatigue compared to simple threshold-based alerting.
+
+#### 5.5.1 Concept
+
+Every SLO defines an **error budget** — the amount of failure allowed within the SLO window. For example, a 99.5% monthly SLO allows 0.5% failures (approximately 3.6 hours of total downtime or equivalent error volume over 30 days). A burn-rate alert fires not when a threshold is crossed at a single point in time, but when the **rate of error budget consumption** is unsustainable — the service is burning through its budget too fast.
+
+#### 5.5.2 Multi-Window Approach
+
+Use two windows per alert to balance responsiveness and false positive rate:
+
+| Alert type | Long window | Short window | Burn rate | Meaning | Severity |
+|-----------|-------------|-------------|-----------|---------|----------|
+| **Fast burn** | 1 hour | 5 minutes | 14.4x | Budget would be consumed in ~2 days at this rate | SEV1 |
+| **Slow burn** | 6 hours | 30 minutes | 6x | Budget would be consumed in ~5 days at this rate | SEV2 |
+| **Gradual burn** | 3 days | 6 hours | 1x | Budget on track to be fully consumed within the window | SEV3 (business hours review) |
+
+The **short window** prevents stale alerts: both windows must show budget burn simultaneously. This eliminates pages for brief spikes that self-resolve.
+
+#### 5.5.3 Application to TCLife SLOs
+
+| SLO (from Section 20) | Error budget (monthly) | Fast burn fires when | Slow burn fires when |
+|-----------------------|----------------------|---------------------|---------------------|
+| Customer Portal availability (99.9%) | 43.2 min | > 0.144% errors in 1h AND > 0.144% in 5 min | > 0.06% errors in 6h AND > 0.06% in 30 min |
+| Application submit success (99.5%) | 3.6 hours | > 7.2% failures in 1h AND > 7.2% in 5 min | > 3% failures in 6h AND > 3% in 30 min |
+| Payment callback success (99.9%) | 43.2 min | > 0.144% failures in 1h AND > 0.144% in 5 min | > 0.06% failures in 6h AND > 0.06% in 30 min |
+
+#### 5.5.4 Implementation Approach
+
+```yaml
+# Example: Prometheus recording rule for burn-rate alerting
+# (Customer Portal availability SLO = 99.9%, error budget = 0.1%)
+
+# Recording rule: error ratio over different windows
+- record: slo:customer_portal:error_ratio_1h
+  expr: 1 - (sum(rate(http_requests_total{service="customer_portal",code!~"5.."}[1h])) / sum(rate(http_requests_total{service="customer_portal"}[1h])))
+
+- record: slo:customer_portal:error_ratio_5m
+  expr: 1 - (sum(rate(http_requests_total{service="customer_portal",code!~"5.."}[5m])) / sum(rate(http_requests_total{service="customer_portal"}[5m])))
+
+# Alert: fast burn (14.4x budget burn in 1h window, confirmed by 5m window)
+- alert: slo_customer_portal_fast_burn
+  expr: slo:customer_portal:error_ratio_1h > (14.4 * 0.001) and slo:customer_portal:error_ratio_5m > (14.4 * 0.001)
+  labels:
+    severity: critical
+    domain: slo
+    service: customer_portal
+  annotations:
+    summary: "Customer Portal error budget burning fast — will exhaust in ~2 days at current rate"
+    runbook: RB-SLO-001
+```
+
+**Phasing**: Introduce burn-rate alerting in Phase 3 alongside SLO target-setting (Section 20). Phase 2 establishes SLI measurement; Phase 3 adds burn-rate alert rules on top. This layered approach avoids overcomplicating Phase 1-2 alerting while delivering mature SLO-driven alerting in Phase 3.
+
+**Relationship to existing alerts**: Burn-rate alerts do not replace hard threshold alerts for infrastructure (node down, DLQ messages). They complement them for customer-facing service reliability. The two strategies coexist: hard thresholds catch binary failures; burn-rate alerts catch gradual degradation that erodes user experience.
+
+### 5.6 Alert Inhibition and Grouping
 
 > _Repeat interval should be severity-based per R-010._
 
@@ -841,11 +952,11 @@ route:
       repeat_interval: 12h
 ```
 
-### 5.6 Alert Lifecycle Management
+### 5.7 Alert Lifecycle Management
 
 Every alert follows a defined lifecycle from firing to post-mortem. Clear state transitions ensure alerts are not forgotten, responsibility is explicit, and resolution is tracked.
 
-#### 5.6.1 Alert States
+#### 5.7.1 Alert States
 
 ```
   FIRING ─────► ACKNOWLEDGED ─────► INVESTIGATING ─────► RESOLVED ─────► POST-MORTEM
@@ -859,7 +970,7 @@ Every alert follows a defined lifecycle from firing to post-mortem. Clear state 
     If alert re-fires within 24h of resolve ─────────────────►│ REOPENED      │
 ```
 
-#### 5.6.2 State Transition Rules
+#### 5.7.2 State Transition Rules
 
 | State | Who transitions | When | Required actions |
 |-------|----------------|------|-----------------|
@@ -869,7 +980,7 @@ Every alert follows a defined lifecycle from firing to post-mortem. Clear state 
 | **Resolved** | Responder | When monitoring confirms the condition has cleared | Document what was done. If a workaround was applied, create a follow-up ticket for root fix. |
 | **Post-mortem** | Incident Commander or Service Quality | Within 5 business days for SEV1/SEV2 | Complete RCA document. Identify action items. Update runbooks if needed. |
 
-#### 5.6.3 ITSM Integration
+#### 5.7.3 ITSM Integration
 
 | Severity | ITSM behavior |
 |----------|--------------|
@@ -880,11 +991,11 @@ Every alert follows a defined lifecycle from firing to post-mortem. Clear state 
 
 **Implementation**: PagerDuty/OpsGenie webhook creates ITSM ticket on SEV1/SEV2 alert creation. Ticket ID is attached to the alert as an annotation. When the alert resolves, the ITSM ticket is updated but not auto-closed (human must confirm resolution).
 
-### 5.7 Alert Runbook Template
+### 5.8 Alert Runbook Template
 
 Every alert rule must have an associated runbook. No alert goes to production without a runbook. The runbook is linked from the alert notification (PagerDuty/OpsGenie custom field or Alertmanager annotation).
 
-#### 5.7.1 Standard Runbook Template
+#### 5.8.1 Standard Runbook Template
 
 ```markdown
 # Runbook: {alert_name}
@@ -927,7 +1038,7 @@ Every alert rule must have an associated runbook. No alert goes to production wi
 - {Date}: {Notable incident and resolution}
 ```
 
-#### 5.7.2 Example Runbook: RDS Connection Pool Exhausted
+#### 5.8.2 Example Runbook: RDS Connection Pool Exhausted
 
 ```markdown
 # Runbook: infra_rds_connection_pool_exhausted
@@ -980,11 +1091,11 @@ require database access (policy issuance, claims, premium collection, quotation)
 - (No incidents recorded yet — update after first occurrence)
 ```
 
-### 5.8 Alert Naming Convention
+### 5.9 Alert Naming Convention
 
 Consistent alert naming enables filtering, routing, and analysis. Every alert follows a standard naming pattern.
 
-#### 5.8.1 Naming Format
+#### 5.9.1 Naming Format
 
 ```
 {domain}_{service}_{condition}
@@ -1003,26 +1114,33 @@ Consistent alert naming enables filtering, routing, and analysis. Every alert fo
 - `sec_guardduty_high_finding`
 - `sec_iam_root_login`
 - `sec_pii_mass_download`
+- `privacy_pii_in_logs`
+- `privacy_cross_border_transfer_anomaly`
+- `privacy_consent_mechanism_failure`
+- `aml_premium_payment_anomaly`
+- `aml_early_surrender_pattern`
+- `slo_customer_portal_fast_burn`
+- `slo_payment_callback_slow_burn`
 - `batch_gl_posting_failed`
 - `batch_nav_calculation_late`
 
-#### 5.8.2 Label Taxonomy
+#### 5.9.2 Label Taxonomy
 
 Every alert must carry the following labels:
 
 | Label | Purpose | Values |
 |-------|---------|--------|
 | `severity` | Routing and escalation | `critical`, `major`, `warning`, `info` |
-| `domain` | Top-level category | `infra`, `app`, `biz`, `sec`, `batch`, `cost` |
+| `domain` | Top-level category | `infra`, `app`, `biz`, `sec`, `privacy`, `aml`, `batch`, `cost`, `slo` |
 | `team` | Responsible team for routing | `devops`, `appops`, `security`, `business`, `vendor` |
 | `service` | Affected service or component | `sale_portal`, `customer_portal`, `rds`, `eks`, `insuremo`, `payment_gateway` |
 | `environment` | Deployment environment | `prod`, `staging`, `dr` |
 | `product` | Insurance product (if applicable) | `ul`, `ci`, `hi`, `mr`, `all` |
 | `channel` | Distribution channel (if applicable) | `agency`, `bancassurance`, `digital`, `all` |
 
-### 5.9 Escalation Flow
+### 5.10 Escalation Flow
 
-#### 5.9.1 Escalation Flowchart
+#### 5.10.1 Escalation Flowchart
 
 ```
   ALERT FIRES
@@ -1070,7 +1188,7 @@ Every alert must carry the following labels:
      └── SEV3: Update runbook if new root cause found
 ```
 
-#### 5.9.2 Time-Based Auto-Escalation Rules
+#### 5.10.2 Time-Based Auto-Escalation Rules
 
 | Condition | Escalation action |
 |-----------|------------------|
@@ -1081,7 +1199,7 @@ Every alert must carry the following labels:
 | SEV2 not resolved in 2 hours | IT Manager reviews; considers upgrading to SEV1 |
 | SEV3 not resolved in 24 hours | Team lead review in daily standup |
 
-#### 5.9.3 Business Hours vs After-Hours Behavior
+#### 5.10.3 Business Hours vs After-Hours Behavior
 
 | Severity | Business hours (08:00-18:00 Mon-Fri) | After hours (18:00-08:00, weekends, holidays) |
 |----------|-------------------------------------|-----------------------------------------------|
@@ -1090,11 +1208,11 @@ Every alert must carry the following labels:
 | **SEV3** | Slack notification; daily standup review | No notification. Queued for next business day review. |
 | **SEV4** | Slack low-priority channel | No notification. Weekly review only. |
 
-### 5.10 Alert Testing Strategy
+### 5.11 Alert Testing Strategy
 
 Alerts are production code. Untested alerts give false confidence. TCLife must validate that alerts fire correctly, reach the right people, and produce actionable notifications.
 
-#### 5.10.1 Alert Rule Unit Testing
+#### 5.11.1 Alert Rule Unit Testing
 
 Before deploying any new or modified alert rule to production:
 
@@ -1106,18 +1224,23 @@ Before deploying any new or modified alert rule to production:
 | **Runbook validation** | Walk through the runbook steps and verify all dashboard links and log queries work | Before every new alert | App Ops |
 | **Inhibition testing** | Verify that child alerts are correctly suppressed when parent alert fires | After any inhibition rule change | DevOps |
 
-#### 5.10.2 Game Day Exercises
+#### 5.11.2 Game Day Exercises
 
 Periodic game days validate that the end-to-end alerting pipeline works: alert fires, notification reaches on-call, responder follows runbook, resolution is achieved.
 
 | Exercise | Frequency | Scope | Owner |
 |----------|-----------|-------|-------|
 | **Alert delivery test** | Monthly | Fire a synthetic SEV2 alert; verify it reaches on-call via PagerDuty/OpsGenie; verify Slack notification; verify ITSM ticket creation | Service Quality |
+| **Canary fail-on-demand** | Monthly | Intentionally fail a synthetic canary (CloudWatch Synthetics or blackbox_exporter); verify the canary failure triggers the correct SEV1 alert, routes to the right on-call, and the runbook is actionable | DevOps |
+| **Escalation routing drill** | Monthly | Simulate an unacknowledged SEV1 alert; verify auto-escalation reaches IT Manager at 15 min and CIO at 30 min per defined escalation rules | Service Quality |
 | **Tabletop incident drill** | Quarterly | Walk through a realistic incident scenario (e.g., "InsureMO API is unreachable") without actually breaking production. Review what alerts would fire, who responds, what runbooks to follow. | IT Manager + Service Quality |
+| **Trace completeness test** (Phase 3+) | Quarterly | Submit a controlled transaction through the full journey (quote > submit > underwrite > issue); verify that trace/correlation ID propagates end-to-end across all services and appears in logs, metrics, and traces | DevOps + App Ops |
 | **Controlled fault injection** (Phase 3+) | Semi-annually | Introduce a controlled failure in staging (e.g., kill a pod, saturate a queue) and verify detection, alerting, and response. | DevOps |
+| **Security simulation** (Phase 3+) | Semi-annually | Seed CloudTrail anomalies (e.g., simulate root login, unusual S3 access patterns, IAM policy change); verify GuardDuty/Security Hub detection flow and alert delivery. Validate that security findings reach OpenSearch and trigger correct alerts | DevOps + SecOps |
+| **Privacy tabletop exercise** (Phase 3+) | Semi-annually | Simulate a privacy incident (e.g., "PII found in application logs by Macie"); walk through the 72-hour notification clock — who is notified, what evidence is captured, what containment actions are taken, how the DPO/Legal decision on notification is documented | Service Quality + DPO/Compliance |
 | **On-call handoff drill** | With each new on-call rotation | New on-call confirms they can access PagerDuty, Grafana, OpenSearch, and runbooks; reviews active alerts and recent incidents | App Ops |
 
-#### 5.10.3 Alert Rule Promotion Process
+#### 5.11.3 Alert Rule Promotion Process
 
 ```
 DEV/LOCAL ──► STAGING ──► PRODUCTION
@@ -1131,11 +1254,11 @@ DEV/LOCAL ──► STAGING ──► PRODUCTION
                   traffic
 ```
 
-### 5.11 Alert Noise Management
+### 5.12 Alert Noise Management
 
 Alert fatigue is the primary threat to alerting effectiveness. If the on-call engineer receives 50 alerts per shift, they will ignore all of them. TCLife targets a high signal-to-noise ratio from day one.
 
-#### 5.11.1 Composite Alert Patterns
+#### 5.12.1 Composite Alert Patterns
 
 Single-metric alerts generate noise. A brief dip in submit success rate might be a network blip; a brief rise in queue backlog might be a normal batch cycle. Composite alerts combine multiple signals to page only when the evidence of real customer or business harm is strong.
 
@@ -1151,7 +1274,7 @@ Single-metric alerts generate noise. A brief dip in submit success rate might be
 
 > _Detailed composite alert implementation patterns are in Section 23._
 
-#### 5.11.2 Noise Budget
+#### 5.12.2 Noise Budget
 
 Define a target ratio of actionable alerts to total alerts. Track and review monthly.
 
@@ -1163,7 +1286,7 @@ Define a target ratio of actionable alerts to total alerts. Track and review mon
 | **Flapping alert count** | 0 flapping alerts sustained > 7 days | Alertmanager metrics: alerts that fire and resolve repeatedly |
 | **Time to tune** | < 5 business days from identification to threshold adjustment | Track in alert review process |
 
-#### 5.11.3 Monthly Alert Quality Report
+#### 5.12.3 Monthly Alert Quality Report
 
 Service Quality produces a monthly alert quality report. Template:
 
@@ -1177,18 +1300,18 @@ Service Quality produces a monthly alert quality report. Template:
 | **Missed incidents** | Any SEV1/SEV2 incident NOT detected by monitoring — root cause and gap analysis |
 | **Recommendations** | New alerts to create, thresholds to adjust, runbooks to update |
 
-### 5.12 Business Alert Routing
+### 5.13 Business Alert Routing
 
 Not all alerts go to engineers. Business anomalies — changes in conversion rates, underwriting mix shifts, collection pattern changes — should route to business stakeholders who can interpret and act on them.
 
-#### 5.12.1 Technical vs Business Alert Distinction
+#### 5.13.1 Technical vs Business Alert Distinction
 
 | Alert type | Definition | Routing | Response expectation |
 |-----------|-----------|---------|---------------------|
 | **Technical alert** | Infrastructure, platform, or application health issue that requires engineering intervention | SRE / DevOps / App Ops on-call via PagerDuty | Immediate (SEV1/2) or business hours (SEV3/4) |
 | **Business alert** | Business metric anomaly that requires domain expertise to interpret and act on | Business team queue via Slack channel or email | Business hours review; daily or weekly depending on urgency |
 
-#### 5.12.2 Business Alert Routing Matrix
+#### 5.13.2 Business Alert Routing Matrix
 
 | Business alert | Routing target | Channel | Frequency |
 |---------------|---------------|---------|-----------|
@@ -1202,7 +1325,7 @@ Not all alerts go to engineers. Business anomalies — changes in conversion rat
 | Commission run discrepancy | Sales Operations + Finance | Slack #sales-ops-alerts + email | Immediately after commission run |
 | Regulatory report generation at risk | Compliance + IT Manager | Slack #compliance-alerts + email | At T-5 and T-2 days |
 
-#### 5.12.3 Business Alert Format
+#### 5.13.3 Business Alert Format
 
 Business alerts must be understandable by non-technical stakeholders. Include:
 
@@ -1338,11 +1461,36 @@ EbaoTech Insuremo is vendor-managed. TCLife cannot install agents, export metric
 
 ### 7.2 Monitoring Strategy for a Vendor-Managed Core System
 
-**Approach: External Observation + Data Freshness + SLA Tracking**
+**Approach: Native Telemetry First + External Observation + Data Freshness + SLA Tracking**
+
+> _Strengthened in v2.3. Deep research confirms eBaoCloud platform has native API gateway telemetry capabilities. Leverage these FIRST before building custom probers._
+
+#### 7.2.0 eBaoCloud Native API Gateway Telemetry
+
+Deep research on eBaoCloud/InsureMO reveals that the eBaoCloud API gateway provides **native telemetry** capabilities including:
+
+- **Authentication, routing, rate limiting, circuit breaking, and logging** — built into the gateway
+- **Dashboardable metrics**: response time, success/failed hits, segmented by API publisher and API consumer
+
+**Recommendation**: Before deploying the custom Health Prober (Section 7.2.1), TCLife should:
+
+1. **Inventory native telemetry**: Work with EbaoTech to document what metrics and dashboards are already available from the eBaoCloud API gateway. Determine whether TCLife can access these dashboards or export the underlying data.
+2. **Integrate native data first**: If eBaoCloud exposes response time and success/failure metrics per API, integrate these into TCLife's Grafana dashboards (potentially via API export, log scraping, or agreed data sharing). This provides immediate observability with zero additional instrumentation.
+3. **Then layer custom probing**: The Health Prober (Section 7.2.1) adds independent verification and catches issues that native telemetry might not surface (e.g., the gateway reports success but the data is stale or incorrect).
+
+**Phase 2 prerequisite**: Document eBaoCloud native telemetry capabilities and agree with EbaoTech on data sharing approach before finalizing Health Prober design.
+
+| Native telemetry aspect | What to ask EbaoTech | Integration approach |
+|------------------------|---------------------|---------------------|
+| API response time dashboards | Can TCLife access these directly? Can data be exported? | Direct access or API export to Grafana |
+| Success/failure hit counts by API | Granularity? Per-endpoint or aggregate? | Feed into AMP/Prometheus for SLA tracking |
+| Rate limiting and circuit breaker status | Is this visible to TCLife or vendor-only? | If visible, include in Insuremo health dashboard |
+| Authentication/routing logs | Can logs be streamed or exported? | Route to OpenSearch for security analysis |
+| API publisher/consumer segmentation | Does this show which TCLife services are calling which APIs? | Valuable for dependency mapping and troubleshooting |
 
 #### 7.2.1 API Health Probes
 
-Deploy a dedicated **Insuremo Health Prober** service (lightweight, runs on EKS) that periodically calls Insuremo APIs and records response metrics.
+Deploy a dedicated **Insuremo Health Prober** service (lightweight, runs on EKS) that periodically calls Insuremo APIs and records response metrics. This provides **independent verification** complementing the native telemetry from Section 7.2.0.
 
 ```
 Insuremo Health Prober (EKS pod)
@@ -1464,7 +1612,27 @@ Beyond the health prober, TCLife must ensure that business events are emitted at
 
 **For every cross-system update**: store before/after status and reconciliation markers so silent sync failures are visible.
 
-### 7.4 Limitations to Acknowledge
+### 7.4 OpenTelemetry Instrumentation at InsureMO Boundary
+
+> _New in v2.3. Informed by deep research on ADOT/OTel instrumentation strategy._
+
+While TCLife cannot instrument InsureMO internals, it can and should instrument the **insurer-owned boundary** — the integration services and API gateway that sit between TCLife's portals/applications and InsureMO's APIs.
+
+**Approach**: Use AWS Distro for OpenTelemetry (ADOT) or OpenTelemetry SDK to instrument the integration layer with distributed tracing. This provides request-level visibility from the TCLife side of the boundary.
+
+| Instrumentation point | What to capture | PII redaction requirement |
+|----------------------|----------------|--------------------------|
+| Integration service outbound call to InsureMO | Trace span: endpoint, operation, latency, response code, retry count | **Replace policy numbers, customer IDs, and national IDs with tokenized values in trace attributes**. Never include health data, names, or contact details in traces. |
+| Integration service inbound response from InsureMO | Trace span: response payload size, business object type (policy, quote, claim), result status | Same redaction rules. Use business correlation IDs (tokenized application ID, tokenized policy ID) instead of raw identifiers. |
+| Queue messages to/from InsureMO | Trace context propagation via SQS message attributes | Ensure W3C Trace Context header propagates through queue messages for end-to-end trace stitching |
+
+**PII redaction in traces and logs**: Use OpenTelemetry Collector processors (e.g., `attributes` processor with regex replacement, or `transform` processor) to strip or tokenize PII before traces are exported to X-Ray or stored in OpenSearch. This is a hard requirement — traces without PII redaction create the same data protection risk as unmasked logs (see Section 12).
+
+**Stable business correlation IDs**: For underwriting/fraud investigations, traces need business context. Use tokenized (hashed or mapped) versions of application ID, policy ID, and claim ID as trace attributes. Maintain a secure lookup table (accessible only to authorized investigators) to map tokens back to real IDs when needed.
+
+**Phasing**: Align with Section 4.4.6 correlation ID propagation (Phase 1-2 foundation) and Phase 3-4 distributed tracing evaluation. OTel context propagation (W3C Trace Context) should be implemented from the start even if full tracing is deferred.
+
+### 7.5 Limitations to Acknowledge
 
 - We cannot monitor Insuremo's internal performance (DB queries, queue depths, memory usage)
 - We depend on vendor notification for planned maintenance and known issues
@@ -1772,9 +1940,12 @@ TCLife is regulated by the Vietnam Ministry of Finance (MOF) and the Insurance S
 
 | Requirement Area | Regulatory Basis (PENDING VERIFICATION) | Monitoring Implication |
 |-----------------|----------------------------------------|----------------------|
-| **Insurance business information systems** | Insurance Business Law 08/2022/QH15 (effective 01/01/2023) — requires insurers to establish, maintain, and operate information systems appropriate to scale; support updating, processing, storing, and securing insurance information; provide data to national insurance business database (pending Legal review) | Observability must cover both business process completeness and evidentiary audit trails. Technology use is explicitly framed across product design, risk assessment, underwriting, contracting, policy admin, loss assessment, claims, statistics, reporting, and anti-fraud. |
+| **Insurance business information systems** | **Law on Insurance Business 08/2022/QH15** (effective 01/01/2023) — explicitly frames insurance IT as a tool to: improve efficiency across product design, risk assessment, contract conclusion/management, and claims; modernize statistical/reporting work; build IT systems and databases to support management/supervision and "prevention and control of insurance frauds." Also requires IT systems to facilitate risk administration/control and inspection/supervision by management agencies, and to have "information technology solutions to respond to catastrophes and ensure uninterrupted business activities" (pending Legal review) | Observability must cover both business process completeness and evidentiary audit trails. Technology use is explicitly framed across product design, risk assessment, underwriting, contracting, policy admin, loss assessment, claims, statistics, reporting, and anti-fraud. Monitoring must produce auditable evidence (availability, audit trails, incident history, controls) that can be presented during inspections and internal/external audits. The law does not prescribe a specific toolset; requirements are "outcome-based" (demonstrable continuity, security, auditability). |
+| **Risk management and internal control** | **Circular 70/2022/TT-BTC** — risk management and internal control requirements for insurance enterprises (pending Legal review) | Monitoring supports internal control evidence. Operational risk management requires demonstrable system monitoring and incident response capability. |
 | **Business continuity** | Circular 125/2018/TT-BTC and related MOF guidance on IT risk management for insurers (pending Legal review) | Must demonstrate system availability measurement and incident response capability |
-| **Data protection** | Cybersecurity Law 2018, Decree 13/2023/ND-CP on personal data protection (pending Legal review) | Must detect and report data breaches; monitoring must cover access anomalies and data exfiltration signals; **breach notification timelines, data processing logs, and cross-border data transfer monitoring requirements apply (R-027)**. Must cover consent events, PII/health-data access, export, retention, data deletion, and third-party processing. |
+| **Personal data protection** | **Personal Data Protection Law 91/2025/QH15** (pending Legal review — this is a newer law than previously referenced Decree 13/2023/ND-CP). Key requirements: **(a)** cross-border transfer is broadly defined (including using offshore platforms to process personal data collected in Vietnam); **(b)** impact assessment dossier must be prepared and submitted within **60 days** from first cross-border transfer; dossiers must be updated periodically; **(c)** notification to the personal data protection authority within **72 hours** after detecting certain personal data protection violations likely to cause serious harms; **(d)** insurance business applications must comply with personal data protection; consent is required for personal data collection/processing in insurance business activities (subject to limited exceptions) | Must detect and report data breaches within 72-hour window. **Critical insight: observability data itself (logs, traces, session metadata, canary artifacts) can be regulated personal data if it contains PII.** Must cover: access anomalies, data exfiltration signals, PII leakage into logs/traces, cross-border data transfer monitoring (see data sovereignty below), consent events, PII/health-data access, export, retention, data deletion, third-party processing. Privacy-incident alerting (Section 4.6.5) directly supports the 72-hour notification requirement. |
+| **Anti-money laundering** | **AML Law 14/2022/QH15** (effective 1 March 2023) — establishes suspicious transaction reporting requirements. Industry guidance highlights specific suspicious activity patterns for life insurance: premium/payment anomalies, early surrender patterns, unusual beneficiary/ownership changes, and agent/channel anomalies (pending Legal/Compliance verification) | AML detection should be treated as production telemetry, not only periodic reporting. Real-time or near-real-time detection for premium anomalies, early surrender, unusual beneficiary changes, agent pattern anomalies (Section 4.6.6). Triage SLA and detection quality KPIs. |
+| **Cybersecurity and data locality** | Cybersecurity Law 2018, **Decree 53/2022/ND-CP** (implementing the Cybersecurity Law) — strengthens cybersecurity/data localization enforceability; scope depends on legal classification (pending Legal review) | Architect monitoring so it supports audit of access, rapid incident response, and — if required — data locality controls (including knowing where logs/traces are stored/processed). |
 | **Product rules and rider separation** | Decree 46/2023 and Circular 67/2023 — from 1 July 2025, investment-linked life products are expected to separate core benefits from supplementary riders (CI, accident, hospitalization) (pending Legal review) | Monitoring must treat rider attachment, eligibility, pricing, issuance, renewal, and claimability as first-class telemetry dimensions. Rider defects carry regulatory as well as operational risk. |
 | **Financial reporting accuracy** | Insurance Law 08/2022/QH15, Circular 50/2017/TT-BTC (pending Legal review) | Must ensure accuracy of financial data processing — monitoring of GL, NAV, premium, and claims calculations |
 | **Digital distribution targets** | Decision 07/QD-TTg — Vietnam 2030 insurance market strategy targets average 10% annual growth in insurance products distributed via digital channels (2023-2030) (pending Legal review) | Digital sales-path reliability is a board-level KPI, not just an IT KPI. Portal availability and conversion funnel monitoring are strategic. |
@@ -1853,13 +2024,23 @@ If this data flows into OpenSearch and Grafana, **the monitoring stack itself be
 | **Dashboard access control** | Restrict access to log dashboards that may contain residual PII (see Section 9.3) | Phase 1 |
 | **Structured logging standard** | Define which fields may contain PII and mandate masking in the logging standard | Phase 1 (design), Phase 2 (enforce) |
 
-### 12.3 Data Sovereignty
+### 12.3 Data Sovereignty and Cross-Border Transfer Considerations
 
-> _Addresses R-029._
+> _Addresses R-029. Strengthened in v2.3 with deep research findings on AWS Hanoi Local Zone and Personal Data Protection Law 91/2025/QH15 cross-border transfer requirements._
 
-- **AWS Region**: Confirm all monitoring components (AMP, AMG, OpenSearch, S3 archive) are deployed in the same region as production workloads.
-- **Cross-border transfer**: If any monitoring data stores are outside Vietnam, assess whether policyholder PII in logs triggers cross-border data transfer requirements under Decree 13/2023/ND-CP (pending Legal review).
-- **Phase 1 action**: Document the AWS region for all monitoring components and confirm alignment with data residency requirements.
+- **AWS Region**: Confirm all monitoring components (AMP, AMG, OpenSearch, S3 archive) are deployed in the same region as production workloads. TCLife's primary region is ap-southeast-1 (Singapore).
+- **AWS Hanoi Local Zone**: AWS lists a Local Zone location in Hanoi, attached to the Asia Pacific (Singapore) parent region. This may help with latency and some data locality objectives, but **it is not the same as a full in-country AWS region**. Data stored in the Local Zone is managed under the parent Singapore region. Cross-border transfer considerations may still apply for core workloads and data, including observability data.
+- **Cross-border transfer — Personal Data Protection Law 91/2025/QH15**: Under this law (pending Legal verification), cross-border transfer is broadly defined — including using offshore platforms to process personal data collected in Vietnam. If logs, traces, or session metadata containing PII flow to the Singapore region (even via AWS managed services), this may constitute a cross-border transfer requiring:
+  - An impact assessment dossier submitted within **60 days** of starting the transfer
+  - Periodic dossier updates when changes occur
+  - 72-hour breach notification to the personal data protection authority for violations likely to cause serious harms
+- **Observability data is potentially regulated**: Logs, traces, RUM session data, and canary artifacts may contain regulated personal data (policy numbers, national IDs in URLs, health data in claims logs, session metadata). This data flowing to Singapore triggers the same cross-border transfer requirements as production customer data.
+- **Phase 1 actions**:
+  1. Document the AWS region for all monitoring components and confirm alignment with data residency requirements
+  2. Inventory which observability data streams contain or may contain personal data
+  3. Assess whether the Hanoi Local Zone can be used for log storage to reduce cross-border transfer scope
+  4. Engage Legal/Compliance to determine whether the monitoring data pipeline requires a cross-border transfer impact assessment dossier
+- **Phase 2 action**: If cross-border transfer impact assessment is required, prepare and submit the dossier within the 60-day window. Factor this into PII scrubbing design — aggressive PII redaction at the source reduces the scope of what constitutes "personal data" in the cross-border transfer.
 
 ---
 
@@ -1919,7 +2100,7 @@ If this data flows into OpenSearch and Grafana, **the monitoring stack itself be
 | **Alert runbooks** | Write runbook for every Phase 1 alert rule | App Ops | 100% alert-to-runbook coverage |
 | **Log pipeline verification** | Verify all application and infrastructure logs flow to OpenSearch; identify gaps | DevOps | Log coverage inventory document |
 | **Infrastructure dashboards** | Build Level 2 infrastructure overview + RDS + ALB dashboards in Grafana | DevOps | Dashboards published and reviewed |
-| **Synthetic monitoring (basic)** | Deploy blackbox_exporter probes for Sale Portal and Customer Portal login URLs | DevOps | Uptime based on real probe, not `up` metric |
+| **Synthetic monitoring (basic)** | Deploy blackbox_exporter probes and/or CloudWatch Synthetics canaries for Sale Portal and Customer Portal login URLs. CloudWatch Synthetics supports scripted journey canaries (not just ping checks) — evaluate for critical journey scripting in Phase 2 | DevOps | Uptime based on real probe, not `up` metric |
 | **Certificate monitoring** | Monitor all TLS certificate expiry dates | DevOps | Alert at 30 and 7 days before expiry |
 | **AWS cost monitoring** | CloudWatch billing alarms + AWS Cost Anomaly Detection **(R-004)** | DevOps | Cost spike alerts active |
 | **GuardDuty basic integration** | Enable GuardDuty; route High-severity findings to OpenSearch + alert **(R-007)** | DevOps | High-severity GuardDuty findings generate alerts |
@@ -2484,6 +2665,7 @@ This roadmap builds on and connects to several existing documents in the TCLife 
 | **L1 Support Frontline** | `solutions/L1-support-frontline/l1-support-frontline.md` | L1 uses monitoring dashboards for incident detection and triage; dashboard design must support L1 workflows |
 | **CIO Review** | `solutions/monitoring-alerting/cio-review-monitoring-roadmap.md` | 43 findings incorporated in v2.0; resolution matrix in Section 17 |
 | **Insurance-Domain Monitoring Research** | `solutions/monitoring-alerting/reference.research.md` | Comprehensive monitoring blueprint for Vietnam life insurer on eBao InsureMO / AWS. Source for v2.1 additions: journey framework, domain matrices, SLOs, first 25 alerts, data model, composite alerts, regulatory citations, InsureMO instrumentation checklist. |
+| **Deep Research Report** | `solutions/monitoring-alerting/deep-research-report.md` | Deep research on regulatory framework, AWS-native observability stack, SRE burn-rate alerting, InsureMO native telemetry, privacy-incident alerting, AML/fraud production telemetry. Source for v2.3 additions. |
 
 ### Incident Management Backlog Items Addressed
 
@@ -2505,3 +2687,4 @@ This roadmap builds on and connects to several existing documents in the TCLife 
 | 2.0 | 2026-03-20 | IT Operations | Restructured into overview + detail; incorporated 43 CIO review findings; added: team structure (7 people), staffing plan, training plan, RUM, cost monitoring, commission batch, PII scrubbing policy, human costs, regulatory citation qualification, governance structure. Full resolution matrix in Section 17. |
 | 2.1 | 2026-03-20 | IT Operations | Added: journey-first monitoring framework (9 core journeys, Sec 18), rider monitoring as cross-cutting dimension (Sec 18.3), domain-specific monitoring matrices for underwriting/STP, billing/persistency, claims, ops workflow, security/fraud/compliance (Sec 19), formal SLO set with starter objectives (Sec 20), prioritized first 25 alerts (Sec 21), canonical telemetry data model across 14 domains (Sec 22), composite multi-signal alert patterns (Sec 23), InsureMO instrumentation checklist (Sec 7.3), strengthened regulatory citations with Insurance Business Law 08/2022/QH15, Decree 46/2023, Circular 67/2023, Decision 07/QD-TTg (Sec 11.1, all pending Legal verification). Reference: `reference.research.md`. |
 | 2.2 | 2026-03-20 | IT Operations | Deep expansion of Sections 4 and 5. Section 4: added EKS-specific monitoring (4.2.2), database deep dive with connection pooling and slow query detection (4.2.3), deployment/release health monitoring (4.2.4), expanded platform/middleware with concrete metrics for SQS/EventBridge/cache/API Gateway (4.3), added golden signals framework per service (4.4.2), health check endpoint specification (4.4.4), log level strategy (4.4.5), correlation ID propagation requirements (4.4.6), journey-first business process monitoring with failure detection patterns (4.5), expanded security with AWS-native services integration, SIEM-lite approach, PII access monitoring, fraud indicators (4.6), added RUM SLO targets and segmentation dimensions (4.7), added insurance-specific cost anomaly scenarios (4.8). Section 5: added alert lifecycle management with ITSM integration (5.6), alert runbook template with example (5.7), alert naming convention and label taxonomy (5.8), escalation flowchart with auto-escalation rules (5.9), alert testing strategy including game days (5.10), alert noise management with composite patterns and noise budget (5.11), business alert routing matrix distinguishing technical from business alerts (5.12). |
+| 2.3 | 2026-03-20 | IT Operations | Strengthened from deep research report. Regulatory (Sec 11): updated with Personal Data Protection Law 91/2025/QH15 (72-hour notification, cross-border transfer), AML Law 14/2022/QH15, Circular 70/2022/TT-BTC, Decree 53/2022/ND-CP; added insight that observability data is regulated personal data. Security (Sec 4.6): added privacy-incident alerting (4.6.5) with 72-hour workflow, AML/fraud production telemetry (4.6.6), strengthened Macie/Security Hub descriptions. Alerting (Sec 5): added SLO burn-rate/multi-window alerting (5.5) with PromQL examples. InsureMO (Sec 7): added eBaoCloud native API gateway telemetry (7.2.0), OTel instrumentation with PII redaction (7.4). RUM (Sec 4.7): added CloudWatch RUM vs Grafana Faro evaluation. Testing (Sec 5.11): added canary fail-on-demand, security simulations, privacy tabletop exercises. Data sovereignty (Sec 12.3): added Hanoi Local Zone detail, cross-border implications for observability data. Reference: `deep-research-report.md`. |

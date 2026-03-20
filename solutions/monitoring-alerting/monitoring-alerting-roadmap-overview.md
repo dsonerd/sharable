@@ -1,6 +1,6 @@
 # Monitoring & Alerting Roadmap
 
-> **Version**: 2.2
+> **Version**: 2.3
 > **Technical reference**: `monitoring-alerting-roadmap-detail.md`
 
 ---
@@ -47,12 +47,20 @@ TCLife's monitoring covers eight domains. Each addresses a distinct operational 
   │                       Portal), page load, JS errors, mobile     │
   └─────────────────────────────────────────────────────────────────┘
 
-  Cross-cutting: DATA PROTECTION
-  PII scrubbing in logs, access controls on dashboards, data sovereignty
+  Cross-cutting: DATA PROTECTION & PRIVACY
+  PII scrubbing in logs/traces, access controls on dashboards, data
+  sovereignty, privacy-incident alerting (72-hour breach notification
+  support per Personal Data Protection Law 91/2025/QH15, pending Legal
+  verification). Observability data itself may be regulated personal data.
 
   Cross-cutting: RIDER MONITORING
   Rider attachment, eligibility, pricing, issuance, renewal, and claimability
   treated as first-class monitoring dimensions across all relevant journeys
+
+  Cross-cutting: AML / FRAUD PRODUCTION TELEMETRY
+  Real-time detection for premium/payment anomalies, early surrender,
+  unusual beneficiary changes, agent/channel anomalies
+  (AML Law 14/2022/QH15, pending Legal verification)
 ```
 
 ### Domain Coverage by Phase
@@ -64,7 +72,7 @@ TCLife's monitoring covers eight domains. Each addresses a distinct operational 
 | Business Process | — | — | Full | Anomaly detection |
 | Vendor / Insuremo | — | Full | Enhanced | Maintained |
 | Batch Jobs | — | — | Full | Automation |
-| Security | Basic (GuardDuty) | Core (WAF, CloudTrail) | Enhanced | Advanced |
+| Security | Basic (GuardDuty) | Core (WAF, CloudTrail, Security Hub, Macie, privacy-incident detection) | Enhanced (AML/fraud telemetry) | Advanced |
 | Cost | Basic (billing alarms) | — | — | Optimization |
 | User Experience (RUM) | — | Basic | Full | Maintained |
 
@@ -167,6 +175,8 @@ What each department sees — why it matters to them — and what "good" looks l
 | Incident history (policyholder impact) | Audit trail | "3 incidents affected policyholders in Q1; all resolved within SLA" |
 | Batch processing proof | Financial reporting integrity | "All GL, regulatory, and NAV batches completed within SLA for 90 consecutive days" |
 | Data breach / security event log | Data protection compliance | "Zero data breach events in Q1" |
+| Privacy-incident alert status | 72-hour notification readiness (Personal Data Protection Law 91/2025/QH15, pending Legal verification) | "0 privacy incidents requiring notification; 72-hour workflow tested quarterly" |
+| AML/fraud detection telemetry | Suspicious activity monitoring (AML Law 14/2022/QH15, pending Legal verification) | "AML detection active; 0 escalations to regulators this quarter" |
 | Audit trail completeness | No audit trail = control failure | "% critical actions logged with actor/time/object/result: 100%" |
 | Consent and privacy controls | Required governance evidence | "Consent capture success: 100%; DSAR SLA adherence: 100%" |
 
@@ -211,7 +221,8 @@ TCLife's monitoring stack uses AWS managed services to minimize operational over
             └──────────────────┘
 
   Additional components (phased):
-  - Grafana Faro (RUM agent) — Phase 2/3
+  - CloudWatch RUM or Grafana Faro (RUM — evaluate in Phase 2)
+  - AWS Security Hub (security finding aggregation) — Phase 2
   - AWS Cost Anomaly Detection — Phase 1
   - Insuremo Health Prober (custom) — Phase 2
   - Batch Job Monitor (custom) — Phase 3
@@ -257,10 +268,10 @@ All components are AWS managed services except the Insuremo Health Prober and Ba
 | Key Deliverables | Who Delivers | Exit Criteria |
 |-----------------|-------------|---------------|
 | Application instrumentation (HTTP metrics, structured logging) | DevOps + App Ops | All applications expose standard metrics |
-| Insuremo Health Prober (independent core system monitoring) | DevOps | Insuremo availability and latency visible; 30-day baseline |
-| Security monitoring (GuardDuty, WAF, CloudTrail) | DevOps | Security events centralized and alerting |
+| InsureMO monitoring (leverage native eBaoCloud API telemetry first, then deploy Health Prober for independent verification) | DevOps | Insuremo availability and latency visible; 30-day baseline |
+| Security monitoring (GuardDuty, WAF, CloudTrail, Security Hub as aggregation point, Macie for S3 PII detection) | DevOps | Security events centralized and alerting; privacy-incident detection foundation |
 | Log-based alerting (error patterns, auth failures) | App Ops + DevOps | 10+ log-based alert rules active |
-| Real User Monitoring — foundation (Grafana Faro or equivalent) | DevOps | RUM data collected for Sale Portal and Customer Portal |
+| Real User Monitoring — foundation (evaluate CloudWatch RUM vs Grafana Faro; select and deploy) | DevOps | RUM data collected for Sale Portal and Customer Portal |
 | Basic compliance dashboard (availability, incident history) | Service Quality | Availability evidence available for regulator/auditor queries |
 | Alert tuning (30-day review of all Phase 1 alerts) | Service Quality | False positive rate < 20% |
 | Status page evaluation and setup | App Ops | External communication channel for portal degradation |
@@ -276,6 +287,8 @@ All components are AWS managed services except the Insuremo Health Prober and Ba
 | GL, printing, datalake, reinsurance batch monitoring | App Ops | All batch partners tracked |
 | Business KPI dashboards (policy, claims, premium, NAV) | Service Quality + App Ops | Business KPIs visible and trended |
 | Reconciliation automation (GL, premium, NAV) | DevOps + App Ops | Daily reconciliation with alerts on mismatch |
+| SLO burn-rate alerting | DevOps + Service Quality | SLO targets set; error budget burn-rate alerts active for customer-facing services (reduces alert fatigue vs. simple thresholds) |
+| Privacy-incident workflow | DevOps + Compliance | Full 72-hour notification workflow with evidence capture |
 | CIO Management dashboard | Service Quality | Single-pane view of business + system health |
 | RUM — full deployment | DevOps | Real user performance visible across regions and devices |
 | Regulatory filing countdown panel | Service Quality | Proactive alerting as regulatory deadlines approach |
